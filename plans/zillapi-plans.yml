@@ -1,0 +1,93 @@
+generated: '2026-08-09'
+method: searched
+source: https://zillapi.com/pricing/
+pricing_as_of: '2026-05-13'
+model: credit-based
+currency: USD
+summary: >-
+  Credit-based, pay-only-for-successful-calls pricing. One credit per record returned on a successful
+  2xx call; 4xx/5xx calls are free. No seats, no minimums, no overage billing — the account simply
+  returns 402 out_of_credits at zero. Control-plane operations (jobs, webhooks, account, usage) never
+  cost credits.
+plans:
+  - name: Free
+    price: 0
+    interval: one-time
+    credits: 100
+    credits_interval: one-time at signup
+    rate_limit: 20/min
+    card_required: false
+    top_ups: false
+    features:
+      - All endpoints
+      - No card required
+      - Pauses when credits hit zero
+  - name: Monthly
+    price: 5
+    interval: month
+    credits: 1000
+    credits_interval: month
+    rate_limit: 200/min
+    top_ups: true
+    top_up_rate: $4 per 1,000 credits
+    features:
+      - All endpoints + webhooks
+      - Email support
+      - Cancel anytime
+  - name: Annual
+    price: 4.50
+    interval: month
+    billed: $54 per year
+    savings: 10%
+    credits: 12000
+    credits_interval: year, released as 1,000 each month
+    rate_limit: 300/min
+    top_ups: true
+    top_up_rate: $3 per 1,000 credits
+    best_value: true
+    features:
+      - All endpoints + webhooks
+      - Priority email support
+      - Best per-credit price
+      - Top-up credits stay valid through the full 12-month term
+  - name: Enterprise
+    price: null
+    rate_limit: custom
+    note: Named in the rate-limits table; no public price.
+top_up_packs:
+  note: Requires an active paid subscription; free-tier accounts must upgrade first.
+  validity: >-
+    Monthly billing — valid at least 30 days (through the end of the current billing period). Annual
+    billing — valid through the end of the 12-month term.
+  packs:
+    - {pack: 1k, credits: 1000, monthly_price: 4, annual_price: 3}
+    - {pack: 5k, credits: 5000, monthly_price: 20, annual_price: 15}
+    - {pack: 10k, credits: 10000, monthly_price: 40, annual_price: 30}
+    - {pack: 25k, credits: 25000, monthly_price: 100, annual_price: 75}
+    - {pack: 50k, credits: 50000, monthly_price: 200, annual_price: 150}
+    - {pack: 100k, credits: 100000, monthly_price: 400, annual_price: 300}
+credit_costs:
+  - {endpoint: 'GET /v1/properties/by-url', cost: 1 credit per record (min 1)}
+  - {endpoint: 'GET /v1/properties/by-address', cost: 3 credits per call, why: address is resolved before the record is fetched}
+  - {endpoint: 'GET /v1/properties/{zpid}', cost: 1 credit}
+  - {endpoint: 'GET /v1/properties/{zpid}/{photos|price-history|tax-history|schools|nearby|agent|zestimate|open-houses|facts}', cost: 1 credit each}
+  - {endpoint: 'POST /v1/properties/batch', cost: 1 credit per record returned (settled async)}
+  - {endpoint: 'GET /v1/buildings/by-url', cost: 1 credit per unit returned (min 1)}
+  - {endpoint: 'POST /v1/listings/{for-sale|for-rent|sold}', cost: 1 credit per result (min 1)}
+  - {endpoint: 'GET /v1/listings', cost: 1 credit per result (min 1)}
+  - {endpoint: 'POST /v1/search', cost: 1 credit per result (min 1)}
+  - {endpoint: 'POST /v1/search/with-details', cost: 1 per search result + 1 per detail record (two stages)}
+  - {endpoint: 'GET /v1/jobs, /v1/jobs/{id}, /v1/jobs/{id}/results', cost: free (control plane)}
+  - {endpoint: 'GET /v1/me, /v1/usage', cost: free}
+  - {endpoint: '* /v1/webhooks*', cost: free}
+expiry:
+  free_tier: one-time grant
+  plan_credits: granted per billing cycle, do not roll over
+  top_ups: 30 days on Monthly; end of term on Annual
+exhaustion:
+  status: 402
+  code: out_of_credits
+  behavior: no surprise overage billing — calls stop until top-up or renewal
+caveat: >-
+  The provider notes it may adjust per-endpoint credit weights as the product evolves; existing credit
+  balances are unaffected. Prices captured 2026-08-09 from a page stamped "Pricing as of 2026-05-13".

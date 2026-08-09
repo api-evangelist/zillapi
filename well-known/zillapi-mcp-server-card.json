@@ -1,0 +1,77 @@
+{
+  "serverInfo": {
+    "name": "zillapi",
+    "title": "Zillapi - Zillow Data API",
+    "version": "1.0.0",
+    "websiteUrl": "https://zillapi.com",
+    "iconUrl": "https://zillapi.com/mcp-icon-128.png",
+    "description": "MCP server exposing Zillapi's Zillow Data API as agent tools. Look up U.S. properties by address or zpid, fetch Zestimates, and search listings inside a bounding box."
+  },
+  "transport": {
+    "type": "streamable-http",
+    "endpoint": "https://api.zillapi.com/mcp"
+  },
+  "protocolVersion": "2025-06-18",
+  "capabilities": {
+    "tools": {
+      "listChanged": false
+    }
+  },
+  "tools": [
+    {
+      "name": "lookup_property_by_address",
+      "title": "Look up a U.S. property by address",
+      "description": "Returns full Zillow property data for a U.S. address."
+    },
+    {
+      "name": "lookup_property_by_zpid",
+      "title": "Look up a U.S. property by Zillow zpid",
+      "description": "Returns full property data for a Zillow property id. Cache-served when fresh."
+    },
+    {
+      "name": "get_zestimate",
+      "title": "Get the current Zestimate for a property",
+      "description": "Returns Zillow's automated valuation and rent Zestimate for a zpid."
+    },
+    {
+      "name": "search_listings",
+      "title": "Search U.S. property listings",
+      "description": "Search for-sale, for-rent, or sold listings inside a geographic bounding box."
+    }
+  ],
+  "authentication": {
+    "methods": ["oauth2", "bearer"],
+    "tokenName": "Authorization",
+    "scheme": "Bearer",
+    "oauth": {
+      "type": "oauth2",
+      "flow": "authorization_code",
+      "authorization_url": "https://api.zillapi.com/oauth/authorize",
+      "token_url": "https://api.zillapi.com/oauth/token",
+      "registration_url": "https://api.zillapi.com/oauth/register",
+      "scopes": ["mcp:access"],
+      "pkce_required": true,
+      "discovery_url": "https://api.zillapi.com/.well-known/oauth-authorization-server",
+      "resource_metadata_url": "https://api.zillapi.com/.well-known/oauth-protected-resource",
+      "connector_install_url": "https://claude.ai/settings/connectors"
+    },
+    "bearer": {
+      "type": "bearer",
+      "format": "Bearer zk_<32 char base64url>",
+      "signup_url": "https://zillapi.com/signup",
+      "management_url": "https://zillapi.com/app/keys/"
+    },
+    "instructions": "Two ways to connect: (1) OAuth 2.1 — add this server as a connector at https://claude.ai/settings/connectors (Anthropic UI), or any MCP client that supports Dynamic Client Registration. The first time you connect, you'll be prompted to authorize on zillapi.com. (2) Long-lived API key — get a free key with 100 credits at https://zillapi.com/signup (no card required), then send 'Authorization: Bearer zk_<key>' with every request. Both modes share the same /v1 REST and /mcp tool surface."
+  },
+  "documentation": {
+    "guide": "https://zillapi.com/blog/mcp-server-for-zillow-data/",
+    "rest": "https://zillapi.com/openapi.json",
+    "agents": "https://zillapi.com/ai-agents/"
+  },
+  "publisher": {
+    "name": "Zillapi",
+    "url": "https://zillapi.com",
+    "contact": "hello@zillapi.com"
+  },
+  "termsOfService": "https://zillapi.com/legal/trademark-and-affiliation/"
+}

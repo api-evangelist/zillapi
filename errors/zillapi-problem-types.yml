@@ -1,0 +1,97 @@
+generated: '2026-08-09'
+method: derived
+source: openapi/zillapi-openapi-original.json
+enriched_from: https://zillapi.com/errors/
+format: proprietary-envelope
+rfc9457: false
+note: >-
+  Derived from the OpenAPI 4xx/5xx and `default` responses. Zillapi does not emit
+  application/problem+json — every error response references components/schemas/ApiError, the
+  `{error:{code,message,request_id}}` envelope. The named code registry lives in
+  errors/zillapi-error-codes.yml; this file is the status-and-operation view.
+spec_observations:
+  error_schema: '#/components/schemas/ApiError'
+  reusable_responses:
+    - {name: Unauthorized, description: Auth missing/invalid, media_type: application/json}
+    - {name: Error, description: Standard error, media_type: application/json}
+  explicit_status_coverage: >-
+    Only getPropertyByUrl enumerates the full status ladder (400/401/404/429/502/504). The other 28
+    operations collapse every failure into a single `default` response, so per-operation status
+    expectations are not machine-readable from the spec — they must be read from
+    https://zillapi.com/errors/. getJobResults additionally names 404 and 409.
+  gap: >-
+    401, 402, 403 and 429 are documented in prose but absent from the spec on 28 of 29 operations, and
+    no response carries an example. An agent planning retries cannot learn the credit-exhaustion (402)
+    or rate-limit (429) contract from the OpenAPI alone.
+problems:
+  - status: 400
+    code_family: [invalid_url, invalid_address, invalid_zpid, missing_input, invalid_filters, invalid_search_url, invalid_status, invalid_extract_units, invalid_json]
+    title: Client validation failed
+    schema: ApiError
+    source_operations:
+      - openapi/zillapi-openapi-original.json#getPropertyByUrl
+      - openapi/zillapi-openapi-original.json#listingsBbox
+      - openapi/zillapi-openapi-original.json#search
+    remediation: >-
+      Fix the request before retrying — these never succeed on retry. For search, supply filters.bbox
+      or a searchUrls[].url containing ?searchQueryState=.
+  - status: 401
+    code_family: [missing_api_key, invalid_api_key]
+    title: Auth missing or invalid
+    schema: ApiError
+    source_operations:
+      - openapi/zillapi-openapi-original.json#getPropertyByUrl
+    remediation: 'Send `Authorization: Bearer zk_<key>`; if revoked, issue a new key.'
+  - status: 402
+    code_family: [out_of_credits]
+    title: Out of credits
+    schema: ApiError
+    documented_in_spec: false
+    source_operations: []
+    remediation: Top up or upgrade. Not retryable until the balance is restored.
+  - status: 403
+    code_family: [account_suspended]
+    title: Account suspended or operation not allowed on current plan
+    schema: ApiError
+    documented_in_spec: false
+    source_operations: []
+  - status: 404
+    code_family: [not_found, job_not_found]
+    title: Resource not found
+    schema: ApiError
+    source_operations:
+      - openapi/zillapi-openapi-original.json#getPropertyByUrl
+      - openapi/zillapi-openapi-original.json#getJobResults
+  - status: 409
+    code_family: [job_not_ready]
+    title: Job not in expected state
+    schema: ApiError
+    source_operations:
+      - openapi/zillapi-openapi-original.json#getJobResults
+    remediation: Poll GET /v1/jobs/{id} or wait for the job.succeeded webhook before fetching results.
+  - status: 429
+    code_family: [rate_limited]
+    title: Rate limit hit
+    schema: ApiError
+    source_operations:
+      - openapi/zillapi-openapi-original.json#getPropertyByUrl
+    remediation: >-
+      Exponential backoff with jitter, no faster than one retry every 2 seconds. Safe to retry on GET.
+  - status: 502
+    code_family: [upstream_error]
+    title: Upstream call failed
+    schema: ApiError
+    source_operations:
+      - openapi/zillapi-openapi-original.json#getPropertyByUrl
+    remediation: Retryable on GET.
+  - status: 504
+    code_family: [upstream_timeout]
+    title: Upstream call timed out
+    schema: ApiError
+    source_operations:
+      - openapi/zillapi-openapi-original.json#getPropertyByUrl
+    remediation: Retryable on GET.
+cross_links:
+  error_codes: errors/zillapi-error-codes.yml
+  conventions: conventions/zillapi-conventions.yml
+  rate_limits: rate-limits/zillapi-rate-limits.yml

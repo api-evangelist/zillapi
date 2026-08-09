@@ -4,8 +4,9 @@ description: >-
   and agent skills. Returns ~300+ fields per property including price, Zestimate, rent Zestimate, photos, schools,
   taxes, and full price history, plus listing search, building extraction, async batch jobs, and signed webhooks.
 url: https://zillapi.apievangelist.com/apis.yml
+image: https://zillapi.com/og.png
 created: '2026-07-13'
-modified: '2026-07-13'
+modified: '2026-08-09'
 specificationVersion: '0.21'
 tags:
   - real estate
@@ -51,11 +52,90 @@ apis:
         url: https://zillapi.com/llms-full.txt
       - type: AgentSkill
         url: https://zillapi.com/.well-known/agent-skills/index.json
+      - type: OpenAPI
+        url: openapi/zillapi-openapi-original.json
+      - type: MCPServer
+        url: mcp/zillapi-mcp.yml
+      - type: ToolCrosswalk
+        url: mcp/zillapi-tool-crosswalk.yml
+      - type: AgentSkill
+        url: skills/_index.yml
+      - type: LLMsTxt
+        url: llms/zillapi-llms.txt
+      - type: Overlay
+        url: overlays/zillapi-openapi-overlay.yaml
+      - type: DataModel
+        url: data-model/zillapi-data-model.yml
+      - type: Examples
+        url: examples/zillapi-examples.yml
 maintainers:
   - FN: ZeroPointRepo
+    email: hello@zillapi.com
     url: https://github.com/ZeroPointRepo/zillow-skills
 generated:
   by: apis.io/add
   model: claude-opus-4-8
   confidence: 97
   at: '2026-07-13T07:54:16.663Z'
+common:
+- type: DomainSecurity
+  url: security/zillapi-domain-security.yml
+- type: AgenticAccess
+  url: agentic-access/zillapi-agentic-access.yml
+- type: Authentication
+  url: authentication/zillapi-authentication.yml
+- type: OAuthScopes
+  url: scopes/zillapi-scopes.yml
+- type: Conventions
+  url: conventions/zillapi-conventions.yml
+- type: ErrorCatalog
+  url: errors/zillapi-error-codes.yml
+- type: Lifecycle
+  url: lifecycle/zillapi-lifecycle.yml
+- type: Conformance
+  url: conformance/zillapi-conformance.yml
+- type: Packages
+  url: packages/zillapi-packages.yml
+- type: WellKnown
+  url: well-known/zillapi-well-known.yml
+- type: APICatalog
+  url: https://zillapi.com/.well-known/api-catalog
+- type: Webhooks
+  url: asyncapi/zillapi-webhooks.yml
+- type: RateLimits
+  url: rate-limits/zillapi-rate-limits.yml
+- type: Plans
+  url: plans/zillapi-plans.yml
+- type: VulnerabilityDisclosure
+  url: security/zillapi-vulnerability-disclosure.yml
+- type: Security
+  url: https://github.com/ZeroPointRepo/zillow-skills/blob/main/SECURITY.md
+- type: DeveloperPortal
+  url: https://zillapi.com/
+- type: Documentation
+  url: https://zillapi.com/quickstart/
+- type: APIReference
+  url: https://zillapi.com/api/properties/
+- type: GettingStarted
+  url: https://zillapi.com/quickstart/
+- type: Blog
+  url: https://zillapi.com/blog/
+- type: GitHubOrganization
+  url: https://github.com/ZeroPointRepo/zillow-skills
+- type: Pricing
+  url: https://zillapi.com/pricing/
+- type: SignUp
+  url: https://zillapi.com/signup
+- type: Login
+  url: https://zillapi.com/login
+- type: TermsOfService
+  url: https://zillapi.com/legal/terms/
+- type: PrivacyPolicy
+  url: https://zillapi.com/legal/privacy/
+- type: Support
+  url: mailto:hello@zillapi.com
+x-enrichment:
+  date: '2026-08-09'
+  status: enriched
+  artifacts_added: 33
+  pass: local-v1

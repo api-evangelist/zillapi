@@ -1,0 +1,72 @@
+generated: '2026-08-09'
+method: searched
+source: live probes of /.well-known/ on both Zillapi hosts, 2026-08-09
+note: >-
+  zillapi.com returns a real HTTP 404 for unknown paths (verified against a control URL), so the 200s
+  below are genuine documents, not SPA catch-all responses. Every 200 was fetched and parsed.
+hosts:
+  - host: https://zillapi.com
+    documents:
+      - path: /.well-known/oauth-authorization-server   # RFC 8414
+        status: 200
+        file: zillapi-oauth-authorization-server.json
+      - path: /.well-known/oauth-protected-resource      # RFC 9728
+        status: 200
+        file: zillapi-oauth-protected-resource.json
+      - path: /.well-known/api-catalog                   # RFC 9727, application/linkset+json
+        status: 200
+        file: zillapi-api-catalog.json
+      - path: /.well-known/mcp/server-card.json          # MCP SEP-1649 server card
+        status: 200
+        file: zillapi-mcp-server-card.json
+      - path: /.well-known/agent-skills/index.json       # Cloudflare Agent Skills Discovery RFC v0.2.0
+        status: 200
+        file: zillapi-agent-skills-index.json
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+  - host: https://api.zillapi.com
+    documents:
+      - path: /.well-known/oauth-authorization-server
+        status: 200
+        note: Same document as the zillapi.com copy; issuer is https://api.zillapi.com.
+      - path: /.well-known/oauth-protected-resource
+        status: 200
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+      - path: /.well-known/mcp/server-card.json
+        status: 404
+extras:
+  - path: /auth.md
+    host: https://zillapi.com
+    status: 200
+    content_type: text/markdown
+    file: zillapi-auth.md
+    note: >-
+      Agent-facing auth procedure in markdown, referenced as `agent_auth.skill` from the RFC 8414
+      metadata and as `auth_md` from the RFC 9728 metadata.
+  - path: /healthz
+    host: https://api.zillapi.com
+    status: 200
+    content_type: application/json
+    note: 'Service health endpoint, advertised in the api-catalog linkset. Returns {"ok":true,"ts":...}.'
+gaps:
+  - No /.well-known/security.txt on either host (RFC 9116) — no machine-readable disclosure contact.
+  - No A2A agent card at either the canonical or legacy path.

@@ -1,0 +1,43 @@
+{
+  "$schema": "https://raw.githubusercontent.com/cloudflare/agent-skills-discovery-rfc/main/schema/index.schema.json",
+  "version": "0.2.0",
+  "generatedAt": "2026-08-03T05:30:12.382Z",
+  "publisher": {
+    "name": "Zillapi",
+    "url": "https://zillapi.com"
+  },
+  "skills": [
+    {
+      "name": "get-zestimate",
+      "type": "skill",
+      "description": "Fetch the current Zestimate (Zillow's automated valuation) and rent Zestimate for a U.S. property by Zillow zpid.",
+      "version": "1.0.0",
+      "url": "https://zillapi.com/.well-known/agent-skills/get-zestimate/SKILL.md",
+      "sha256": "8612500532c52fa9953ea085b629fe84f4e63a5d106ce3234e20d8b22c6ef105"
+    },
+    {
+      "name": "lookup-zillow-property",
+      "type": "skill",
+      "description": "Look up a U.S. property by address or Zillow zpid and return full property data including price, Zestimate, photos, schools, taxes, agent contact, and price history.",
+      "version": "1.0.0",
+      "url": "https://zillapi.com/.well-known/agent-skills/lookup-zillow-property/SKILL.md",
+      "sha256": "18b959a3b122402373ec66d4c02aad080721cdd0f00c57df06f6b5bfdc4166ed"
+    },
+    {
+      "name": "search-zillow-listings",
+      "type": "skill",
+      "description": "Search U.S. property listings inside a geographic bounding box, filtered by status (for_sale, for_rent, sold), price ceiling, and bedroom count.",
+      "version": "1.0.0",
+      "url": "https://zillapi.com/.well-known/agent-skills/search-zillow-listings/SKILL.md",
+      "sha256": "aadcc02f3364415f9ee016797e1ad3d6a10f8c0db300538f9d6a5aef30054377"
+    },
+    {
+      "name": "verify-zillow-webhook",
+      "type": "skill",
+      "description": "Verify the HMAC-SHA256 signature on an inbound Zillapi webhook so you can trust the payload before acting on it.",
+      "version": "1.0.0",
+      "url": "https://zillapi.com/.well-known/agent-skills/verify-zillow-webhook/SKILL.md",
+      "sha256": "e7bdb9d9e90ad2ce77c8ca55db0d7b1a9fb09670f477396f57a30152c57c8f06"
+    }
+  ]
+}

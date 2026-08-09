@@ -1,0 +1,139 @@
+generated: '2026-08-09'
+method: searched
+source: https://zillapi.com/llms.txt
+docs:
+  - https://zillapi.com/authentication/
+  - https://zillapi.com/errors/
+  - https://zillapi.com/rate-limits/
+  - https://zillapi.com/pagination/
+  - https://zillapi.com/output-formats/
+  - https://zillapi.com/field-projection/
+  - https://zillapi.com/async-jobs/
+  - https://zillapi.com/webhooks-guide/
+summary: >-
+  Cross-cutting request/response semantics for the Zillapi /v1 REST surface, captured from the
+  published docs and confirmed against the live OpenAPI 3.1. The defining conventions are a single
+  response envelope, a stable machine-matchable error code, dot-notation field projection over a
+  300+ field property object, a hard concurrency limit of one in-flight request per key, and a
+  sync-versus-async threshold driven by `maxItems`.
+authentication:
+  styles: [http_bearer, oauth2]
+  header: 'Authorization: Bearer zk_<key>'
+  see: authentication/zillapi-authentication.yml
+versioning:
+  scheme: uri-path
+  current: v1
+  base_url: https://api.zillapi.com
+  notes: All operations sit under /v1/. No version header, no date-based train, no version negotiation.
+response_envelope:
+  success: |
+    {
+      "data": { ... } | [ ... ],
+      "meta": { "count": 50, "total": 213, "limit": 50, "offset": 0, "has_more": true },
+      "request_id": "..."
+    }
+  error: |
+    { "error": { "code": "invalid_url", "message": "...", "request_id": "..." } }
+  notes: >-
+    `meta` is present on collection responses only. `request_id` appears on both success and error
+    payloads and is the correlation handle the provider asks for in support reports.
+request_tracing:
+  field: request_id
+  location: response body (both success and error envelopes)
+  header: null
+  notes: >-
+    Correlation is body-borne, not header-borne — there is no documented X-Request-Id response header.
+    The provider directs users to include request_id when reporting issues.
+idempotency:
+  supported: false
+  documented: true
+  header: null
+  notes: >-
+    Explicitly NOT supported, and the docs say so plainly: reads (GET) are safe to retry on 5xx and
+    429, but async writes "create new jobs — retrying creates a new job". There is no Idempotency-Key
+    header or equivalent parameter anywhere in the OpenAPI. Callers must de-duplicate themselves using
+    request_id correlation in their own logs. Webhook deliveries are at-least-once, so consumers must
+    make their own handlers idempotent on job.id.
+pagination:
+  style: limit-offset
+  params: [limit, offset]
+  response_fields: [meta.count, meta.total, meta.limit, meta.offset, meta.has_more]
+  termination: Stop when meta.has_more is false
+  caps:
+    - {endpoint: '/v1/jobs/{id}/results', default: 100, max: 1000}
+    - {endpoint: '/v1/usage', default: 100, max: 1000}
+    - {endpoint: '/v1/jobs', default: 50, max: 500}
+    - {endpoint: '/v1/webhooks/{id}/deliveries', default: 50, max: 200}
+field_projection:
+  supported: true
+  param: fields
+  syntax:
+    top_level: price
+    nested: address.streetAddress
+    array_index: priceHistory[0].price
+    whole_array: priceHistory
+  available_on: [getPropertyByUrl, getPropertyByAddress, getPropertyByZpid]
+  unknown_fields: Silently dropped — an unknown field name does not raise an error
+  notes: >-
+    The detail response carries 300+ fields; projection is the documented way to trim it. Sub-resources
+    (/photos, /schools, …) are already field-scoped so ?fields= is unnecessary there.
+content_negotiation:
+  formats: [json, ndjson, csv]
+  param: format
+  accept_header: true
+  available_on: ['/v1/listings', '/v1/listings/*', '/v1/search', '/v1/jobs/{id}/results']
+  details:
+    - {format: json, query: '?format=json', accept: application/json, note: 'default; enveloped'}
+    - {format: ndjson, query: '?format=ndjson', accept: application/x-ndjson, note: 'one object per line, no envelope; response carries X-Row-Count'}
+    - {format: csv, query: '?format=csv', accept: text/csv, note: 'dot-notation column names, arrays JSON-stringified, RFC 4180 quoting'}
+async_model:
+  trigger_field: maxItems
+  threshold: >-
+    maxItems <= 50 runs synchronously; maxItems >= 51 flips the request to an async job, as do
+    extractionMethod PAGINATION_WITH_ZOOM_IN and async:true. /v1/search/with-details and
+    /v1/properties/batch are always async.
+  accepted_response: '202 with {"data":{"job_id","status"}}'
+  collection: Poll GET /v1/jobs/{id} then GET /v1/jobs/{id}/results, or subscribe to webhooks
+  sync_ceiling: 5 minutes
+concurrency:
+  in_flight_per_key: 1
+  behavior: >-
+    A first-class limit on par with the per-minute rate. Extra parallel calls on one key QUEUE rather
+    than being rejected — parallelism does not increase throughput. Scale by raising the plan or by
+    moving to async jobs, not by adding threads.
+rate_limit_signaling:
+  headers: none documented
+  error_code: rate_limited
+  status: 429
+  notes: >-
+    No X-RateLimit-* response headers are documented and none appear in the OpenAPI. An agent learns
+    its remaining budget only by calling the free GET /v1/usage and GET /v1/me, or by hitting a 429.
+    This is the weakest link in the runtime contract.
+  see: rate-limits/zillapi-rate-limits.yml
+metering:
+  model: credits
+  billed_on: successful calls only
+  control_plane_free: ['/v1/jobs', '/v1/jobs/{id}', '/v1/jobs/{id}/results', '/v1/me', '/v1/usage', '/v1/webhooks*']
+  exhaustion: 402 out_of_credits
+  see: plans/zillapi-plans.yml
+errors:
+  envelope_field: error.code
+  guidance: Match on error.code; never parse error.message
+  see: errors/zillapi-error-codes.yml
+webhooks:
+  signature_header: X-Zillow-Signature
+  algorithm: HMAC-SHA256 over "<t>.<raw_body>"
+  replay_window: 300 seconds
+  see: asyncapi/zillapi-webhooks.yml
+caching:
+  notes: >-
+    The zpid lookup is documented as cache-served when fresh (the spec has a distinct PropertyCachedOk
+    response component). The provider advises client-side caching of static fields (zpid, address, year
+    built) to avoid burning rate limit and credits on re-fetches.
+cross_links:
+  authentication: authentication/zillapi-authentication.yml
+  scopes: scopes/zillapi-scopes.yml
+  errors: errors/zillapi-error-codes.yml
+  lifecycle: lifecycle/zillapi-lifecycle.yml
+  rate_limits: rate-limits/zillapi-rate-limits.yml
+  mcp: mcp/zillapi-mcp.yml

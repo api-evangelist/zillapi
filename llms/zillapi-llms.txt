@@ -1,0 +1,49 @@
+# Zillapi: Zillow property data API
+
+> REST API for U.S. Zillow property data — Zestimates, photos, schools, taxes, agent contact, price history, listing search, multi-unit building extraction, async batches, signed webhooks. Free tier: 100 credits, no card required. See https://zillapi.com/pricing for current plans. Built for AI agents and SaaS products.
+
+Auth is `Authorization: Bearer zk_…`. Errors return `{ error: { code, message, request_id } }`. Async endpoints return `{ data: { job_id, status } }` with a `202` and notify completion via signed HMAC-SHA256 webhooks.
+
+## Get a key in 30 seconds
+- [Sign up free](https://zillapi.com/signup): 100 credits, no card required. Same key works for REST, MCP, and agent skills.
+- [Pricing](https://zillapi.com/pricing/): Free tier plus paid plans with top-ups. Current prices on the page.
+
+## Use Zillapi from any AI agent
+- [MCP server](https://api.zillapi.com/mcp): Hosted, streamable-http transport. Drop into Claude Desktop, Claude Code, Cursor, ChatGPT, or the OpenAI Agents SDK with one config line.
+- [Agent skills (open source, MIT-0)](https://github.com/ZeroPointRepo/zillow-skills): `npx skills add ZeroPointRepo/zillow-skills` — three drop-in Python skills for any skills-compatible agent.
+- [Per-client setup guides](https://zillapi.com/blog/): Step-by-step install for Claude Desktop, Claude Code, Cursor, and ChatGPT custom GPTs.
+- [For AI agents and LLMs](https://zillapi.com/ai-agents/): Tooling, conventions, function-calling templates.
+
+## Start here
+- [Welcome](https://zillapi.com/): Overview and entry points
+- [Quickstart](https://zillapi.com/quickstart/): First call in 60 seconds, all four languages
+- [Authentication](https://zillapi.com/authentication/): Keys, rotation, revocation
+
+## Core concepts
+- [Errors](https://zillapi.com/errors/): Stable error codes + HTTP status mapping
+- [Rate limits & quotas](https://zillapi.com/rate-limits/): Per-minute caps + monthly quota by plan
+- [Pagination](https://zillapi.com/pagination/): `limit`/`offset`/`has_more`
+- [Output formats](https://zillapi.com/output-formats/): JSON, CSV, NDJSON
+- [Field projection](https://zillapi.com/field-projection/): `?fields=zpid,address.streetAddress`
+- [Async jobs](https://zillapi.com/async-jobs/): Polling vs webhooks
+- [Webhooks](https://zillapi.com/webhooks-guide/): HMAC-SHA256 signature, retries, examples
+
+## API reference
+- [Properties](https://zillapi.com/api/properties/): Single lookups + 9 sub-resources (photos, price-history, tax-history, schools, nearby, agent, zestimate, open-houses, facts) + bulk batch
+- [Buildings](https://zillapi.com/api/buildings/): Multi-unit extraction (apartments, condos)
+- [Listings](https://zillapi.com/api/listings/): Status presets + REST GET wrapper with bbox
+- [Search](https://zillapi.com/api/search/): Structured filters + chained search→detail
+- [Jobs](https://zillapi.com/api/jobs/): List, inspect, results
+- [Webhooks API](https://zillapi.com/api/webhooks/): Manage subscriptions
+- [Account](https://zillapi.com/api/account/): `/v1/me`, `/v1/usage`
+
+## Recipes
+- [Get full property by zpid](https://zillapi.com/recipes/full-property/): Cache-first sub-resource fan-out
+- [Search → details (chained)](https://zillapi.com/recipes/search-then-detail/): One job, two stages
+- [Verify a webhook signature](https://zillapi.com/recipes/verify-webhook/): Node, Python, Go
+
+## Machine-readable
+- [OpenAPI 3.1 spec](https://zillapi.com/openapi.json): Full spec, every endpoint
+- [MCP server card](https://zillapi.com/.well-known/mcp/server-card.json): MCP discovery
+- [Agent skills index](https://zillapi.com/.well-known/agent-skills/index.json): Hosted skill manifests
+- [llms-full.txt](https://zillapi.com/llms-full.txt): Every doc page concatenated for context windows

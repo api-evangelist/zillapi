@@ -1,0 +1,27 @@
+{
+  "resource": "https://api.zillapi.com",
+  "resource_name": "Zillapi",
+  "resource_logo_uri": "https://zillapi.com/mcp-icon-128.png",
+  "authorization_servers": ["https://api.zillapi.com"],
+  "scopes_supported": ["mcp:access"],
+  "bearer_methods_supported": ["header"],
+  "resource_documentation": "https://zillapi.com/authentication/",
+  "auth_md": "https://zillapi.com/auth.md",
+  "resource_tos_uri": "https://zillapi.com/legal/trademark-and-affiliation/",
+  "resource_signing_alg_values_supported": [],
+  "auth_methods": ["oauth2", "api_key"],
+  "api_key_format": "Bearer zk_<32 char base64url>",
+  "api_key_signup_url": "https://zillapi.com/login",
+  "api_key_management_url": "https://zillapi.com/app/keys/",
+  "oauth_dashboard_url": "https://zillapi.com/app/mcp/",
+  "rate_limit_documentation": "https://zillapi.com/rate-limits/",
+  "description": "Zillapi accepts two auth modes: (1) long-lived API keys (Bearer zk_<key>) issued in the dashboard at /app/keys/ for direct REST and MCP usage; (2) OAuth 2.1 + Dynamic Client Registration for claude.ai-style remote-MCP connectors. Both paths grant the same scope (mcp:access) and bill against the same account.",
+  "discovery_endpoints": {
+    "openapi": "https://zillapi.com/openapi.json",
+    "api_catalog": "https://zillapi.com/.well-known/api-catalog",
+    "mcp_server_card": "https://zillapi.com/.well-known/mcp/server-card.json",
+    "agent_skills": "https://zillapi.com/.well-known/agent-skills/index.json",
+    "oauth_authorization_server": "https://api.zillapi.com/.well-known/oauth-authorization-server",
+    "auth_md": "https://zillapi.com/auth.md"
+  }
+}

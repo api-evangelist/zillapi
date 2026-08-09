@@ -1,0 +1,89 @@
+generated: '2026-08-09'
+method: searched
+source: https://zillapi.com/webhooks-guide/
+spec_type: Webhooks
+asyncapi_published: false
+asyncapi_probes:
+  - {url: 'https://zillapi.com/asyncapi.yaml', status: 404}
+  - {url: 'https://zillapi.com/asyncapi.json', status: 404}
+  - {url: 'https://api.zillapi.com/asyncapi.json', status: 404}
+note: >-
+  Zillapi publishes no AsyncAPI document and declares no `webhooks` block in its OpenAPI 3.1 (which
+  would be the natural home for it). The event surface below is captured from the published webhooks
+  guide. It is a real, signed, retried callback surface — it simply has no machine-readable contract.
+transport:
+  style: http-callback
+  method: POST
+  content_type: application/json
+  direction: provider -> subscriber
+  trigger: an async job reaching a terminal state
+subscription:
+  managed_via: REST
+  operations:
+    - openapi/zillapi-openapi-original.json#createWebhook
+    - openapi/zillapi-openapi-original.json#listWebhooks
+    - openapi/zillapi-openapi-original.json#revokeWebhook
+    - openapi/zillapi-openapi-original.json#listWebhookDeliveries
+  cost: free (no credits)
+  scope: fires to every active webhook on the account
+events:
+  - name: job.succeeded
+    when: Job done, results ready
+    follow_up: GET /v1/jobs/{id}/results
+  - name: job.failed
+    when: Upstream or chain failure
+  - name: job.timed_out
+    when: Upstream exceeded timeout
+  - name: job.aborted
+    when: Manually cancelled
+payload:
+  example: |
+    {
+      "event": "job.succeeded",
+      "delivered_at": "2026-05-01T12:34:56.789Z",
+      "data": {
+        "job": {
+          "id": "8c2a...",
+          "type": "batch_detail",
+          "status": "succeeded",
+          "result_count": 213,
+          "created_at": "...", "started_at": "...", "completed_at": "..."
+        }
+      }
+    }
+  note: >-
+    The event carries job metadata only, not the rows. Fetch results with a follow-up call to
+    GET /v1/jobs/{id}/results.
+headers:
+  - {name: Content-Type, value: application/json}
+  - {name: X-Zillow-Signature, value: 't=<unix ts>,v1=<hex hmac>'}
+  - {name: X-Zillow-Event, value: 'the event name, e.g. job.succeeded'}
+  - {name: User-Agent, value: zillow-api-platform/1.0}
+security:
+  scheme: HMAC-SHA256
+  signed_payload: '<t>.<raw_body>'
+  signature_header: X-Zillow-Signature
+  encoding: hex
+  secret: per-webhook secret issued at creation
+  replay_window_seconds: 300
+  verification_examples: [JavaScript, Python, Go]
+  comparison: constant-time comparison shown in all three published examples
+delivery:
+  connect_timeout_seconds: 8
+  body_timeout_seconds: 8
+  attempts: 3 (initial + 2 retries)
+  backoff: quadratic — 250ms x n^2
+  success_criteria: any 2xx
+  failure_behavior: retry until attempts exhausted
+  delivery_log: GET /v1/webhooks/{id}/deliveries
+  guarantee: at-least-once
+consumer_guidance:
+  - Verify the signature on every request; reject unsigned payloads
+  - Reject events older than 5 minutes (replay protection)
+  - Be idempotent — process the same job.id twice without side effects
+  - Return within 5 seconds; queue the work and 200 immediately
+gap: >-
+  No AsyncAPI document, and the OpenAPI 3.1 `webhooks` object is empty even though the spec version
+  supports it. Declaring the four job.* events there would make this surface machine-readable at zero
+  cost to the provider.
+related_skill: skills/zillapi-verify-zillow-webhook.md

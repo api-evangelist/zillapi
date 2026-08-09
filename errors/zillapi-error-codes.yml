@@ -1,0 +1,118 @@
+generated: '2026-08-09'
+method: searched
+source: https://zillapi.com/errors/
+also: openapi/zillapi-openapi-original.json (components.schemas.ApiError)
+format: proprietary-envelope
+note: >-
+  Zillapi does NOT use RFC 9457 problem+json. It publishes its own stable error envelope and a named
+  code registry. The provider's own instruction is explicit: match on `error.code`, never parse
+  `error.message`. See errors/zillapi-problem-types.yml for the HTTP-status view derived from the spec.
+envelope:
+  media_type: application/json
+  shape: |
+    {
+      "error": {
+        "code": "invalid_url",
+        "message": "Must be a https://www.zillow.com property URL",
+        "request_id": "8f7a3b..."
+      }
+    }
+  fields:
+    - {name: error.code, type: string, stability: stable, guidance: Machine-matchable. Match on this.}
+    - {name: error.message, type: string, stability: may evolve, guidance: Human-readable. Do not match on this.}
+    - {name: error.details, type: any, stability: optional}
+    - {name: error.request_id, type: string, guidance: Include when reporting issues to support.}
+  required: [code, message]
+status_mapping:
+  - {status: 200, meaning: Success}
+  - {status: 201, meaning: Created (e.g. webhook)}
+  - {status: 202, meaning: Accepted, async job started}
+  - {status: 204, meaning: No content (e.g. webhook revoke)}
+  - {status: 400, meaning: Client validation failed}
+  - {status: 401, meaning: Missing or invalid API key}
+  - {status: 402, meaning: Out of credits}
+  - {status: 403, meaning: Account suspended or operation not allowed on current plan}
+  - {status: 404, meaning: Resource not found}
+  - {status: 409, meaning: Job not in expected state}
+  - {status: 429, meaning: Rate limit hit}
+  - {status: 502, meaning: Upstream call failed}
+  - {status: 504, meaning: Upstream call timed out}
+codes:
+  - code: missing_api_key
+    status: 401
+    when: No Authorization header
+    action: 'Send `Authorization: Bearer zk_<key>`'
+  - code: invalid_api_key
+    status: 401
+    when: Bad format, unknown, or revoked key
+    action: Create a new key in the dashboard and roll it in
+  - code: account_suspended
+    status: 403
+    when: Account is suspended or closed
+    action: Contact support
+  - code: out_of_credits
+    status: 402
+    when: Account credit balance reached 0
+    action: Top up at /app/billing or upgrade the plan
+  - code: rate_limited
+    status: 429
+    when: Per-minute rate limit hit
+    action: Back off with exponential jitter; do not retry faster than once every 2 seconds
+  - code: invalid_url
+    status: 400
+    when: URL does not match the expected Zillow pattern
+    action: Supply a https://www.zillow.com property URL
+  - code: invalid_address
+    status: 400
+    when: Address too short or malformed
+  - code: invalid_zpid
+    status: 400
+    when: Non-numeric zpid
+  - code: missing_input
+    status: 400
+    when: >-
+      A required body/query field is absent — e.g. POST /v1/search with neither filters nor searchUrls,
+      or by-url with no url
+  - code: invalid_filters
+    status: 400
+    when: >-
+      `filters` is present but unusable — most commonly a search with no bbox (a free-text location or
+      city alone is not enough), or a malformed bbox/range object
+    action: Supply filters.bbox, or bbox=w,s,e,n on the GET wrapper
+  - code: invalid_search_url
+    status: 400
+    when: >-
+      A searchUrls[].url is not a usable Zillow search URL — it must contain a ?searchQueryState=…
+      query parameter; pretty URLs like /austin-tx/houses/ are rejected
+  - code: invalid_status
+    status: 400
+    when: Bad value for `status`
+  - code: invalid_extract_units
+    status: 400
+    when: Bad value for `extract_units`
+  - code: invalid_json
+    status: 400
+    when: Body could not be parsed as JSON
+  - code: not_found
+    status: 404
+    when: Property, job, or webhook not found
+  - code: job_not_found
+    status: 404
+    when: UUID does not match an account-owned job
+  - code: job_not_ready
+    status: 409
+    when: Job has not reached the succeeded state
+    action: Poll GET /v1/jobs/{id} or wait for the job.succeeded webhook
+  - code: upstream_timeout
+    status: 504
+    when: Provider call exceeded timeout
+  - code: upstream_error
+    status: 502
+    when: Provider returned non-2xx
+retry_guidance:
+  reads: GET requests are safe to retry on 5xx and 429
+  writes: >-
+    Async POSTs create a new job on every attempt — retrying creates a duplicate job. There is no
+    idempotency key. Correlate attempts using request_id in your own logs.
+  webhooks: >-
+    Deliveries carry a per-attempt counter and a timestamp; treat any single delivery as at-least-once.

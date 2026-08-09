@@ -1,0 +1,90 @@
+generated: '2026-08-09'
+method: searched
+source: live probes of Zillapi's well-known surface, OpenAPI, and docs, 2026-08-09
+standards:
+  - id: openapi-3.1
+    conforms: true
+    evidence: >-
+      https://zillapi.com/openapi.json returns a valid OpenAPI 3.1.0 document (Content-Type
+      application/openapi+json) with 28 paths, 29 operations, 20 component schemas, and a unique
+      operationId on every operation.
+  - id: oauth2
+    conforms: true
+    evidence: >-
+      Authorization-code flow published at /.well-known/oauth-authorization-server with
+      authorization, token, revocation and registration endpoints.
+  - id: oauth2-pkce
+    conforms: true
+    evidence: code_challenge_methods_supported is ["S256"] and the MCP server card sets pkce_required true.
+  - id: rfc8414-authorization-server-metadata
+    conforms: true
+    evidence: /.well-known/oauth-authorization-server returns 200 with valid metadata on both hosts.
+  - id: rfc9728-protected-resource-metadata
+    conforms: true
+    evidence: /.well-known/oauth-protected-resource returns 200 with resource, authorization_servers and scopes_supported.
+  - id: rfc7591-dynamic-client-registration
+    conforms: true
+    evidence: registration_endpoint https://api.zillapi.com/oauth/register; the metadata names RFC 7591 explicitly.
+  - id: rfc9727-api-catalog
+    conforms: true
+    evidence: >-
+      /.well-known/api-catalog returns 200 with Content-Type application/linkset+json and a linkset
+      carrying service-desc, service-doc, service-meta, status and mcp-server relations.
+  - id: mcp
+    conforms: true
+    evidence: >-
+      Hosted MCP server at https://api.zillapi.com/mcp, streamable-http transport, protocolVersion
+      2025-06-18, with a SEP-1649 server card at /.well-known/mcp/server-card.json.
+  - id: agent-skills-discovery
+    conforms: true
+    evidence: >-
+      /.well-known/agent-skills/index.json conforms to the Cloudflare Agent Skills Discovery RFC
+      v0.2.0 schema, listing four skills with hosted SKILL.md URLs and sha256 digests.
+  - id: llms-txt
+    conforms: true
+    evidence: https://zillapi.com/llms.txt returns 200 text/plain in llms.txt format, plus an llms-full.txt.
+  - id: rfc9457-problem-details
+    conforms: false
+    evidence: >-
+      Errors use a proprietary {error:{code,message,request_id}} envelope with media type
+      application/json, not application/problem+json.
+  - id: rfc9116-security-txt
+    conforms: false
+    evidence: /.well-known/security.txt returns 404 on both zillapi.com and api.zillapi.com.
+  - id: oidc-discovery
+    conforms: false
+    evidence: /.well-known/openid-configuration returns 404 on both hosts.
+  - id: a2a-agent-card
+    conforms: false
+    evidence: >-
+      /.well-known/agent-card.json and /.well-known/agent.json both return 404 on both hosts (verified
+      against a control URL that also 404s, so these are real misses, not SPA catch-alls).
+  - id: asyncapi
+    conforms: false
+    evidence: >-
+      No AsyncAPI document published; /asyncapi.yaml and /asyncapi.json 404. Webhooks are documented in
+      prose only and the OpenAPI 3.1 `webhooks` object is empty.
+  - id: rfc8594-sunset-header
+    conforms: false
+    evidence: No deprecation or sunset policy and no Sunset/Deprecation header support documented.
+  - id: rfc4180-csv
+    conforms: true
+    evidence: >-
+      The output-formats doc states CSV cells containing commas, quotes or newlines are quoted and
+      embedded quotes doubled per RFC 4180.
+  - id: ndjson
+    conforms: true
+    evidence: '?format=ndjson returns Content-Type application/x-ndjson with an X-Row-Count header.'
+  - id: hmac-webhook-signing
+    conforms: true
+    evidence: >-
+      X-Zillow-Signature carries t=<unix>,v1=<hex HMAC-SHA256 over "<t>.<raw_body>"> with a documented
+      300-second replay window and constant-time comparison in all published verification samples.
+compliance_program:
+  published: false
+  certifications: []
+  trust_center: null
+  notes: >-
+    No SOC 2, ISO 27001, PCI DSS, HIPAA, FedRAMP or GDPR posture is published, and no trust or security
+    center exists (trust./security. subdomains do not resolve). No `Compliance` pointer is emitted —
+    conformance to technical standards is not a published compliance program.

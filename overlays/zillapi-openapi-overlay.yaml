@@ -1,0 +1,96 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for Zillapi Property Data API
+  version: 1.0.0
+extends: openapi/zillapi-openapi-original.json
+x-provenance:
+  generated: '2026-08-09'
+  method: generated
+  source: >-
+    Generated from the enrichment pass over the live spec at https://zillapi.com/openapi.json plus the
+    published docs. Captures API Evangelist annotations WITHOUT mutating the harvested original.
+actions:
+  - target: $.info
+    update:
+      x-apievangelist-enriched: '2026-08-09'
+      x-apievangelist-provider: zillapi
+      x-apievangelist-artifacts:
+        conventions: conventions/zillapi-conventions.yml
+        errors: errors/zillapi-error-codes.yml
+        rate_limits: rate-limits/zillapi-rate-limits.yml
+        plans: plans/zillapi-plans.yml
+        webhooks: asyncapi/zillapi-webhooks.yml
+        mcp: mcp/zillapi-mcp.yml
+        crosswalk: mcp/zillapi-tool-crosswalk.yml
+        data_model: data-model/zillapi-data-model.yml
+
+  # --- Auth: the spec declares only the bearer key; OAuth 2.1 exists but is published
+  # --- solely in the RFC 8414 / RFC 9728 well-known metadata.
+  - target: $.components.securitySchemes
+    update:
+      x-apievangelist-note: >-
+        The provider also operates an OAuth 2.1 authorization-code + PKCE flow with RFC 7591 dynamic
+        client registration (scope mcp:access) for remote-MCP connectors. It is absent from this spec;
+        see well-known/zillapi-oauth-authorization-server.json.
+
+  # --- Error contract: documented in prose, largely absent from the spec.
+  - target: $.components.schemas.ApiError
+    update:
+      x-apievangelist-error-registry: errors/zillapi-error-codes.yml
+      x-apievangelist-note: >-
+        Not RFC 9457. 20 stable error codes are published at https://zillapi.com/errors/ but none are
+        enumerated in this spec. Match on error.code, never on error.message.
+  - target: $.components.responses.Error
+    update:
+      x-apievangelist-note: >-
+        28 of 29 operations collapse every failure into this single `default` response. 402
+        out_of_credits and 429 rate_limited are real, documented outcomes on every billable operation
+        yet appear on no operation here.
+
+  # --- Runtime semantics an agent needs and cannot learn from the spec.
+  - target: $.servers[0]
+    update:
+      x-apievangelist-runtime:
+        concurrency_in_flight_per_key: 1
+        rate_limit_headers: none
+        idempotency: not supported
+        sync_ceiling_seconds: 300
+        metering: credits, billed per record returned on 2xx; failed calls free
+
+  # --- Event surface.
+  - target: $
+    update:
+      x-apievangelist-webhooks:
+        published: prose only
+        events: [job.succeeded, job.failed, job.timed_out, job.aborted]
+        signature: HMAC-SHA256 over "<t>.<raw_body>" in X-Zillow-Signature
+        replay_window_seconds: 300
+        note: >-
+          This document is OpenAPI 3.1, which supports a top-level `webhooks` object, but it is empty.
+          Declaring the four job.* events there would make the event surface machine-readable.
+
+  # --- Field projection, available on the three single-property lookups.
+  - target: $.paths['/v1/properties/{zpid}'].get
+    update:
+      x-apievangelist-field-projection:
+        param: fields
+        syntax: 'dot notation and [n] indexing, e.g. address.streetAddress, priceHistory[0].price'
+        unknown_fields: silently dropped
+  - target: $.components.schemas.Property
+    update:
+      x-apievangelist-note: >-
+        23 top-level fields are typed here against 300+ advertised; the remainder arrive inside the
+        untyped `resoFacts` object, so most of the payload is not machine-readable from this spec.
+
+  # --- Sync/async threshold, the single most surprising behaviour in the API.
+  - target: $.components.schemas.SearchRequest
+    update:
+      x-apievangelist-async-threshold: >-
+        maxItems <= 50 executes synchronously; maxItems >= 51 silently becomes a 202 async job, as does
+        extractionMethod PAGINATION_WITH_ZOOM_IN. The same operation returns two different response
+        shapes depending on an input value.
+  - target: $.components.schemas.SearchFilters
+    update:
+      x-apievangelist-note: >-
+        `bbox` is effectively required. A free-text `location` alone returns 400 invalid_filters even
+        though the field is optional in this schema.

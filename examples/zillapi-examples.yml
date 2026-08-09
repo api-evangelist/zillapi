@@ -1,0 +1,137 @@
+generated: '2026-08-09'
+method: searched
+source: >-
+  Request/response examples published in the Zillapi docs and captured verbatim. The OpenAPI itself
+  carries ZERO examples — no `example` or `examples` on any of the 29 operations' media types — so
+  every example here comes from the docs, not the spec.
+spec_example_count: 0
+examples:
+  - name: get-property-by-url
+    operation: getPropertyByUrl
+    source: https://zillapi.com/quickstart/
+    request: |
+      curl https://api.zillapi.com/v1/properties/by-url \
+        -H "Authorization: Bearer $ZILLOW_API_KEY" \
+        --data-urlencode "url=https://www.zillow.com/homedetails/17-Zelma-Dr-Greenville-SC-29617/11026031_zpid/" \
+        -G
+    response: |
+      {
+        "data": {
+          "zpid": "11026031",
+          "address": { "streetAddress": "17 Zelma Dr", "city": "Greenville", "state": "SC", "zipcode": "29617" },
+          "price": 295000,
+          "bedrooms": 3, "bathrooms": 2,
+          "livingArea": 1432,
+          "yearBuilt": 1965,
+          "homeType": "SINGLE_FAMILY",
+          "homeStatus": "FOR_SALE",
+          "latitude": 34.882, "longitude": -82.428,
+          "zestimate": 305100,
+          "rentZestimate": 1850
+        },
+        "request_id": "8f7a3b…"
+      }
+  - name: field-projection
+    operation: getPropertyByZpid
+    source: https://zillapi.com/field-projection/
+    request: 'GET /v1/properties/11026031?fields=zpid,address.streetAddress,price,zestimate'
+    response: |
+      {
+        "data": {
+          "zpid": "11026031",
+          "address": { "streetAddress": "17 Zelma Dr" },
+          "price": 295000,
+          "zestimate": 305100
+        },
+        "request_id": "..."
+      }
+  - name: paginated-collection
+    operation: getJobResults
+    source: https://zillapi.com/pagination/
+    request: 'GET /v1/jobs/{id}/results?limit=200&offset=400'
+    response: |
+      {
+        "data": [ ... ],
+        "meta": {
+          "count": 200,
+          "total": 8541,
+          "limit": 200,
+          "offset": 400,
+          "has_more": true
+        },
+        "request_id": "..."
+      }
+  - name: ndjson-output
+    operation: getJobResults
+    source: https://zillapi.com/output-formats/
+    request: 'GET /v1/jobs/{id}/results?format=ndjson&limit=1000'
+    response: |
+      {"zpid":"11026031","address":{"city":"Greenville",...},"price":295000}
+      {"zpid":"11026032","address":{"city":"Greenville",...},"price":312000}
+    headers: [Content-Type: application/x-ndjson, 'X-Row-Count: <n>']
+  - name: csv-output
+    operation: getJobResults
+    source: https://zillapi.com/output-formats/
+    response: |
+      zpid, address.streetAddress, address.city, address.state, price, beds, baths, latLong.latitude, latLong.longitude
+      11026031, "17 Zelma Dr", Greenville, SC, 295000, 3, 2, 34.882, -82.428
+  - name: error-envelope
+    source: https://zillapi.com/errors/
+    response: |
+      {
+        "error": {
+          "code": "invalid_url",
+          "message": "Must be a https://www.zillow.com property URL",
+          "request_id": "8f7a3b..."
+        }
+      }
+  - name: rate-limited
+    source: https://zillapi.com/rate-limits/
+    status: 429
+    response: |
+      { "error": { "code": "rate_limited",
+                   "message": "Rate limit exceeded for plan 'monthly' (200/min)",
+                   "request_id": "..." } }
+  - name: search-validation-failures
+    operation: search
+    source: https://zillapi.com/errors/
+    status: 400
+    request_response_pairs:
+      - request: 'POST /v1/search {"maxItems": 50}'
+        response: '{"error":{"code":"missing_input","message":"..."}}'
+        why: nothing to search on
+      - request: 'POST /v1/search {"filters":{"location":"Austin, TX","status":"for_sale"}}'
+        response: '{"error":{"code":"invalid_filters","message":"..."}}'
+        why: free-text location only, no bbox
+      - request: 'POST /v1/search {"searchUrls":[{"url":"https://www.zillow.com/austin-tx/houses/"}]}'
+        response: '{"error":{"code":"invalid_search_url","message":"..."}}'
+        why: URL has no searchQueryState parameter
+  - name: webhook-event
+    source: https://zillapi.com/webhooks-guide/
+    direction: inbound-callback
+    headers:
+      - 'Content-Type: application/json'
+      - 'X-Zillow-Signature: t=1714560000,v1=8a91…'
+      - 'X-Zillow-Event: job.succeeded'
+      - 'User-Agent: zillow-api-platform/1.0'
+    payload: |
+      {
+        "event": "job.succeeded",
+        "delivered_at": "2026-05-01T12:34:56.789Z",
+        "data": {
+          "job": {
+            "id": "8c2a...",
+            "type": "batch_detail",
+            "status": "succeeded",
+            "result_count": 213,
+            "created_at": "...", "started_at": "...", "completed_at": "..."
+          }
+        }
+      }
+  - name: health-check
+    source: https://api.zillapi.com/healthz
+    method: probed
+    response: '{"ok":true,"ts":"2026-08-09T22:01:11.652Z"}'
+gap: >-
+  Rich examples exist in the docs and none of them are in the machine-readable spec. Moving these into
+  the OpenAPI `examples` would be the single cheapest contract improvement available to this provider.

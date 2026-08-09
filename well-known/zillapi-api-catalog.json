@@ -1,0 +1,91 @@
+{
+  "linkset": [
+    {
+      "anchor": "https://api.zillapi.com/v1/",
+      "service-desc": [
+        {
+          "href": "https://zillapi.com/openapi.json",
+          "type": "application/openapi+json",
+          "title": "Zillapi v1 OpenAPI 3.1 specification"
+        }
+      ],
+      "service-doc": [
+        {
+          "href": "https://zillapi.com/quickstart/",
+          "type": "text/html",
+          "title": "Quickstart"
+        },
+        {
+          "href": "https://zillapi.com/api/properties/",
+          "type": "text/html",
+          "title": "REST API reference"
+        },
+        {
+          "href": "https://zillapi.com/ai-agents/",
+          "type": "text/html",
+          "title": "For AI agents and LLMs"
+        }
+      ],
+      "service-meta": [
+        {
+          "href": "https://zillapi.com/llms.txt",
+          "type": "text/plain",
+          "title": "llms.txt index"
+        },
+        {
+          "href": "https://zillapi.com/llms-full.txt",
+          "type": "text/plain",
+          "title": "Concatenated docs for LLM context windows"
+        }
+      ],
+      "status": [
+        {
+          "href": "https://api.zillapi.com/healthz",
+          "type": "application/json",
+          "title": "Service health endpoint"
+        }
+      ],
+      "mcp-server": [
+        {
+          "href": "https://api.zillapi.com/mcp",
+          "type": "application/json",
+          "title": "Zillapi MCP server (Streamable HTTP transport)"
+        }
+      ],
+      "mcp-server-card": [
+        {
+          "href": "https://zillapi.com/.well-known/mcp/server-card.json",
+          "type": "application/json",
+          "title": "MCP server card (SEP-1649)"
+        }
+      ],
+      "agent-skills": [
+        {
+          "href": "https://zillapi.com/.well-known/agent-skills/index.json",
+          "type": "application/json",
+          "title": "Agent Skills Discovery index (Cloudflare RFC v0.2.0)"
+        }
+      ],
+      "oauth-protected-resource": [
+        {
+          "href": "https://api.zillapi.com/.well-known/oauth-protected-resource",
+          "type": "application/json",
+          "title": "OAuth Protected Resource Metadata (RFC 9728)"
+        }
+      ],
+      "terms-of-service": [
+        {
+          "href": "https://zillapi.com/legal/trademark-and-affiliation/",
+          "type": "text/html",
+          "title": "Trademark and affiliation"
+        }
+      ],
+      "author": [
+        {
+          "href": "https://zillapi.com/",
+          "title": "Zillapi"
+        }
+      ]
+    }
+  ]
+}

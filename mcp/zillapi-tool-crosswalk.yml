@@ -1,0 +1,99 @@
+generated: '2026-08-09'
+method: derived
+source: >-
+  Derived by aligning the four tools on Zillapi's published MCP server card
+  (well-known/zillapi-mcp-server-card.json) with the 29 operationIds in the live OpenAPI 3.1
+  (openapi/zillapi-openapi-original.json). Every operationId below was verified present in the spec.
+purpose: >-
+  Bind each agent-facing MCP tool to the REST operation that backs it, so a tool inherits a real
+  inputSchema (that operation's parameters + requestBody) instead of a guessed one — and so the
+  REST-only remainder of the surface is recorded rather than silently dropped.
+surfaces:
+  rest_openapi: openapi/zillapi-openapi-original.json   # OpenAPI 3.1.0, 28 paths, 29 operations, 20 schemas
+  mcp: https://api.zillapi.com/mcp                       # streamable-http; tools/list gated (401 missing_api_key)
+  graphql: null                                          # no GraphQL surface published
+  agent_skills: https://zillapi.com/.well-known/agent-skills/index.json
+crosswalk:
+  - tool: lookup_property_by_address
+    category: properties
+    rest: [getPropertyByAddress]
+    binding: rest
+    confidence: high
+    note: >-
+      GET /v1/properties/by-address, the only address-keyed lookup in the spec. Costs 3 credits per
+      call versus 1 for the zpid path.
+  - tool: lookup_property_by_zpid
+    category: properties
+    rest: [getPropertyByZpid]
+    binding: rest
+    confidence: high
+    note: >-
+      GET /v1/properties/{zpid}. The card's "cache-served when fresh" matches the spec's
+      PropertyCachedOk response component.
+  - tool: get_zestimate
+    category: valuation
+    rest: [getPropertyZestimate]
+    binding: rest
+    confidence: high
+    note: GET /v1/properties/{zpid}/zestimate — returns both the sale Zestimate and the rent Zestimate.
+  - tool: search_listings
+    category: search
+    rest: [listingsBbox, listingsForSale, listingsForRent, listingsSold]
+    binding: rest
+    confidence: medium
+    note: >-
+      Fans out. The card describes one tool taking a bounding box plus a for-sale/for-rent/sold status,
+      which is exactly the GET /v1/listings wrapper (listingsBbox, bbox + status params, capped at 50
+      items, sync only). The three POST status presets are the same capability at higher volume.
+      Server-side routing is not observable while tools/list is gated.
+mcp_only: []
+rest_only:
+  - capability: Property sub-resources
+    operations:
+      - getPropertyByUrl
+      - getPropertyPhotos
+      - getPropertyPriceHistory
+      - getPropertyTaxHistory
+      - getPropertySchools
+      - getPropertyNearby
+      - getPropertyAgent
+      - getPropertyOpenHouses
+      - getPropertyFacts
+    note: >-
+      Nine of the twelve property operations have no tool. An agent on MCP alone cannot fetch photos,
+      price history, tax history, schools, comps, the listing agent, open houses, or the full resoFacts
+      block as discrete calls — only whatever the full-property lookup embeds.
+  - capability: Buildings
+    operations: [getBuildingByUrl]
+    note: Multi-unit building extraction (apartments, condos) is REST-only.
+  - capability: Structured search
+    operations: [search, searchWithDetails]
+    note: >-
+      The filter-based POST /v1/search and the chained search-then-enrich flow are REST-only. Those are
+      the operations that accept a full SearchFilters object; search_listings only reaches the bbox
+      wrapper.
+  - capability: Async jobs
+    operations: [createBatchPropertyJob, listJobs, getJob, getJobResults]
+    note: >-
+      The whole async surface — batch of up to 500 entries, job polling, paged results — is REST-only,
+      so no MCP tool can run or collect a job.
+  - capability: Webhooks
+    operations: [listWebhooks, createWebhook, revokeWebhook, listWebhookDeliveries]
+    note: REST-only. Event subscription management is not reachable from an agent over MCP.
+  - capability: Account
+    operations: [getMe, getUsage]
+    note: >-
+      REST-only, and both are free (no credit cost). An MCP agent cannot check its own plan, credit
+      balance, or usage before spending credits.
+coverage:
+  tools_named: 4
+  tools_bound: 4
+  mcp_only: 0
+  rest_operations_total: 29
+  rest_operations_with_a_tool: 6
+  rest_operations_without_a_tool: 23
+divergence: >-
+  MCP is a strict subset of REST here — there is no MCP-only capability. The 4 tools cover the three
+  highest-value read paths (property by address, property by zpid, Zestimate) plus bbox listing search;
+  the remaining 23 operations, including every write operation and the entire async and webhook
+  surface, are reachable only over REST.

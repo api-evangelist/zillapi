@@ -1,0 +1,129 @@
+generated: '2026-08-09'
+method: derived
+source: openapi/zillapi-openapi-original.json
+enriched_from: https://zillapi.com/api/properties/
+summary: >-
+  Derived from the 20 component schemas and their $ref graph plus id-reference fields. The model has
+  two disconnected halves: a read-only PROPERTY domain keyed on Zillow's zpid (an external identifier
+  Zillapi does not mint), and an OPERATIONAL domain — jobs, webhooks, deliveries, account, usage —
+  keyed on Zillapi's own UUIDs. Nothing in the property domain is writable.
+identifiers:
+  - id: zpid
+    type: string (numeric)
+    minted_by: Zillow (external)
+    note: >-
+      The primary key of the entire data domain is a third party's identifier. Property, BuildingUnit
+      and SearchResultRow all key on it, and it is the join between search results and detail lookups.
+  - id: job.id
+    type: uuid
+    minted_by: Zillapi
+  - id: webhook.id
+    type: uuid
+    minted_by: Zillapi
+entities:
+  - name: Property
+    schema: Property
+    domain: property
+    key: zpid
+    field_count_in_spec: 23
+    documented_field_count: 300+
+    note: >-
+      The spec models 23 top-level fields while the docs advertise 300+ per property; the remainder
+      arrives inside the untyped `resoFacts` block. Field projection (?fields=) is the documented way
+      to trim the response.
+    operations: [getPropertyByZpid, getPropertyByUrl, getPropertyByAddress, getPropertyFacts]
+  - name: Photo
+    schema: Photo
+    domain: property
+    operations: [getPropertyPhotos]
+  - name: PriceHistoryEvent
+    schema: PriceHistoryEvent
+    domain: property
+    operations: [getPropertyPriceHistory]
+  - name: TaxHistoryEvent
+    schema: TaxHistoryEvent
+    domain: property
+    operations: [getPropertyTaxHistory]
+  - name: School
+    schema: School
+    domain: property
+    operations: [getPropertySchools]
+  - name: OpenHouse
+    schema: OpenHouse
+    domain: property
+    operations: [getPropertyOpenHouses]
+  - name: BuildingUnit
+    schema: BuildingUnit
+    domain: property
+    key: zpid
+    operations: [getBuildingByUrl]
+  - name: SearchResultRow
+    schema: SearchResultRow
+    domain: property
+    key: zpid
+    note: >-
+      A flattened listing projection, NOT a Property. It carries its own denormalized address fields
+      (addressStreet, addressCity, …) where Property nests them under `address`, and adds statusType,
+      detailUrl, imgSrc and hdpData. Joining search to detail requires a second call on zpid.
+    operations: [search, listingsBbox, listingsForSale, listingsForRent, listingsSold]
+  - name: Job
+    schema: Job
+    domain: operational
+    key: id
+    states: [status, chain_stage]
+    operations: [createBatchPropertyJob, listJobs, getJob, getJobResults]
+  - name: Webhook
+    schema: Webhook
+    domain: operational
+    key: id
+    operations: [createWebhook, listWebhooks, revokeWebhook]
+  - name: WebhookDelivery
+    schema: WebhookDelivery
+    domain: operational
+    key: id
+    operations: [listWebhookDeliveries]
+  - name: Me
+    schema: Me
+    domain: account
+    operations: [getMe]
+  - name: UsageRow
+    schema: UsageRow
+    domain: account
+    operations: [getUsage]
+  - name: ApiError
+    schema: ApiError
+    domain: cross-cutting
+    note: The single error envelope every failure response references.
+relationships:
+  - {from: Property, to: Photo, kind: has_many, via: responsivePhotos, evidence: '$ref in Property.responsivePhotos'}
+  - {from: Property, to: PriceHistoryEvent, kind: has_many, via: priceHistory, evidence: '$ref in Property.priceHistory'}
+  - {from: Property, to: TaxHistoryEvent, kind: has_many, via: taxHistory, evidence: '$ref in Property.taxHistory'}
+  - {from: Property, to: School, kind: has_many, via: schools, evidence: '$ref in Property.schools'}
+  - {from: Property, to: OpenHouse, kind: has_many, via: openHouseSchedule, evidence: '$ref in Property.openHouseSchedule'}
+  - {from: Property, to: Property, kind: has_many, via: nearbyHomes, evidence: 'self-referential comparables list'}
+  - {from: SearchResultRow, to: Property, kind: belongs_to, via: zpid, evidence: 'shared zpid key; resolve with getPropertyByZpid'}
+  - {from: BuildingUnit, to: Property, kind: belongs_to, via: zpid, evidence: 'shared zpid key'}
+  - {from: SearchRequest, to: SearchFilters, kind: has_one, via: filters, evidence: '$ref in SearchRequest.filters'}
+  - {from: SearchWithDetailsRequest, to: SearchRequest, kind: extends, via: allOf, evidence: '$ref composition'}
+  - {from: WebhookCreated, to: Webhook, kind: extends, via: allOf, evidence: '$ref composition'}
+  - {from: WebhookDelivery, to: Job, kind: belongs_to, via: job_id, evidence: 'id-reference field WebhookDelivery.job_id'}
+  - {from: WebhookDelivery, to: Webhook, kind: belongs_to, via: path parameter, evidence: 'GET /v1/webhooks/{id}/deliveries'}
+  - {from: Job, to: Property, kind: has_many, via: job results, evidence: 'batch_detail jobs return Property records from getJobResults'}
+  - {from: Me, to: Plan, kind: has_one, via: plan_id, evidence: 'id-reference field Me.plan_id'}
+  - {from: UsageRow, to: Job, kind: references, via: endpoint/actor, confidence: low, evidence: 'usage rows record the endpoint and actor, not a job id'}
+request_shapes:
+  - {name: BatchPropertyRequest, feeds: createBatchPropertyJob, note: 'urls + addresses, up to 500 entries per job'}
+  - {name: SearchFilters, feeds: search, note: '16 filters; bbox is effectively required — a free-text location alone returns invalid_filters'}
+  - {name: WebhookCreate, feeds: createWebhook}
+observations:
+  - >-
+    The two halves of the model never join: no operational entity carries a zpid, and no property
+    entity carries a job or webhook id. The bridge is entirely procedural — you submit a batch, then
+    fetch results.
+  - >-
+    Search and detail are separate representations of the same real-world thing with different field
+    names for the same data (addressCity vs address.city). Any consumer building a warehouse has to
+    reconcile them.
+  - >-
+    resoFacts is present in the spec but untyped, so the majority of the advertised 300+ fields are not
+    machine-readable from the OpenAPI.

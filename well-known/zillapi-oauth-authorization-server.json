@@ -1,0 +1,38 @@
+{
+  "issuer": "https://api.zillapi.com",
+  "authorization_endpoint": "https://api.zillapi.com/oauth/authorize",
+  "token_endpoint": "https://api.zillapi.com/oauth/token",
+  "revocation_endpoint": "https://api.zillapi.com/oauth/revoke",
+  "registration_endpoint": "https://api.zillapi.com/oauth/register",
+  "grant_types_supported": ["authorization_code"],
+  "response_types_supported": ["code"],
+  "token_endpoint_auth_methods_supported": ["none"],
+  "revocation_endpoint_auth_methods_supported": ["none"],
+  "code_challenge_methods_supported": ["S256"],
+  "scopes_supported": ["mcp:access"],
+  "response_modes_supported": ["query"],
+  "service_documentation": "https://zillapi.com/blog/mcp-server-for-zillow-data/",
+  "ui_locales_supported": ["en-US"],
+  "require_pushed_authorization_requests": false,
+  "agent_auth": {
+    "skill": "https://zillapi.com/auth.md",
+    "register_uri": "https://api.zillapi.com/oauth/register",
+    "authorization_endpoint": "https://api.zillapi.com/oauth/authorize",
+    "token_endpoint": "https://api.zillapi.com/oauth/token",
+    "revocation_uri": "https://api.zillapi.com/oauth/revoke",
+    "claim_uri": "https://api.zillapi.com/oauth/authorize",
+    "management_uri": "https://zillapi.com/app/mcp/",
+    "identity_types_supported": ["anonymous"],
+    "anonymous": {
+      "credential_types_supported": ["oauth2_access_token", "api_key"],
+      "claim_uri": "https://api.zillapi.com/oauth/authorize"
+    },
+    "credential_types_supported": ["oauth2_access_token", "api_key"],
+    "grant_types_supported": ["authorization_code"],
+    "code_challenge_methods_supported": ["S256"],
+    "scopes_supported": ["mcp:access"],
+    "events_supported": [],
+    "registration_standard": "RFC 7591",
+    "description": "Agents register as a public OAuth 2.1 client via Dynamic Client Registration (RFC 7591) at register_uri, then send the user through authorization_endpoint (PKCE S256 mandatory) where a human signs in and grants the connection — this consent step is the claim. Exchanging the resulting code at token_endpoint yields an OAuth 2.1 Bearer access token scoped to mcp:access. Agents may instead use a long-lived API key (Bearer zk_...) created at https://zillapi.com/app/keys/. This service does not require or accept ID-JAG identity assertions or a verified-email claim grant; see https://zillapi.com/auth.md for the exact procedure."
+  }
+}

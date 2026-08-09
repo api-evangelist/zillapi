@@ -1,0 +1,83 @@
+generated: '2026-08-09'
+method: searched
+source: https://zillapi.com/rate-limits/
+summary: >-
+  Three independent limits govern every API key: a per-minute request rate, a hard concurrency ceiling
+  of one in-flight request per key, and a credit balance. They are enforced separately — passing one
+  does not exempt you from the others.
+signaling:
+  headers: none documented
+  status: 429
+  error_code: rate_limited
+  error_example: |
+    { "error": { "code": "rate_limited",
+                 "message": "Rate limit exceeded for plan 'monthly' (200/min)",
+                 "request_id": "..." } }
+  note: >-
+    No X-RateLimit-Limit / -Remaining / -Reset headers are published and none appear in the OpenAPI.
+    Remaining budget is observable only via the free GET /v1/usage and GET /v1/me, or by tripping a 429.
+rate_limits:
+  - plan: Free
+    limit_count: 20
+    limit_interval: minute
+    window: sliding 60 seconds
+  - plan: Monthly
+    limit_count: 200
+    limit_interval: minute
+    window: sliding 60 seconds
+  - plan: Annual
+    limit_count: 300
+    limit_interval: minute
+    window: sliding 60 seconds
+  - plan: Enterprise
+    limit_count: null
+    limit_interval: minute
+    window: sliding 60 seconds
+    note: custom
+concurrency:
+  in_flight_per_key: 1
+  behavior: >-
+    Extra parallel calls on a single key queue rather than being rejected. Firing requests in parallel
+    does not go faster. Scale throughput by raising the plan or using async jobs, not by adding
+    parallelism.
+credit_limit:
+  model: credits drawn down per successful call
+  exhaustion_status: 402
+  exhaustion_code: out_of_credits
+  failed_calls_charged: false
+  see: plans/zillapi-plans.yml
+result_caps:
+  - endpoint: POST /v1/search, POST /v1/listings/{for-sale,for-rent,sold}
+    field: maxItems
+    bounds: 1 – ~820 (PAGINATION); ~500 (MAP_MARKERS)
+    sync_async: <= 50 sync; >= 51 async; PAGINATION_WITH_ZOOM_IN always async
+  - endpoint: POST /v1/search/with-details
+    field: maxItems
+    bounds: 1 – ~820
+    sync_async: always async (two chained stages)
+  - endpoint: GET /v1/listings
+    field: max_items
+    bounds: 1 – 50
+    sync_async: sync only — use POST /v1/search for more than 50
+  - endpoint: POST /v1/properties/batch
+    field: entries (urls + addresses)
+    bounds: up to 500 per job
+    sync_async: always async
+  - endpoint: GET /v1/buildings/by-url
+    field: null
+    bounds: null
+    sync_async: sync by default; set sync=false for large buildings
+  - endpoint: GET /v1/jobs
+    field: limit
+    bounds: 1 – 500 (default 50)
+  - endpoint: GET /v1/jobs/{id}/results
+    field: limit
+    bounds: 1 – 1000 (default 100)
+  - endpoint: GET /v1/usage
+    field: limit
+    bounds: 1 – 1000 (default 100)
+handling_guidance:
+  - Back off with exponential jitter; do not retry faster than once every 2 seconds
+  - Use async jobs plus webhooks for any batch over ~50 — synchronous calls have a 5-minute ceiling
+  - Cache static fields (zpid, address, year built) client-side to avoid re-fetching
+sync_ceiling: 5 minutes

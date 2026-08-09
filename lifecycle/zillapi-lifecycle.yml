@@ -1,0 +1,64 @@
+generated: '2026-08-09'
+method: searched
+source: https://zillapi.com/ + live probes 2026-08-09
+versioning:
+  scheme: uri-path
+  current: v1
+  base_url: https://api.zillapi.com
+  spec_version: 1.0.0
+  notes: >-
+    Every operation is served under /v1/. No version header, no date-based version train, no
+    documented policy for how a v2 would be introduced or how long v1 would be supported.
+changelog:
+  published: false
+  probes:
+    - {url: 'https://zillapi.com/changelog/', status: 404}
+  notes: >-
+    No dated changelog. The blog at https://zillapi.com/blog/ carries product and setup posts but is
+    not a versioned change record.
+deprecation:
+  policy_documented: false
+  sunset_header: false
+  deprecation_header: false
+  deprecated_operations: []
+  notes: >-
+    No deprecation or sunset policy located, no RFC 8594 Sunset/Deprecation header support documented,
+    and no operation in the OpenAPI carries `deprecated: true`.
+status_page:
+  published: false
+  probes:
+    - {host: 'status.zillapi.com', status: NXDOMAIN}
+  health_endpoint:
+    url: https://api.zillapi.com/healthz
+    status: 200
+    content_type: application/json
+    response: '{"ok":true,"ts":"2026-08-09T22:01:11.652Z"}'
+    advertised_in: well-known/zillapi-api-catalog.json (linkset "status" relation)
+  notes: >-
+    There is no hosted status page. A liveness endpoint exists and is advertised in the api-catalog,
+    but it is a boolean health check — no incident history, no component breakdown, no subscription.
+    A `StatusPage` pointer is deliberately NOT emitted for this: /healthz is not a status page.
+sla:
+  documented: false
+  notes: >-
+    No uptime target or SLA published on any tier, including the paid Monthly and Annual plans.
+    Enterprise is named in the rate-limits table but has no published terms.
+support:
+  channels:
+    - {tier: Free, channel: none stated}
+    - {tier: Monthly, channel: email support}
+    - {tier: Annual, channel: priority email support}
+  contact: hello@zillapi.com
+  source: https://zillapi.com/pricing/ + well-known/zillapi-mcp-server-card.json
+data_provenance:
+  upstream: Zillow (third-party sourced; Zillapi is not affiliated with Zillow)
+  affiliation_notice: https://zillapi.com/legal/trademark-and-affiliation/
+  notes: >-
+    Continuity risk worth recording: the entire data surface is derived from a third party that is not
+    a contractual supplier. The provider's own terms-of-service link is a trademark-and-affiliation
+    disclaimer, which is the honest framing of that dependency.
+gaps:
+  - No changelog
+  - No deprecation or sunset policy
+  - No status page or incident history
+  - No SLA on paid tiers

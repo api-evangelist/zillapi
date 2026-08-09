@@ -1,0 +1,82 @@
+generated: '2026-08-09'
+method: searched
+source: openapi/zillapi-openapi-original.json
+docs: https://zillapi.com/authentication/
+additional_sources:
+  - https://zillapi.com/.well-known/oauth-protected-resource
+  - https://zillapi.com/.well-known/oauth-authorization-server
+  - https://zillapi.com/auth.md
+summary:
+  types:
+    - http
+    - oauth2
+  api_key_in:
+    - header
+  oauth2_flows:
+    - authorizationCode
+notes: >-
+  Zillapi accepts two auth modes against one account and one scope. (1) A long-lived API key sent as
+  `Authorization: Bearer zk_<key>`, issued in the dashboard, used for both the /v1 REST surface and the
+  hosted MCP server. (2) OAuth 2.1 authorization-code + PKCE with RFC 7591 Dynamic Client Registration,
+  for remote-MCP connectors. The OpenAPI only declares the bearer scheme; the OAuth surface is published
+  in the RFC 8414 / RFC 9728 well-known metadata, not in the spec.
+schemes:
+  - name: bearerAuth
+    type: http
+    scheme: bearer
+    bearerFormat: API key (zk_*)
+    sources:
+      - openapi/zillapi-openapi-original.json
+    key_format:
+      prefix: zk_
+      body: 43 characters, URL-safe base64 of 32 random bytes
+      total_length: 46
+    storage: >-
+      Plaintext shown once at creation; provider states it stores only the SHA-256 hash and cannot
+      recover the original.
+    management_url: https://zillapi.com/app/keys/
+    signup_url: https://zillapi.com/signup
+    rotation:
+      documented: true
+      procedure:
+        - Create a new key in the dashboard
+        - Roll it into the environment
+        - Confirm traffic on the new key under Usage
+        - Revoke the old key
+      revocation: immediate — calls on a revoked key return 401 invalid_api_key within seconds
+  - name: oauth2
+    type: oauth2
+    sources:
+      - well-known/zillapi-oauth-authorization-server.json
+      - well-known/zillapi-oauth-protected-resource.json
+    issuer: https://api.zillapi.com
+    flows:
+      - flow: authorizationCode
+        authorizationUrl: https://api.zillapi.com/oauth/authorize
+        tokenUrl: https://api.zillapi.com/oauth/token
+        revocationUrl: https://api.zillapi.com/oauth/revoke
+        registrationUrl: https://api.zillapi.com/oauth/register
+        pkce: S256
+        pkce_required: true
+        token_endpoint_auth_methods: [none]
+        scopes:
+          mcp:access: Access the Zillapi MCP server and the /v1 REST surface
+    dynamic_client_registration:
+      supported: true
+      standard: RFC 7591
+      endpoint: https://api.zillapi.com/oauth/register
+    intended_for: remote-MCP connectors (e.g. claude.ai connector install flow)
+errors:
+  - {status: 401, code: missing_api_key, cause: No Authorization header}
+  - {status: 401, code: invalid_api_key, cause: Bad format, unknown key, or revoked}
+  - {status: 403, code: account_suspended, cause: Account is suspended or closed}
+  - {status: 402, code: out_of_credits, cause: Credit balance reached 0}
+  - {status: 429, code: rate_limited, cause: Per-minute rate limit hit}
+guidance:
+  - Server-side only; never embed a key in browser or mobile code that ships to users
+  - One key per environment (staging vs production)
+  - One key per service so they can be revoked independently
+cross_links:
+  scopes: scopes/zillapi-scopes.yml
+  conventions: conventions/zillapi-conventions.yml
+  well_known: well-known/zillapi-well-known.yml

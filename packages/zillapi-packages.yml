@@ -1,0 +1,50 @@
+generated: '2026-08-09'
+method: searched
+source: >-
+  Registry probes (npm, PyPI) plus the provider's GitHub repository and quickstart docs, 2026-08-09.
+summary: >-
+  Zillapi ships NO client SDKs. The quickstart documents raw HTTP in curl, JavaScript, Python and Go —
+  four code samples, not four libraries. The only first-party distributable is an agent-skills bundle
+  on GitHub, installed with the `skills` CLI rather than from a package registry.
+sdks:
+  count: 0
+  note: >-
+    No official or community client library was found on npm, PyPI, Maven Central, NuGet, pkg.go.dev,
+    RubyGems, Packagist or crates.io. No `SDKs` pointer is emitted — code samples in four languages are
+    not SDKs, and claiming otherwise would credit the provider for something it does not ship.
+registry_probes:
+  - {registry: npm, name: zillapi, status: 404}
+  - {registry: npm, name: '@zillapi/sdk', status: 404}
+  - {registry: npm, name: zillow-skills, status: 404}
+  - {registry: pypi, name: zillapi, status: 404}
+  - {registry: pypi, name: zillow-skills, status: 404}
+packages:
+  - name: zillow-skills
+    kind: agent-skills
+    language: python
+    registry: github
+    version: 1.0.1
+    url: https://github.com/ZeroPointRepo/zillow-skills
+    install: npx skills add ZeroPointRepo/zillow-skills
+    license: MIT-0
+    official: true
+    official_evidence: >-
+      package.json and manifest.json both set "author": "Zillapi"; the repo is the maintainer URL in
+      the provider's own apis.yml submission and is linked from https://zillapi.com/llms.txt.
+    contents:
+      - {skill: zillow-full, path: skills/zillow-full, description: 'Complete Zillow property data toolkit — address/URL lookup, Zestimate, search, price history, photos, schools, agent.'}
+      - {skill: zillow-zestimate, path: skills/zillow-zestimate, description: 'Zillow Zestimate (property valuation and rent Zestimate) lookups by address or zpid.'}
+      - {skill: zillow-search, path: skills/zillow-search, description: 'Search U.S. property listings by location or bounding box, price, beds, baths, and home type.'}
+    dependencies: >-
+      Python standard library only (urllib, json, os). No third-party packages, no transitive
+      dependencies, no build step. Sole network destination is https://api.zillapi.com.
+    credentials: reads ZILLAPI_KEY from the environment at call time; not cached, not written to disk, not logged
+    tests: each skill ships a tests/test_handler.py
+    note: >-
+      The repository's package.json points its homepage/repository at github.com/nikhonit/zillow-skills
+      while the live repo and every provider link use ZeroPointRepo/zillow-skills — a stale metadata
+      reference, recorded as observed.
+code_samples:
+  source: https://zillapi.com/quickstart/
+  languages: [curl, javascript, python, go]
+  note: Raw HTTP examples per language, plus webhook-verification samples in JavaScript, Python and Go.
