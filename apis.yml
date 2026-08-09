@@ -1,0 +1,61 @@
+name: Zillapi
+description: >-
+  Independent third-party provider of Zillow-sourced U.S. residential property data via a REST API, hosted MCP server,
+  and agent skills. Returns ~300+ fields per property including price, Zestimate, rent Zestimate, photos, schools,
+  taxes, and full price history, plus listing search, building extraction, async batch jobs, and signed webhooks.
+url: https://zillapi.apievangelist.com/apis.yml
+created: '2026-07-13'
+modified: '2026-07-13'
+specificationVersion: '0.21'
+tags:
+  - real estate
+  - proptech
+  - property data
+  - zillow
+  - zestimate
+  - valuation
+  - AVM
+  - listings
+  - MCP
+  - AI agent
+  - REST API
+apis:
+  - name: Zillapi Property Data API
+    description: >-
+      REST API returning Zillow-sourced U.S. residential property data with bearer auth, plus a hosted MCP server,
+      llms.txt, and published agent skills.
+    humanURL: https://zillapi.com/api/properties/
+    baseURL: https://api.zillapi.com
+    tags:
+      - real estate
+      - proptech
+      - property data
+      - zillow
+      - zestimate
+      - valuation
+      - AVM
+      - listings
+      - MCP
+      - AI agent
+      - REST API
+    properties:
+      - type: OpenAPI
+        url: https://zillapi.com/openapi.json
+      - type: Documentation
+        url: https://zillapi.com/quickstart/
+      - type: MCPServer
+        url: https://api.zillapi.com/mcp
+      - type: LLMsTxt
+        url: https://zillapi.com/llms.txt
+      - type: LLMsTxt
+        url: https://zillapi.com/llms-full.txt
+      - type: AgentSkill
+        url: https://zillapi.com/.well-known/agent-skills/index.json
+maintainers:
+  - FN: ZeroPointRepo
+    url: https://github.com/ZeroPointRepo/zillow-skills
+generated:
+  by: apis.io/add
+  model: claude-opus-4-8
+  confidence: 97
+  at: '2026-07-13T07:54:16.663Z'
