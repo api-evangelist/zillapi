@@ -21,53 +21,174 @@ tags:
   - AI agent
   - REST API
 apis:
-  - name: Zillapi Property Data API
-    description: >-
-      REST API returning Zillow-sourced U.S. residential property data with bearer auth, plus a hosted MCP server,
-      llms.txt, and published agent skills.
-    humanURL: https://zillapi.com/api/properties/
-    baseURL: https://api.zillapi.com
-    tags:
-      - real estate
-      - proptech
-      - property data
-      - zillow
-      - zestimate
-      - valuation
-      - AVM
-      - listings
-      - MCP
-      - AI agent
-      - REST API
-    properties:
-      - type: OpenAPI
-        url: https://zillapi.com/openapi.json
-      - type: Documentation
-        url: https://zillapi.com/quickstart/
-      - type: MCPServer
-        url: https://api.zillapi.com/mcp
-      - type: LLMsTxt
-        url: https://zillapi.com/llms.txt
-      - type: LLMsTxt
-        url: https://zillapi.com/llms-full.txt
-      - type: AgentSkill
-        url: https://zillapi.com/.well-known/agent-skills/index.json
-      - type: OpenAPI
-        url: openapi/zillapi-openapi-original.json
-      - type: MCPServer
-        url: mcp/zillapi-mcp.yml
-      - type: ToolCrosswalk
-        url: mcp/zillapi-tool-crosswalk.yml
-      - type: AgentSkill
-        url: skills/_index.yml
-      - type: LLMsTxt
-        url: llms/zillapi-llms.txt
-      - type: Overlay
-        url: overlays/zillapi-openapi-overlay.yaml
-      - type: DataModel
-        url: data-model/zillapi-data-model.yml
-      - type: Examples
-        url: examples/zillapi-examples.yml
+- aid: zillapi:zillapi-account-api
+  name: Zillapi Account API
+  description: The Account API from Zillapi — 2 operation(s) for account.
+  humanURL: https://zillapi.com/api/properties/
+  baseURL: https://api.zillapi.com
+  tags:
+  - Account
+  properties:
+  - type: OpenAPI
+    url: openapi/zillapi-account-api-openapi.yml
+  - type: Documentation
+    url: https://zillapi.com/quickstart/
+  - type: LLMsTxt
+    url: https://zillapi.com/llms.txt
+  - type: LLMsTxt
+    url: https://zillapi.com/llms-full.txt
+  - type: ToolCrosswalk
+    url: mcp/zillapi-tool-crosswalk.yml
+  - type: LLMsTxt
+    url: llms/zillapi-llms.txt
+  - type: DataModel
+    url: data-model/zillapi-data-model.yml
+  - type: Examples
+    url: examples/zillapi-examples.yml
+- aid: zillapi:zillapi-buildings-api
+  name: Zillapi Buildings API
+  description: The Buildings API from Zillapi — 1 operation(s) for buildings.
+  humanURL: https://zillapi.com/api/properties/
+  baseURL: https://api.zillapi.com
+  tags:
+  - Buildings
+  properties:
+  - type: OpenAPI
+    url: openapi/zillapi-buildings-api-openapi.yml
+  - type: Documentation
+    url: https://zillapi.com/quickstart/
+  - type: LLMsTxt
+    url: https://zillapi.com/llms.txt
+  - type: LLMsTxt
+    url: https://zillapi.com/llms-full.txt
+  - type: ToolCrosswalk
+    url: mcp/zillapi-tool-crosswalk.yml
+  - type: LLMsTxt
+    url: llms/zillapi-llms.txt
+  - type: DataModel
+    url: data-model/zillapi-data-model.yml
+  - type: Examples
+    url: examples/zillapi-examples.yml
+- aid: zillapi:zillapi-jobs-api
+  name: Zillapi Jobs API
+  description: The Jobs API from Zillapi — 3 operation(s) for jobs.
+  humanURL: https://zillapi.com/api/properties/
+  baseURL: https://api.zillapi.com
+  tags:
+  - Jobs
+  properties:
+  - type: OpenAPI
+    url: openapi/zillapi-jobs-api-openapi.yml
+  - type: Documentation
+    url: https://zillapi.com/quickstart/
+  - type: LLMsTxt
+    url: https://zillapi.com/llms.txt
+  - type: LLMsTxt
+    url: https://zillapi.com/llms-full.txt
+  - type: ToolCrosswalk
+    url: mcp/zillapi-tool-crosswalk.yml
+  - type: LLMsTxt
+    url: llms/zillapi-llms.txt
+  - type: DataModel
+    url: data-model/zillapi-data-model.yml
+  - type: Examples
+    url: examples/zillapi-examples.yml
+- aid: zillapi:zillapi-listings-api
+  name: Zillapi Listings API
+  description: The Listings API from Zillapi — 4 operation(s) for listings.
+  humanURL: https://zillapi.com/api/properties/
+  baseURL: https://api.zillapi.com
+  tags:
+  - Listings
+  properties:
+  - type: OpenAPI
+    url: openapi/zillapi-listings-api-openapi.yml
+  - type: Documentation
+    url: https://zillapi.com/quickstart/
+  - type: LLMsTxt
+    url: https://zillapi.com/llms.txt
+  - type: LLMsTxt
+    url: https://zillapi.com/llms-full.txt
+  - type: ToolCrosswalk
+    url: mcp/zillapi-tool-crosswalk.yml
+  - type: LLMsTxt
+    url: llms/zillapi-llms.txt
+  - type: DataModel
+    url: data-model/zillapi-data-model.yml
+  - type: Examples
+    url: examples/zillapi-examples.yml
+- aid: zillapi:zillapi-properties-api
+  name: Zillapi Properties API
+  description: The Properties API from Zillapi — 13 operation(s) for properties.
+  humanURL: https://zillapi.com/api/properties/
+  baseURL: https://api.zillapi.com
+  tags:
+  - Properties
+  properties:
+  - type: OpenAPI
+    url: openapi/zillapi-properties-api-openapi.yml
+  - type: Documentation
+    url: https://zillapi.com/quickstart/
+  - type: LLMsTxt
+    url: https://zillapi.com/llms.txt
+  - type: LLMsTxt
+    url: https://zillapi.com/llms-full.txt
+  - type: ToolCrosswalk
+    url: mcp/zillapi-tool-crosswalk.yml
+  - type: LLMsTxt
+    url: llms/zillapi-llms.txt
+  - type: DataModel
+    url: data-model/zillapi-data-model.yml
+  - type: Examples
+    url: examples/zillapi-examples.yml
+- aid: zillapi:zillapi-search-api
+  name: Zillapi Search API
+  description: The Search API from Zillapi — 2 operation(s) for search.
+  humanURL: https://zillapi.com/api/properties/
+  baseURL: https://api.zillapi.com
+  tags:
+  - Search
+  properties:
+  - type: OpenAPI
+    url: openapi/zillapi-search-api-openapi.yml
+  - type: Documentation
+    url: https://zillapi.com/quickstart/
+  - type: LLMsTxt
+    url: https://zillapi.com/llms.txt
+  - type: LLMsTxt
+    url: https://zillapi.com/llms-full.txt
+  - type: ToolCrosswalk
+    url: mcp/zillapi-tool-crosswalk.yml
+  - type: LLMsTxt
+    url: llms/zillapi-llms.txt
+  - type: DataModel
+    url: data-model/zillapi-data-model.yml
+  - type: Examples
+    url: examples/zillapi-examples.yml
+- aid: zillapi:zillapi-webhooks-api
+  name: Zillapi Webhooks API
+  description: The Webhooks API from Zillapi — 3 operation(s) for webhooks.
+  humanURL: https://zillapi.com/api/properties/
+  baseURL: https://api.zillapi.com
+  tags:
+  - Webhooks
+  properties:
+  - type: OpenAPI
+    url: openapi/zillapi-webhooks-api-openapi.yml
+  - type: Documentation
+    url: https://zillapi.com/quickstart/
+  - type: LLMsTxt
+    url: https://zillapi.com/llms.txt
+  - type: LLMsTxt
+    url: https://zillapi.com/llms-full.txt
+  - type: ToolCrosswalk
+    url: mcp/zillapi-tool-crosswalk.yml
+  - type: LLMsTxt
+    url: llms/zillapi-llms.txt
+  - type: DataModel
+    url: data-model/zillapi-data-model.yml
+  - type: Examples
+    url: examples/zillapi-examples.yml
 maintainers:
   - FN: ZeroPointRepo
     email: hello@zillapi.com
@@ -78,6 +199,12 @@ generated:
   confidence: 97
   at: '2026-07-13T07:54:16.663Z'
 common:
+- type: AgentSkill
+  url: skills/zillapi-get-zestimate.md
+- type: MCPServer
+  url: mcp/zillapi-mcp.yml
+- type: Overlay
+  url: overlays/zillapi-openapi-overlay.yaml
 - type: DomainSecurity
   url: security/zillapi-domain-security.yml
 - type: AgenticAccess
