@@ -3,7 +3,7 @@ description: >-
   Independent third-party provider of Zillow-sourced U.S. residential property data via a REST API, hosted MCP server,
   and agent skills. Returns ~300+ fields per property including price, Zestimate, rent Zestimate, photos, schools,
   taxes, and full price history, plus listing search, building extraction, async batch jobs, and signed webhooks.
-url: https://zillapi.apievangelist.com/apis.yml
+url: https://raw.githubusercontent.com/api-evangelist/zillapi/refs/heads/main/apis.yml
 image: https://zillapi.com/og.png
 created: '2026-07-13'
 modified: '2026-08-09'
