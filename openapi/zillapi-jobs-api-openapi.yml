@@ -1,0 +1,281 @@
+openapi: 3.2.0
+info:
+  title: 'Zillapi: Zillow property data Jobs API'
+  version: 1.0.0
+  description: Real estate data API. Look up properties by URL, address, or zpid; search listings; extract multi-unit buildings; run async batches; receive results via signed webhooks.
+  license:
+    name: Proprietary
+  contact:
+    name: Support
+    url: https://zillapi.com/
+servers:
+- url: https://api.zillapi.com
+  description: Production
+security:
+- bearerAuth: []
+tags:
+- name: Jobs
+paths:
+  /v1/jobs:
+    get:
+      tags:
+      - Jobs
+      operationId: listJobs
+      x-credit-cost: 0
+      summary: List async jobs
+      description: List your async jobs filtered by status, type, and creation time. Control-plane endpoint — free, does not consume credits.
+      parameters:
+      - name: status
+        in: query
+        schema:
+          type: string
+          enum:
+          - queued
+          - running
+          - succeeded
+          - failed
+          - timed_out
+          - aborted
+        description: Filter by job status.
+      - name: type
+        in: query
+        schema:
+          type: string
+          enum:
+          - search
+          - batch_detail
+          - chained_search_detail
+          - building_units
+        description: Filter by job type.
+      - name: since
+        in: query
+        schema:
+          type: string
+          format: date-time
+        description: Return jobs with created_at >= this ISO timestamp.
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          default: 50
+          maximum: 500
+        description: Page size (max 500).
+      - name: offset
+        in: query
+        schema:
+          type: integer
+          default: 0
+        description: Pagination offset.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Job'
+                  meta:
+                    type: object
+                    properties:
+                      limit:
+                        type: integer
+                      offset:
+                        type: integer
+                  request_id:
+                    type: string
+        default:
+          $ref: '#/components/responses/Error'
+  /v1/jobs/{id}:
+    get:
+      tags:
+      - Jobs
+      operationId: getJob
+      x-credit-cost: 0
+      summary: Get a job by id
+      description: 'Fetch a single job row including status, result_count, chain_stage, and timestamps. For chained_search_detail jobs, status: succeeded means both stages finished. Control-plane endpoint — free.'
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: Job UUID.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Job'
+                  request_id:
+                    type: string
+        default:
+          $ref: '#/components/responses/Error'
+  /v1/jobs/{id}/results:
+    get:
+      tags:
+      - Jobs
+      operationId: getJobResults
+      x-credit-cost: 0
+      summary: Get job results
+      description: Fetch paginated results for a succeeded job in JSON, CSV, or NDJSON. Returns 409 job_not_ready until the job status is succeeded. Free — billing happens once when the job completes, not on result reads.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: Job UUID.
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          default: 100
+          maximum: 1000
+        description: Page size (max 1000).
+      - name: offset
+        in: query
+        schema:
+          type: integer
+          default: 0
+        description: Pagination offset (unbounded).
+      - name: format
+        in: query
+        schema:
+          type: string
+          enum:
+          - json
+          - csv
+          - ndjson
+          default: json
+        description: Response format.
+      responses:
+        '200':
+          description: Job results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      additionalProperties: true
+                    description: 'Result rows. Shape depends on job type: search jobs return SearchResultRow objects; batch_detail and chained_search_detail jobs return full Property (detail) objects.'
+                  meta:
+                    type: object
+                    properties:
+                      count:
+                        type: integer
+                      total:
+                        type: integer
+                        nullable: true
+                      limit:
+                        type: integer
+                      offset:
+                        type: integer
+                      has_more:
+                        type: boolean
+                  request_id:
+                    type: string
+            application/x-ndjson:
+              schema:
+                type: string
+            text/csv:
+              schema:
+                type: string
+        '404':
+          $ref: '#/components/responses/Error'
+        '409':
+          $ref: '#/components/responses/Error'
+        default:
+          $ref: '#/components/responses/Error'
+components:
+  schemas:
+    Job:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - search
+          - batch_detail
+          - chained_search_detail
+          - building_units
+        status:
+          type: string
+          enum:
+          - queued
+          - running
+          - succeeded
+          - failed
+          - timed_out
+          - aborted
+        result_count:
+          type: integer
+          nullable: true
+        error:
+          type: string
+          nullable: true
+        chain_stage:
+          type: string
+          nullable: true
+          enum:
+          - search
+          - detail
+          - null
+          description: search or detail for chained jobs, null otherwise.
+        created_at:
+          type: string
+          format: date-time
+        started_at:
+          type: string
+          format: date-time
+          nullable: true
+        completed_at:
+          type: string
+          format: date-time
+          nullable: true
+    ApiError:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              description: Stable, machine-matchable error code (e.g. missing_input, invalid_filters, invalid_search_url). Match on code, never on message.
+            message:
+              type: string
+              description: Human-readable message; may evolve. Do not match on this.
+            details: {}
+            request_id:
+              type: string
+          required:
+          - code
+          - message
+  responses:
+    Error:
+      description: Standard error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: API key (zk_*)

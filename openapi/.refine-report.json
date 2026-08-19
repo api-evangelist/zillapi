@@ -1,0 +1,35 @@
+{
+  "provider": "zillapi",
+  "sources": [
+    "zillapi-account-api-openapi.yml",
+    "zillapi-buildings-api-openapi.yml",
+    "zillapi-jobs-api-openapi.yml",
+    "zillapi-listings-api-openapi.yml",
+    "zillapi-properties-api-openapi.yml",
+    "zillapi-search-api-openapi.yml",
+    "zillapi-webhooks-api-openapi.yml"
+  ],
+  "outputs": [
+    "zillapi-account-api-openapi.yml",
+    "zillapi-buildings-api-openapi.yml",
+    "zillapi-jobs-api-openapi.yml",
+    "zillapi-listings-api-openapi.yml",
+    "zillapi-properties-api-openapi.yml",
+    "zillapi-search-api-openapi.yml",
+    "zillapi-webhooks-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "zillapi-account-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "zillapi-buildings-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "zillapi-jobs-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "zillapi-listings-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "zillapi-properties-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "zillapi-search-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "zillapi-webhooks-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": []
+}

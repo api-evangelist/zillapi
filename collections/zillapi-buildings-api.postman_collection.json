@@ -1,0 +1,271 @@
+{
+  "item": [
+    {
+      "id": "da099310-59b6-42e4-817e-6008d28b2d3d",
+      "name": "Buildings",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "6d8db888-90b8-48c7-b2c5-337d9c58040e",
+          "name": "Get all units in a building",
+          "request": {
+            "name": "Get all units in a building",
+            "description": {
+              "content": "Extract all unit listings from a Zillow building, apartments, or community URL (/b/, /apartments/, or /community/). Runs synchronously by default; set sync=false for large buildings to receive a job_id. Billed at 1 credit per unit returned; failed calls are free.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "buildings",
+                "by-url"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "url",
+                  "value": "<string>",
+                  "description": "(Required) Building/apartments/community URL (must be /b/, /apartments/, or /community/)."
+                },
+                {
+                  "disabled": false,
+                  "key": "include_units",
+                  "value": "all",
+                  "description": "Which units to include."
+                },
+                {
+                  "disabled": false,
+                  "key": "sync",
+                  "value": "true",
+                  "description": "When true (default) returns units synchronously. Set false for large buildings to run async and return a job_id."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "d22f02df-17ae-4808-9950-7dfa887f3803",
+              "name": "Building units returned synchronously",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "buildings",
+                    "by-url"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "url",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "include_units",
+                      "value": "all"
+                    },
+                    {
+                      "key": "sync",
+                      "value": "true"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"units\": [\n      {\n        \"zpid\": \"string\",\n        \"unitNumber\": \"string\",\n        \"price\": 9281.53274693877,\n        \"beds\": 9480.076980858812,\n        \"baths\": 2130.5302542352724\n      },\n      {\n        \"zpid\": \"string\",\n        \"unitNumber\": \"string\",\n        \"price\": 1045.4766709474684,\n        \"beds\": 5252.270753363267,\n        \"baths\": 1839.9300045698742\n      }\n    ]\n  },\n  \"meta\": {\n    \"count\": 4880,\n    \"include_units\": \"string\"\n  },\n  \"request_id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "74f70a6c-58f7-464d-ac35-4dc216c05313",
+              "name": "Async job accepted",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "buildings",
+                    "by-url"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "url",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "include_units",
+                      "value": "all"
+                    },
+                    {
+                      "key": "sync",
+                      "value": "true"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Accepted",
+              "code": 202,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"job_id\": \"1de49395-7051-6faa-018d-53ec0b080dc4\",\n    \"status\": \"string\",\n    \"stage\": \"string\"\n  },\n  \"request_id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ef5b4d48-6c78-4933-ab48-6ce7dbfd517f",
+              "name": "Standard error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "buildings",
+                    "by-url"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "url",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "include_units",
+                      "value": "all"
+                    },
+                    {
+                      "key": "sync",
+                      "value": "true"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": \"\",\n    \"request_id\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.zillapi.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "0cca6a3f-fbc2-4795-9241-1d29b0d2ed2d",
+    "name": "Zillapi: Zillow property data Buildings API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Real estate data API. Look up properties by URL, address, or zpid; search listings; extract multi-unit buildings; run async batches; receive results via signed webhooks.\n\nContact Support:\n Name: Support",
+      "type": "text/plain"
+    }
+  }
+}

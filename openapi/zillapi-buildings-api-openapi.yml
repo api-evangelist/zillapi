@@ -1,0 +1,153 @@
+openapi: 3.2.0
+info:
+  title: 'Zillapi: Zillow property data Buildings API'
+  version: 1.0.0
+  description: Real estate data API. Look up properties by URL, address, or zpid; search listings; extract multi-unit buildings; run async batches; receive results via signed webhooks.
+  license:
+    name: Proprietary
+  contact:
+    name: Support
+    url: https://zillapi.com/
+servers:
+- url: https://api.zillapi.com
+  description: Production
+security:
+- bearerAuth: []
+tags:
+- name: Buildings
+paths:
+  /v1/buildings/by-url:
+    get:
+      tags:
+      - Buildings
+      operationId: getBuildingByUrl
+      x-credit-cost: 1
+      summary: Get all units in a building
+      description: Extract all unit listings from a Zillow building, apartments, or community URL (/b/, /apartments/, or /community/). Runs synchronously by default; set sync=false for large buildings to receive a job_id. Billed at 1 credit per unit returned; failed calls are free.
+      parameters:
+      - name: url
+        in: query
+        required: true
+        schema:
+          type: string
+        description: Building/apartments/community URL (must be /b/, /apartments/, or /community/).
+      - name: include_units
+        in: query
+        schema:
+          type: string
+          enum:
+          - all
+          - for_sale
+          - for_rent
+          - recently_sold
+          - off_market
+          default: all
+        description: Which units to include.
+      - name: sync
+        in: query
+        schema:
+          type: boolean
+          default: true
+        description: When true (default) returns units synchronously. Set false for large buildings to run async and return a job_id.
+      responses:
+        '200':
+          description: Building units returned synchronously
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      units:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/BuildingUnit'
+                        description: Unit listings. The first item is sometimes the building's parent record (no unitNumber); units follow.
+                  meta:
+                    type: object
+                    properties:
+                      count:
+                        type: integer
+                      include_units:
+                        type: string
+                  request_id:
+                    type: string
+        '202':
+          $ref: '#/components/responses/JobAccepted'
+        default:
+          $ref: '#/components/responses/Error'
+components:
+  schemas:
+    BuildingUnit:
+      type: object
+      additionalProperties: true
+      properties:
+        zpid:
+          type: string
+          description: Zillow property id, always a string.
+        unitNumber:
+          type: string
+          nullable: true
+          description: Absent on the building's parent record.
+        price:
+          type: number
+          nullable: true
+        beds:
+          type: number
+          nullable: true
+        baths:
+          type: number
+          nullable: true
+    ApiError:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              description: Stable, machine-matchable error code (e.g. missing_input, invalid_filters, invalid_search_url). Match on code, never on message.
+            message:
+              type: string
+              description: Human-readable message; may evolve. Do not match on this.
+            details: {}
+            request_id:
+              type: string
+          required:
+          - code
+          - message
+  responses:
+    JobAccepted:
+      description: Async job accepted
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  job_id:
+                    type: string
+                    format: uuid
+                  status:
+                    type: string
+                  stage:
+                    type: string
+                    nullable: true
+                    description: Present on chained jobs (e.g. "search").
+              request_id:
+                type: string
+    Error:
+      description: Standard error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: API key (zk_*)

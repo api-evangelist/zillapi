@@ -1,0 +1,1146 @@
+{
+  "item": [
+    {
+      "id": "197fb0d2-c575-4d44-8b46-7ab12a083f25",
+      "name": "Listings",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "293fdf3e-5a60-4413-afb3-43769e0fc2ba",
+          "name": "Search for-sale listings",
+          "request": {
+            "name": "Search for-sale listings",
+            "description": {
+              "content": "Search for-sale listings within a bounding box (status forced to for_sale). Same body as POST /v1/search; a `bbox` or `searchUrls` is required. Billed at 1 credit per listing returned; failed calls are free.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "listings",
+                "for-sale"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "8fc22f7b-e43c-4200-854f-ce123c684794",
+              "name": "Search rows (sync). Note: the search-row shape (SearchResultRow) is NOT the same as the detail Property shape returned by the property endpoints.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "listings",
+                    "for-sale"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"zpid\": \"string\",\n      \"id\": \"string\",\n      \"palsId\": \"string\",\n      \"address\": \"string\",\n      \"addressStreet\": \"string\",\n      \"addressCity\": \"string\",\n      \"addressState\": \"string\",\n      \"addressZipcode\": \"string\",\n      \"price\": \"string\",\n      \"unformattedPrice\": 346.4369879953866,\n      \"beds\": 6391.341105195569,\n      \"baths\": 5802.477978285972,\n      \"area\": 8162.1912606937385,\n      \"livingArea\": 3720.8843599521124,\n      \"latLong\": {\n        \"latitude\": 1634.91311638429,\n        \"longitude\": 1265.670120169856\n      },\n      \"statusType\": \"string\",\n      \"statusText\": \"string\",\n      \"homeType\": \"string\",\n      \"imgSrc\": \"string\",\n      \"hasImage\": false,\n      \"detailUrl\": \"string\",\n      \"hdpData\": {\n        \"homeInfo\": {\n          \"homeStatus\": \"string\",\n          \"daysOnZillow\": 652,\n          \"listing_sub_type\": {\n            \"key_0\": 5931,\n            \"key_1\": \"string\",\n            \"key_2\": false\n          }\n        },\n        \"key_0\": 6570\n      }\n    },\n    {\n      \"zpid\": \"string\",\n      \"id\": \"string\",\n      \"palsId\": \"string\",\n      \"address\": \"string\",\n      \"addressStreet\": \"string\",\n      \"addressCity\": \"string\",\n      \"addressState\": \"string\",\n      \"addressZipcode\": \"string\",\n      \"price\": \"string\",\n      \"unformattedPrice\": 8748.701077304304,\n      \"beds\": 8070.390086860073,\n      \"baths\": 551.3486313703942,\n      \"area\": 7358.212018976477,\n      \"livingArea\": 7039.455181706325,\n      \"latLong\": {\n        \"latitude\": 834.2194848569784,\n        \"longitude\": 4703.8060540964925\n      },\n      \"statusType\": \"string\",\n      \"statusText\": \"string\",\n      \"homeType\": \"string\",\n      \"imgSrc\": \"string\",\n      \"hasImage\": false,\n      \"detailUrl\": \"string\",\n      \"hdpData\": {\n        \"homeInfo\": {\n          \"homeStatus\": \"string\",\n          \"daysOnZillow\": 6290,\n          \"listing_sub_type\": {\n            \"key_0\": \"string\"\n          },\n          \"key_0\": \"string\",\n          \"key_1\": 6830.905550182109\n        }\n      }\n    }\n  ],\n  \"meta\": {\n    \"count\": 8671\n  },\n  \"request_id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "772f8fd1-6bed-4d71-a6dd-e7e7a6a2d010",
+              "name": "Async job accepted",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "listings",
+                    "for-sale"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Accepted",
+              "code": 202,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"job_id\": \"17d4608a-c447-533a-2332-cee32edb64f9\",\n    \"status\": \"string\",\n    \"stage\": \"string\"\n  },\n  \"request_id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "100d3974-31ca-4c8b-aca7-e8c53908f055",
+              "name": "Standard error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "listings",
+                    "for-sale"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": \"\",\n    \"request_id\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "cc186d67-739c-4978-885f-e0de7447aebb",
+          "name": "Search for-rent listings",
+          "request": {
+            "name": "Search for-rent listings",
+            "description": {
+              "content": "Search for-rent listings within a bounding box (status forced to for_rent). Same body as POST /v1/search; a `bbox` or `searchUrls` is required. Billed at 1 credit per listing returned; failed calls are free.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "listings",
+                "for-rent"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "763a1fd7-52f9-47e8-b8e0-2fb87a1b6a03",
+              "name": "Search rows (sync). Note: the search-row shape (SearchResultRow) is NOT the same as the detail Property shape returned by the property endpoints.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "listings",
+                    "for-rent"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"zpid\": \"string\",\n      \"id\": \"string\",\n      \"palsId\": \"string\",\n      \"address\": \"string\",\n      \"addressStreet\": \"string\",\n      \"addressCity\": \"string\",\n      \"addressState\": \"string\",\n      \"addressZipcode\": \"string\",\n      \"price\": \"string\",\n      \"unformattedPrice\": 8947.313111279143,\n      \"beds\": 5130.38048830065,\n      \"baths\": 2526.0449788833116,\n      \"area\": 9429.478669220289,\n      \"livingArea\": 9822.15161008267,\n      \"latLong\": {\n        \"latitude\": 7629.594428983012,\n        \"longitude\": 4809.362693604792\n      },\n      \"statusType\": \"string\",\n      \"statusText\": \"string\",\n      \"homeType\": \"string\",\n      \"imgSrc\": \"string\",\n      \"hasImage\": true,\n      \"detailUrl\": \"string\",\n      \"hdpData\": {\n        \"homeInfo\": {\n          \"homeStatus\": \"string\",\n          \"daysOnZillow\": 5484,\n          \"listing_sub_type\": {\n            \"key_0\": 9106\n          }\n        }\n      }\n    },\n    {\n      \"zpid\": \"string\",\n      \"id\": \"string\",\n      \"palsId\": \"string\",\n      \"address\": \"string\",\n      \"addressStreet\": \"string\",\n      \"addressCity\": \"string\",\n      \"addressState\": \"string\",\n      \"addressZipcode\": \"string\",\n      \"price\": \"string\",\n      \"unformattedPrice\": 4250.110288486809,\n      \"beds\": 5410.220059383099,\n      \"baths\": 4031.851468455323,\n      \"area\": 4429.107207580125,\n      \"livingArea\": 4170.503907449814,\n      \"latLong\": {\n        \"latitude\": 9348.680026698801,\n        \"longitude\": 6053.407324588093\n      },\n      \"statusType\": \"string\",\n      \"statusText\": \"string\",\n      \"homeType\": \"string\",\n      \"imgSrc\": \"string\",\n      \"hasImage\": false,\n      \"detailUrl\": \"string\",\n      \"hdpData\": {\n        \"homeInfo\": {\n          \"homeStatus\": \"string\",\n          \"daysOnZillow\": 4072,\n          \"listing_sub_type\": {\n            \"key_0\": 4328.399027733959\n          },\n          \"key_0\": \"string\"\n        }\n      }\n    }\n  ],\n  \"meta\": {\n    \"count\": 7733\n  },\n  \"request_id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "dd39cec5-fc93-4c43-a658-dd98918a5495",
+              "name": "Async job accepted",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "listings",
+                    "for-rent"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Accepted",
+              "code": 202,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"job_id\": \"17d4608a-c447-533a-2332-cee32edb64f9\",\n    \"status\": \"string\",\n    \"stage\": \"string\"\n  },\n  \"request_id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d4bc754e-f353-4f0c-8849-69da647bbf66",
+              "name": "Standard error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "listings",
+                    "for-rent"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": \"\",\n    \"request_id\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "584ec312-b776-4dbd-9517-cb710bdbb7e4",
+          "name": "Search sold listings",
+          "request": {
+            "name": "Search sold listings",
+            "description": {
+              "content": "Search recently-sold listings within a bounding box (status forced to sold). Same body as POST /v1/search; a `bbox` or `searchUrls` is required. Billed at 1 credit per listing returned; failed calls are free.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "listings",
+                "sold"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "99bf6da7-a097-4b8b-ad7a-9291f658d2f9",
+              "name": "Search rows (sync). Note: the search-row shape (SearchResultRow) is NOT the same as the detail Property shape returned by the property endpoints.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "listings",
+                    "sold"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"zpid\": \"string\",\n      \"id\": \"string\",\n      \"palsId\": \"string\",\n      \"address\": \"string\",\n      \"addressStreet\": \"string\",\n      \"addressCity\": \"string\",\n      \"addressState\": \"string\",\n      \"addressZipcode\": \"string\",\n      \"price\": \"string\",\n      \"unformattedPrice\": 8947.313111279143,\n      \"beds\": 5130.38048830065,\n      \"baths\": 2526.0449788833116,\n      \"area\": 9429.478669220289,\n      \"livingArea\": 9822.15161008267,\n      \"latLong\": {\n        \"latitude\": 7629.594428983012,\n        \"longitude\": 4809.362693604792\n      },\n      \"statusType\": \"string\",\n      \"statusText\": \"string\",\n      \"homeType\": \"string\",\n      \"imgSrc\": \"string\",\n      \"hasImage\": true,\n      \"detailUrl\": \"string\",\n      \"hdpData\": {\n        \"homeInfo\": {\n          \"homeStatus\": \"string\",\n          \"daysOnZillow\": 5484,\n          \"listing_sub_type\": {\n            \"key_0\": 9106\n          }\n        }\n      }\n    },\n    {\n      \"zpid\": \"string\",\n      \"id\": \"string\",\n      \"palsId\": \"string\",\n      \"address\": \"string\",\n      \"addressStreet\": \"string\",\n      \"addressCity\": \"string\",\n      \"addressState\": \"string\",\n      \"addressZipcode\": \"string\",\n      \"price\": \"string\",\n      \"unformattedPrice\": 4250.110288486809,\n      \"beds\": 5410.220059383099,\n      \"baths\": 4031.851468455323,\n      \"area\": 4429.107207580125,\n      \"livingArea\": 4170.503907449814,\n      \"latLong\": {\n        \"latitude\": 9348.680026698801,\n        \"longitude\": 6053.407324588093\n      },\n      \"statusType\": \"string\",\n      \"statusText\": \"string\",\n      \"homeType\": \"string\",\n      \"imgSrc\": \"string\",\n      \"hasImage\": false,\n      \"detailUrl\": \"string\",\n      \"hdpData\": {\n        \"homeInfo\": {\n          \"homeStatus\": \"string\",\n          \"daysOnZillow\": 4072,\n          \"listing_sub_type\": {\n            \"key_0\": 4328.399027733959\n          },\n          \"key_0\": \"string\"\n        }\n      }\n    }\n  ],\n  \"meta\": {\n    \"count\": 7733\n  },\n  \"request_id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8ece502c-6734-4d6b-96a3-325bcaa99084",
+              "name": "Async job accepted",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "listings",
+                    "sold"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Accepted",
+              "code": 202,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"job_id\": \"17d4608a-c447-533a-2332-cee32edb64f9\",\n    \"status\": \"string\",\n    \"stage\": \"string\"\n  },\n  \"request_id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "01bda9c2-14eb-4b61-8ab0-45c4bf07663c",
+              "name": "Standard error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "listings",
+                    "sold"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": \"\",\n    \"request_id\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "d1dd9f58-cc76-4845-a2b8-923beb983e9f",
+          "name": "Search listings by bounding box",
+          "request": {
+            "name": "Search listings by bounding box",
+            "description": {
+              "content": "REST GET wrapper over /v1/search for one-line curl or agent-toolchain use. A `bbox` (west,south,east,north) is REQUIRED — free-text location is not supported. Returns up to 50 rows synchronously; for more, use POST /v1/search with async. Billed at 1 credit per listing returned; failed calls are free.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "listings"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "status",
+                  "value": "for_sale",
+                  "description": "Listing status preset."
+                },
+                {
+                  "disabled": false,
+                  "key": "bbox",
+                  "value": "<string>",
+                  "description": "(Required) REQUIRED bounding box as `west,south,east,north` (decimal degrees, comma-separated). A free-text location alone is not accepted and returns 400 missing_input; the search engine needs a real bounding box."
+                },
+                {
+                  "disabled": false,
+                  "key": "price_min",
+                  "value": "<integer>",
+                  "description": "Minimum price in dollars."
+                },
+                {
+                  "disabled": false,
+                  "key": "price_max",
+                  "value": "<integer>",
+                  "description": "Maximum price in dollars."
+                },
+                {
+                  "disabled": false,
+                  "key": "beds_min",
+                  "value": "<integer>",
+                  "description": "Minimum bedrooms."
+                },
+                {
+                  "disabled": false,
+                  "key": "beds_max",
+                  "value": "<integer>",
+                  "description": "Maximum bedrooms."
+                },
+                {
+                  "disabled": false,
+                  "key": "baths_min",
+                  "value": "<integer>",
+                  "description": "Minimum bathrooms."
+                },
+                {
+                  "disabled": false,
+                  "key": "baths_max",
+                  "value": "<integer>",
+                  "description": "Maximum bathrooms."
+                },
+                {
+                  "disabled": false,
+                  "key": "sqft_min",
+                  "value": "<integer>",
+                  "description": "Minimum living area in square feet."
+                },
+                {
+                  "disabled": false,
+                  "key": "sqft_max",
+                  "value": "<integer>",
+                  "description": "Maximum living area in square feet."
+                },
+                {
+                  "disabled": false,
+                  "key": "year_built_min",
+                  "value": "<integer>",
+                  "description": "Minimum year built."
+                },
+                {
+                  "disabled": false,
+                  "key": "year_built_max",
+                  "value": "<integer>",
+                  "description": "Maximum year built."
+                },
+                {
+                  "disabled": false,
+                  "key": "home_types",
+                  "value": "<string>",
+                  "description": "Comma-separated home types: house,condo,townhouse,multi_family,manufactured,lot,apartment."
+                },
+                {
+                  "disabled": false,
+                  "key": "days_on_zillow",
+                  "value": "<string>",
+                  "description": "Max age of the listing on Zillow."
+                },
+                {
+                  "disabled": false,
+                  "key": "max_items",
+                  "value": "50",
+                  "description": "Maximum rows to return in sync mode. Hard cap 50; for more results switch to POST /v1/search with async: true."
+                },
+                {
+                  "disabled": false,
+                  "key": "format",
+                  "value": "json",
+                  "description": "Response format."
+                },
+                {
+                  "disabled": false,
+                  "key": "location",
+                  "value": "<string>",
+                  "description": "Optional free-text place label (city/ZIP/neighborhood) — a hint only. A `bbox` is REQUIRED; `location` alone returns 400 (missing_input)."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "c5e2d288-4bcb-4d49-a442-644a563ac401",
+              "name": "Search rows (sync). Note: the search-row shape (SearchResultRow) is NOT the same as the detail Property shape returned by the property endpoints.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "listings"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "status",
+                      "value": "for_sale"
+                    },
+                    {
+                      "key": "bbox",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "price_min",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "price_max",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "beds_min",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "beds_max",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "baths_min",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "baths_max",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "sqft_min",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "sqft_max",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "year_built_min",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "year_built_max",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "home_types",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "days_on_zillow",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "max_items",
+                      "value": "50"
+                    },
+                    {
+                      "key": "format",
+                      "value": "json"
+                    },
+                    {
+                      "key": "location",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"zpid\": \"string\",\n      \"id\": \"string\",\n      \"palsId\": \"string\",\n      \"address\": \"string\",\n      \"addressStreet\": \"string\",\n      \"addressCity\": \"string\",\n      \"addressState\": \"string\",\n      \"addressZipcode\": \"string\",\n      \"price\": \"string\",\n      \"unformattedPrice\": 8947.313111279143,\n      \"beds\": 5130.38048830065,\n      \"baths\": 2526.0449788833116,\n      \"area\": 9429.478669220289,\n      \"livingArea\": 9822.15161008267,\n      \"latLong\": {\n        \"latitude\": 7629.594428983012,\n        \"longitude\": 4809.362693604792\n      },\n      \"statusType\": \"string\",\n      \"statusText\": \"string\",\n      \"homeType\": \"string\",\n      \"imgSrc\": \"string\",\n      \"hasImage\": true,\n      \"detailUrl\": \"string\",\n      \"hdpData\": {\n        \"homeInfo\": {\n          \"homeStatus\": \"string\",\n          \"daysOnZillow\": 5484,\n          \"listing_sub_type\": {\n            \"key_0\": 9106\n          }\n        }\n      }\n    },\n    {\n      \"zpid\": \"string\",\n      \"id\": \"string\",\n      \"palsId\": \"string\",\n      \"address\": \"string\",\n      \"addressStreet\": \"string\",\n      \"addressCity\": \"string\",\n      \"addressState\": \"string\",\n      \"addressZipcode\": \"string\",\n      \"price\": \"string\",\n      \"unformattedPrice\": 4250.110288486809,\n      \"beds\": 5410.220059383099,\n      \"baths\": 4031.851468455323,\n      \"area\": 4429.107207580125,\n      \"livingArea\": 4170.503907449814,\n      \"latLong\": {\n        \"latitude\": 9348.680026698801,\n        \"longitude\": 6053.407324588093\n      },\n      \"statusType\": \"string\",\n      \"statusText\": \"string\",\n      \"homeType\": \"string\",\n      \"imgSrc\": \"string\",\n      \"hasImage\": false,\n      \"detailUrl\": \"string\",\n      \"hdpData\": {\n        \"homeInfo\": {\n          \"homeStatus\": \"string\",\n          \"daysOnZillow\": 4072,\n          \"listing_sub_type\": {\n            \"key_0\": 4328.399027733959\n          },\n          \"key_0\": \"string\"\n        }\n      }\n    }\n  ],\n  \"meta\": {\n    \"count\": 7733\n  },\n  \"request_id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6ed91006-9780-4a53-a062-f54d3ed2b108",
+              "name": "Standard error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "listings"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "status",
+                      "value": "for_sale"
+                    },
+                    {
+                      "key": "bbox",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "price_min",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "price_max",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "beds_min",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "beds_max",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "baths_min",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "baths_max",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "sqft_min",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "sqft_max",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "year_built_min",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "year_built_max",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "home_types",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "days_on_zillow",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "max_items",
+                      "value": "50"
+                    },
+                    {
+                      "key": "format",
+                      "value": "json"
+                    },
+                    {
+                      "key": "location",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": \"\",\n    \"request_id\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "fe2767a6-6714-45d6-93d9-acc9cd677f4c",
+              "name": "Standard error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "listings"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "status",
+                      "value": "for_sale"
+                    },
+                    {
+                      "key": "bbox",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "price_min",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "price_max",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "beds_min",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "beds_max",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "baths_min",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "baths_max",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "sqft_min",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "sqft_max",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "year_built_min",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "year_built_max",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "home_types",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "days_on_zillow",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "max_items",
+                      "value": "50"
+                    },
+                    {
+                      "key": "format",
+                      "value": "json"
+                    },
+                    {
+                      "key": "location",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": \"\",\n    \"request_id\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.zillapi.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "91819119-af93-4ab3-9401-bbe989992bd0",
+    "name": "Zillapi: Zillow property data Listings API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Real estate data API. Look up properties by URL, address, or zpid; search listings; extract multi-unit buildings; run async batches; receive results via signed webhooks.\n\nContact Support:\n Name: Support",
+      "type": "text/plain"
+    }
+  }
+}

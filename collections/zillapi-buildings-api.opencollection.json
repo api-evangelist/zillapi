@@ -1,0 +1,55 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Zillapi: Zillow property data Buildings API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Buildings",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get all units in a building",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.zillapi.com/v1/buildings/by-url",
+            "params": [
+              {
+                "name": "url",
+                "value": "",
+                "type": "query",
+                "description": "Building/apartments/community URL (must be /b/, /apartments/, or /community/)."
+              },
+              {
+                "name": "include_units",
+                "value": "",
+                "type": "query",
+                "description": "Which units to include."
+              },
+              {
+                "name": "sync",
+                "value": "",
+                "type": "query",
+                "description": "When true (default) returns units synchronously. Set false for large buildings to run async and return a job_id."
+              }
+            ]
+          },
+          "docs": "Extract all unit listings from a Zillow building, apartments, or community URL (/b/, /apartments/, or /community/). Runs synchronously by default; set sync=false for large buildings to receive a job_id. Billed at 1 credit per unit returned; failed calls are free."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

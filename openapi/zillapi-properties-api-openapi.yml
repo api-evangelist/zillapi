@@ -1,0 +1,931 @@
+openapi: 3.2.0
+info:
+  title: 'Zillapi: Zillow property data Properties API'
+  version: 1.0.0
+  description: Real estate data API. Look up properties by URL, address, or zpid; search listings; extract multi-unit buildings; run async batches; receive results via signed webhooks.
+  license:
+    name: Proprietary
+  contact:
+    name: Support
+    url: https://zillapi.com/
+servers:
+- url: https://api.zillapi.com
+  description: Production
+security:
+- bearerAuth: []
+tags:
+- name: Properties
+paths:
+  /v1/properties/by-url:
+    get:
+      tags:
+      - Properties
+      operationId: getPropertyByUrl
+      x-credit-cost: 1
+      summary: Look up a property by Zillow URL
+      description: Fetch the full property record for a Zillow URL (homedetails, /b/, /community/, or /apartments/). When `extract_units` is not `disabled` and the URL is a multi-unit building, `data` is returned as an array of unit records. Costs 1 credit per record returned; failed calls are free.
+      parameters:
+      - name: url
+        in: query
+        required: true
+        schema:
+          type: string
+          format: uri
+        description: 'Full Zillow URL: homedetails, /b/, /community/, or /apartments/.'
+      - name: status
+        in: query
+        schema:
+          type: string
+          enum:
+          - FOR_SALE
+          - RECENTLY_SOLD
+          - FOR_RENT
+          default: FOR_SALE
+        description: Listing status to resolve.
+      - name: extract_units
+        in: query
+        schema:
+          type: string
+          enum:
+          - disabled
+          - all
+          - for_sale
+          - recently_sold
+          - for_rent
+          - off_market
+          default: disabled
+        description: For building URLs, which units to extract. `disabled` returns the parent record only; any other value returns an array of unit records.
+      - name: fields
+        in: query
+        schema:
+          type: string
+        description: Comma-separated dotted-path field projection, e.g. `zpid,address.streetAddress,priceHistory[0].price`.
+      responses:
+        '200':
+          $ref: '#/components/responses/PropertyOk'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/Error'
+        '502':
+          $ref: '#/components/responses/Error'
+        '504':
+          $ref: '#/components/responses/Error'
+  /v1/properties/by-address:
+    get:
+      tags:
+      - Properties
+      operationId: getPropertyByAddress
+      x-credit-cost: 3
+      summary: Look up a property by address
+      description: Resolve a full street address (street, city, state, ZIP) to a property record via upstream geocoding. Costs 3 credits per successful call because the address is resolved upstream; failed calls are free.
+      parameters:
+      - name: address
+        in: query
+        required: true
+        schema:
+          type: string
+          minLength: 6
+        description: Full street address including city, state, and ZIP; geocoded upstream.
+      - name: status
+        in: query
+        schema:
+          type: string
+          enum:
+          - FOR_SALE
+          - RECENTLY_SOLD
+          - FOR_RENT
+          default: FOR_SALE
+        description: Listing status to resolve.
+      - name: fields
+        in: query
+        schema:
+          type: string
+        description: Comma-separated dotted-path field projection.
+      responses:
+        '200':
+          $ref: '#/components/responses/PropertyOk'
+        default:
+          $ref: '#/components/responses/Error'
+  /v1/properties/{zpid}:
+    get:
+      tags:
+      - Properties
+      operationId: getPropertyByZpid
+      x-credit-cost: 1
+      summary: Get a property by zpid
+      description: Cache-first lookup (24h TTL) of the full property record by Zillow zpid. Cache hits (fresh, ≤24h old) cost 0 credits; a fresh upstream fetch costs 1 credit. Failed calls are free.
+      parameters:
+      - name: zpid
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[0-9]+$
+        description: Zillow property id (numeric string).
+      - name: fields
+        in: query
+        schema:
+          type: string
+        description: Comma-separated dotted-path field projection.
+      responses:
+        '200':
+          $ref: '#/components/responses/PropertyCachedOk'
+        default:
+          $ref: '#/components/responses/Error'
+  /v1/properties/{zpid}/photos:
+    get:
+      tags:
+      - Properties
+      operationId: getPropertyPhotos
+      x-credit-cost: 1
+      summary: Get property photos
+      description: Return the property's photo array with multi-width JPEG/WebP sources plus counts and 3D/video flags. Cache-served when fresh (≤24h); cache hits cost 0 credits.
+      parameters:
+      - name: zpid
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[0-9]+$
+        description: Zillow property id (numeric string).
+      responses:
+        '200':
+          $ref: '#/components/responses/PhotosOk'
+        default:
+          $ref: '#/components/responses/Error'
+  /v1/properties/{zpid}/price-history:
+    get:
+      tags:
+      - Properties
+      operationId: getPropertyPriceHistory
+      x-credit-cost: 1
+      summary: Get property price history
+      description: Return the property's price-history events (listed, sold, and price changes). Cache-served when fresh (≤24h); cache hits cost 0 credits.
+      parameters:
+      - name: zpid
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[0-9]+$
+        description: Zillow property id (numeric string).
+      responses:
+        '200':
+          $ref: '#/components/responses/PriceHistoryOk'
+        default:
+          $ref: '#/components/responses/Error'
+  /v1/properties/{zpid}/tax-history:
+    get:
+      tags:
+      - Properties
+      operationId: getPropertyTaxHistory
+      x-credit-cost: 1
+      summary: Get property tax history
+      description: Return the property's tax-history rows (tax paid and assessed value per year). Cache-served when fresh (≤24h); cache hits cost 0 credits.
+      parameters:
+      - name: zpid
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[0-9]+$
+        description: Zillow property id (numeric string).
+      responses:
+        '200':
+          $ref: '#/components/responses/TaxHistoryOk'
+        default:
+          $ref: '#/components/responses/Error'
+  /v1/properties/{zpid}/schools:
+    get:
+      tags:
+      - Properties
+      operationId: getPropertySchools
+      x-credit-cost: 1
+      summary: Get assigned and nearby schools
+      description: Return schools associated with the property, including GreatSchools rating, distance, type, and level. Cache-served when fresh (≤24h); cache hits cost 0 credits.
+      parameters:
+      - name: zpid
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[0-9]+$
+        description: Zillow property id (numeric string).
+      responses:
+        '200':
+          $ref: '#/components/responses/SchoolsOk'
+        default:
+          $ref: '#/components/responses/Error'
+  /v1/properties/{zpid}/nearby:
+    get:
+      tags:
+      - Properties
+      operationId: getPropertyNearby
+      x-credit-cost: 1
+      summary: Get comparable nearby listings
+      description: Return comparable nearby homes (top ~12 from upstream) as search-style rows. Cache-served when fresh (≤24h); cache hits cost 0 credits.
+      parameters:
+      - name: zpid
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[0-9]+$
+        description: Zillow property id (numeric string).
+      responses:
+        '200':
+          $ref: '#/components/responses/NearbyOk'
+        default:
+          $ref: '#/components/responses/Error'
+  /v1/properties/{zpid}/agent:
+    get:
+      tags:
+      - Properties
+      operationId: getPropertyAgent
+      x-credit-cost: 1
+      summary: Get listing agent and broker
+      description: Return the listing agent and broker contact details plus attribution info. Cache-served when fresh (≤24h); cache hits cost 0 credits.
+      parameters:
+      - name: zpid
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[0-9]+$
+        description: Zillow property id (numeric string).
+      responses:
+        '200':
+          $ref: '#/components/responses/AgentOk'
+        default:
+          $ref: '#/components/responses/Error'
+  /v1/properties/{zpid}/zestimate:
+    get:
+      tags:
+      - Properties
+      operationId: getPropertyZestimate
+      x-credit-cost: 1
+      summary: Get Zestimate and rent estimate
+      description: Return the property's Zestimate, rent Zestimate, tax-assessed value, and last sold price. Cache-served when fresh (≤24h); cache hits cost 0 credits.
+      parameters:
+      - name: zpid
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[0-9]+$
+        description: Zillow property id (numeric string).
+      responses:
+        '200':
+          $ref: '#/components/responses/ZestimateOk'
+        default:
+          $ref: '#/components/responses/Error'
+  /v1/properties/{zpid}/open-houses:
+    get:
+      tags:
+      - Properties
+      operationId: getPropertyOpenHouses
+      x-credit-cost: 1
+      summary: Get open-house schedule
+      description: Return the property's open-house schedule and tour eligibility. Cache-served when fresh (≤24h); cache hits cost 0 credits.
+      parameters:
+      - name: zpid
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[0-9]+$
+        description: Zillow property id (numeric string).
+      responses:
+        '200':
+          $ref: '#/components/responses/OpenHousesOk'
+        default:
+          $ref: '#/components/responses/Error'
+  /v1/properties/{zpid}/facts:
+    get:
+      tags:
+      - Properties
+      operationId: getPropertyFacts
+      x-credit-cost: 1
+      summary: Get full resoFacts attributes
+      description: Return the full `resoFacts` MLS attribute set (appliances, flooring, parking, view, and hundreds of other fields). Cache-served when fresh (≤24h); cache hits cost 0 credits.
+      parameters:
+      - name: zpid
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[0-9]+$
+        description: Zillow property id (numeric string).
+      responses:
+        '200':
+          $ref: '#/components/responses/FactsOk'
+        default:
+          $ref: '#/components/responses/Error'
+  /v1/properties/batch:
+    post:
+      tags:
+      - Properties
+      operationId: createBatchPropertyJob
+      x-credit-cost: 1
+      summary: Batch property-detail job
+      description: 'Queue an async job that resolves up to 500 URLs and/or addresses to full property records. Always async: returns a job_id — poll GET /v1/jobs/{id} or use a webhook. Billed at 1 credit per record returned, settled when the job completes; failed calls are free.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchPropertyRequest'
+      responses:
+        '202':
+          $ref: '#/components/responses/JobAccepted'
+        default:
+          $ref: '#/components/responses/Error'
+components:
+  responses:
+    PropertyOk:
+      description: Single property (an array of Property when extract_units is set and the URL is a multi-unit building)
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/components/schemas/Property'
+              request_id:
+                type: string
+    PhotosOk:
+      description: Property photos with multi-width sources and counts
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Photo'
+              meta:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  photo_count:
+                    type: integer
+                  has_3d:
+                    type: boolean
+                  has_video:
+                    type: boolean
+              request_id:
+                type: string
+    TaxHistoryOk:
+      description: Property tax-history rows
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaxHistoryEvent'
+              meta:
+                type: object
+                properties:
+                  cached:
+                    type: boolean
+              request_id:
+                type: string
+    AgentOk:
+      description: Listing agent + broker contact
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  agentName:
+                    type: string
+                    nullable: true
+                  agentEmail:
+                    type: string
+                    nullable: true
+                  agentPhoneNumber:
+                    type: string
+                    nullable: true
+                  agentLicenseNumber:
+                    type: string
+                    nullable: true
+                  brokerName:
+                    type: string
+                    nullable: true
+                  brokerPhoneNumber:
+                    type: string
+                    nullable: true
+                  attributionInfo:
+                    type: object
+                    additionalProperties: true
+                    nullable: true
+              request_id:
+                type: string
+    PriceHistoryOk:
+      description: Property price-history events
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PriceHistoryEvent'
+              meta:
+                type: object
+                properties:
+                  cached:
+                    type: boolean
+              request_id:
+                type: string
+    Error:
+      description: Standard error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+    FactsOk:
+      description: Full resoFacts MLS attribute set
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                additionalProperties: true
+                description: resoFacts blob — the full MLS attribute set (appliances, flooring, parking, view, and hundreds of other fields).
+              meta:
+                type: object
+                properties:
+                  cached:
+                    type: boolean
+              request_id:
+                type: string
+    PropertyCachedOk:
+      description: Single property with cache info
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/components/schemas/Property'
+              cached:
+                type: boolean
+              fetched_at:
+                type: string
+                format: date-time
+              request_id:
+                type: string
+    ZestimateOk:
+      description: Zestimate / rent zestimate
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  zestimate:
+                    type: number
+                    nullable: true
+                  rent_zestimate:
+                    type: number
+                    nullable: true
+                  tax_assessed_value:
+                    type: number
+                    nullable: true
+                  last_sold_price:
+                    type: number
+                    nullable: true
+                  currency:
+                    type: string
+              request_id:
+                type: string
+    JobAccepted:
+      description: Async job accepted
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  job_id:
+                    type: string
+                    format: uuid
+                  status:
+                    type: string
+                  stage:
+                    type: string
+                    nullable: true
+                    description: Present on chained jobs (e.g. "search").
+              request_id:
+                type: string
+    OpenHousesOk:
+      description: Open-house schedule and tour eligibility
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OpenHouse'
+              meta:
+                type: object
+                properties:
+                  cached:
+                    type: boolean
+                  tour_eligibility:
+                    type: object
+                    additionalProperties: true
+              request_id:
+                type: string
+    SchoolsOk:
+      description: Schools associated with the property
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/School'
+              meta:
+                type: object
+                properties:
+                  cached:
+                    type: boolean
+              request_id:
+                type: string
+    NearbyOk:
+      description: Comparable nearby listings (search-row shape)
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SearchResultRow'
+              meta:
+                type: object
+                properties:
+                  cached:
+                    type: boolean
+              request_id:
+                type: string
+    Unauthorized:
+      description: Auth missing/invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+  schemas:
+    Photo:
+      type: object
+      additionalProperties: true
+      properties:
+        url:
+          type: string
+          description: Default-resolution JPEG URL.
+        caption:
+          type: string
+          nullable: true
+        subjectType:
+          type: string
+          nullable: true
+        mixedSources:
+          type: object
+          properties:
+            jpeg:
+              type: array
+              items:
+                type: object
+                properties:
+                  url:
+                    type: string
+                  width:
+                    type: integer
+            webp:
+              type: array
+              items:
+                type: object
+                properties:
+                  url:
+                    type: string
+                  width:
+                    type: integer
+    School:
+      type: object
+      additionalProperties: true
+      properties:
+        name:
+          type: string
+        rating:
+          type: integer
+          nullable: true
+          description: GreatSchools rating (1–10).
+        distance:
+          type: number
+          nullable: true
+          description: Distance in miles.
+        type:
+          type: string
+          nullable: true
+          description: e.g. public, private, charter.
+        level:
+          type: string
+          nullable: true
+          description: e.g. Elementary, Middle, High.
+    ApiError:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              description: Stable, machine-matchable error code (e.g. missing_input, invalid_filters, invalid_search_url). Match on code, never on message.
+            message:
+              type: string
+              description: Human-readable message; may evolve. Do not match on this.
+            details: {}
+            request_id:
+              type: string
+          required:
+          - code
+          - message
+    Property:
+      type: object
+      description: Full property-detail record (300+ fields; additional properties allowed). This is the DETAIL shape and differs from the SearchResultRow shape returned by search endpoints.
+      additionalProperties: true
+      properties:
+        zpid:
+          type: string
+          description: Zillow property id, always returned as a string.
+        address:
+          type: object
+          additionalProperties: true
+        price:
+          type: number
+        bedrooms:
+          type: number
+        bathrooms:
+          type: number
+        livingArea:
+          type: number
+        lotSize:
+          type: number
+        yearBuilt:
+          type: integer
+        homeType:
+          type: string
+          description: SINGLE_FAMILY | CONDO | TOWNHOUSE | MULTI_FAMILY | APARTMENT | MANUFACTURED | LOT
+        homeStatus:
+          type: string
+          description: FOR_SALE | RECENTLY_SOLD | FOR_RENT | ...
+        latitude:
+          type: number
+        longitude:
+          type: number
+        zestimate:
+          type: number
+          nullable: true
+        rentZestimate:
+          type: number
+          nullable: true
+        priceHistory:
+          type: array
+          items:
+            $ref: '#/components/schemas/PriceHistoryEvent'
+        taxHistory:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaxHistoryEvent'
+        schools:
+          type: array
+          items:
+            $ref: '#/components/schemas/School'
+        nearbyHomes:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        responsivePhotos:
+          type: array
+          items:
+            $ref: '#/components/schemas/Photo'
+        photoCount:
+          type: integer
+        openHouseSchedule:
+          type: array
+          items:
+            $ref: '#/components/schemas/OpenHouse'
+        tourEligibility:
+          type: object
+          additionalProperties: true
+        resoFacts:
+          type: object
+          additionalProperties: true
+    OpenHouse:
+      type: object
+      additionalProperties: true
+      properties:
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
+    PriceHistoryEvent:
+      type: object
+      additionalProperties: true
+      properties:
+        date:
+          type: string
+          description: Event date (YYYY-MM-DD).
+        event:
+          type: string
+          description: e.g. "Listed for sale", "Sold".
+        price:
+          type: number
+        priceChangeRate:
+          type: number
+    BatchPropertyRequest:
+      type: object
+      description: Up to 500 entries total across urls and addresses. At least one of urls or addresses is required.
+      properties:
+        urls:
+          type: array
+          items:
+            type: string
+            format: uri
+          maxItems: 500
+          description: Zillow URLs to resolve.
+        addresses:
+          type: array
+          items:
+            type: string
+          maxItems: 500
+          description: Full street addresses to resolve.
+        propertyStatus:
+          type: string
+          enum:
+          - FOR_SALE
+          - RECENTLY_SOLD
+          - FOR_RENT
+          default: FOR_SALE
+        extractBuildingUnits:
+          type: string
+          enum:
+          - disabled
+          - all
+          - for_sale
+          - recently_sold
+          - for_rent
+          - off_market
+          default: disabled
+        maxItems:
+          type: integer
+          minimum: 1
+          maximum: 5000
+          description: Upper bound on records returned by the job.
+    TaxHistoryEvent:
+      type: object
+      additionalProperties: true
+      properties:
+        time:
+          type: integer
+          description: Epoch milliseconds for the tax year.
+        taxPaid:
+          type: number
+          nullable: true
+        value:
+          type: number
+          nullable: true
+          description: Assessed value.
+        valueIncreaseRate:
+          type: number
+          nullable: true
+    SearchResultRow:
+      type: object
+      description: A single row returned by search/listings endpoints. This is the SEARCH shape — lighter than the full Property detail record and with different field names. To get the full detail record for a row, call GET /v1/properties/{zpid} using its zpid.
+      additionalProperties: true
+      properties:
+        zpid:
+          type: string
+          description: Zillow property id, always a string.
+        id:
+          type: string
+          nullable: true
+          description: Zillow result id for the row.
+        palsId:
+          type: string
+          nullable: true
+        address:
+          type: string
+          nullable: true
+          description: Formatted street address for the row.
+        addressStreet:
+          type: string
+          nullable: true
+        addressCity:
+          type: string
+          nullable: true
+        addressState:
+          type: string
+          nullable: true
+        addressZipcode:
+          type: string
+          nullable: true
+        price:
+          type: string
+          nullable: true
+          description: Formatted price string, e.g. "$1,250,000".
+        unformattedPrice:
+          type: number
+          nullable: true
+          description: Numeric price.
+        beds:
+          type: number
+          nullable: true
+        baths:
+          type: number
+          nullable: true
+        area:
+          type: number
+          nullable: true
+          description: Living area in square feet.
+        livingArea:
+          type: number
+          nullable: true
+        latLong:
+          type: object
+          properties:
+            latitude:
+              type: number
+            longitude:
+              type: number
+        statusType:
+          type: string
+          nullable: true
+          description: e.g. FOR_SALE, FOR_RENT, SOLD.
+        statusText:
+          type: string
+          nullable: true
+        homeType:
+          type: string
+          nullable: true
+        imgSrc:
+          type: string
+          nullable: true
+          description: Primary thumbnail image URL.
+        hasImage:
+          type: boolean
+          nullable: true
+        detailUrl:
+          type: string
+          nullable: true
+          description: Relative or absolute Zillow detail URL for the listing.
+        hdpData:
+          type: object
+          additionalProperties: true
+          properties:
+            homeInfo:
+              type: object
+              additionalProperties: true
+              properties:
+                homeStatus:
+                  type: string
+                daysOnZillow:
+                  type: integer
+                listing_sub_type:
+                  type: object
+                  additionalProperties: true
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: API key (zk_*)

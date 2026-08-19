@@ -1,0 +1,223 @@
+{
+  "item": [
+    {
+      "id": "a1ec5a8d-add0-4ac0-87e3-1268c3e0149a",
+      "name": "Account",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "a674ffd7-ef0d-4b53-8ec3-809ccae8f609",
+          "name": "Get account and plan",
+          "request": {
+            "name": "Get account and plan",
+            "description": {
+              "content": "Return the authenticated account, plan summary, and credit balance. Control-plane endpoint — free.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "me"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "66f65033-0fbf-4ca5-a662-0ce023b9d7c1",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "me"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"f304842a-8851-e715-337a-aef6893f8723\",\n    \"email\": \"2-c@vGvx.ws\",\n    \"plan_id\": \"enterprise\",\n    \"current_period_start\": \"1959-01-16T03:20:19.322Z\",\n    \"status\": \"closed\",\n    \"plan\": {\n      \"id\": \"string\",\n      \"credits_per_cycle\": 4507,\n      \"rate_limit_per_minute\": 9230\n    },\n    \"credits\": {\n      \"balance\": 9452,\n      \"granted_this_cycle\": 736\n    }\n  },\n  \"request_id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "248e26ee-b9ac-4d2d-a84b-c15176cce091",
+          "name": "List recent usage rows",
+          "request": {
+            "name": "List recent usage rows",
+            "description": {
+              "content": "Return recent metered usage rows (endpoint, actor, units, status code). Control-plane endpoint — free.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "usage"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "since",
+                  "value": "<dateTime>",
+                  "description": "Return rows with created_at >= this ISO timestamp."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "100",
+                  "description": "Page size (max 1000)."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "96830e80-cbf9-4d8a-9a22-e87443ec4de0",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "usage"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "since",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "100"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": 2319,\n      \"endpoint\": \"string\",\n      \"actor\": \"search\",\n      \"units\": 1342,\n      \"status_code\": 2787,\n      \"created_at\": \"2012-08-06T20:15:00.760Z\"\n    },\n    {\n      \"id\": 8951,\n      \"endpoint\": \"string\",\n      \"actor\": \"search\",\n      \"units\": 2674,\n      \"status_code\": 4742,\n      \"created_at\": \"2021-12-21T15:07:29.000Z\"\n    }\n  ],\n  \"request_id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.zillapi.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "35346e24-48f2-4712-b5b8-6a515febad3f",
+    "name": "Zillapi: Zillow property data Account API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Real estate data API. Look up properties by URL, address, or zpid; search listings; extract multi-unit buildings; run async batches; receive results via signed webhooks.\n\nContact Support:\n Name: Support",
+      "type": "text/plain"
+    }
+  }
+}

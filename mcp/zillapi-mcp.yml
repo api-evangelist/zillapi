@@ -17,13 +17,16 @@ capabilities:
   tools:
     listChanged: false
 auth:
-  methods: [oauth2, bearer]
+  methods:
+  - oauth2
+  - bearer
   oauth2:
     flow: authorization_code
     authorization_url: https://api.zillapi.com/oauth/authorize
     token_url: https://api.zillapi.com/oauth/token
     registration_url: https://api.zillapi.com/oauth/register
-    scopes: [mcp:access]
+    scopes:
+    - mcp:access
     pkce_required: true
     discovery: well-known/zillapi-oauth-authorization-server.json
     resource_metadata: well-known/zillapi-oauth-protected-resource.json
@@ -36,40 +39,45 @@ introspection:
   tools_list_probed: '2026-08-09'
   http_status: 401
   error_code: missing_api_key
-  note: >-
-    A live POST of {"jsonrpc":"2.0","id":1,"method":"tools/list"} to https://api.zillapi.com/mcp returns
+  note: A live POST of {"jsonrpc":"2.0","id":1,"method":"tools/list"} to https://api.zillapi.com/mcp returns
     401 missing_api_key — the runtime tool schemas are auth-gated. The tool list below is taken verbatim
-    from the provider's published MCP server card (SEP-1649), which carries names, titles and
-    descriptions but no inputSchema. Real input contracts are bound to REST operations in
-    mcp/zillapi-tool-crosswalk.yml rather than guessed.
+    from the provider's published MCP server card (SEP-1649), which carries names, titles and descriptions
+    but no inputSchema. Real input contracts are bound to REST operations in mcp/zillapi-tool-crosswalk.yml
+    rather than guessed.
 tool_count: 4
 tools:
-  - name: lookup_property_by_address
-    title: Look up a U.S. property by address
-    category: properties
-    description: Returns full Zillow property data for a U.S. address.
-    source_operation: openapi/zillapi-openapi-original.json#getPropertyByAddress
-  - name: lookup_property_by_zpid
-    title: Look up a U.S. property by Zillow zpid
-    category: properties
-    description: Returns full property data for a Zillow property id. Cache-served when fresh.
-    source_operation: openapi/zillapi-openapi-original.json#getPropertyByZpid
-  - name: get_zestimate
-    title: Get the current Zestimate for a property
-    category: valuation
-    description: Returns Zillow's automated valuation and rent Zestimate for a zpid.
-    source_operation: openapi/zillapi-openapi-original.json#getPropertyZestimate
-  - name: search_listings
-    title: Search U.S. property listings
-    category: search
-    description: Search for-sale, for-rent, or sold listings inside a geographic bounding box.
-    source_operation: openapi/zillapi-openapi-original.json#listingsBbox
+- name: lookup_property_by_address
+  title: Look up a U.S. property by address
+  category: properties
+  description: Returns full Zillow property data for a U.S. address.
+  source_operation: openapi/zillapi-openapi-original.json#getPropertyByAddress
+- name: lookup_property_by_zpid
+  title: Look up a U.S. property by Zillow zpid
+  category: properties
+  description: Returns full property data for a Zillow property id. Cache-served when fresh.
+  source_operation: openapi/zillapi-openapi-original.json#getPropertyByZpid
+- name: get_zestimate
+  title: Get the current Zestimate for a property
+  category: valuation
+  description: Returns Zillow's automated valuation and rent Zestimate for a zpid.
+  source_operation: openapi/zillapi-openapi-original.json#getPropertyZestimate
+- name: search_listings
+  title: Search U.S. property listings
+  category: search
+  description: Search for-sale, for-rent, or sold listings inside a geographic bounding box.
+  source_operation: openapi/zillapi-openapi-original.json#listingsBbox
 publisher:
   name: Zillapi
   url: https://zillapi.com
   contact: hello@zillapi.com
 terms_of_service: https://zillapi.com/legal/trademark-and-affiliation/
-notes: >-
-  The MCP surface is a deliberate 4-tool subset of a 29-operation REST API — buildings, async batch
-  jobs, webhooks, job management, sub-resources (photos, price history, tax history, schools, agent,
-  open houses, facts) and account/usage are REST-only. See mcp/zillapi-tool-crosswalk.yml.
+notes: The MCP surface is a deliberate 4-tool subset of a 29-operation REST API — buildings, async batch
+  jobs, webhooks, job management, sub-resources (photos, price history, tax history, schools, agent, open
+  houses, facts) and account/usage are REST-only. See mcp/zillapi-tool-crosswalk.yml.
+deployment:
+  mode: remote
+  endpoint: https://api.zillapi.com/mcp
+  verified: probed
+  probe: gated
+  checked: '2026-08-12'
+  source: catalog MCP census

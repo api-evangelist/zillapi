@@ -1,0 +1,184 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Zillapi: Zillow property data Listings API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Listings",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Search for-sale listings",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.zillapi.com/v1/listings/for-sale",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Search for-sale listings within a bounding box (status forced to for_sale). Same body as POST /v1/search; a `bbox` or `searchUrls` is required. Billed at 1 credit per listing returned; failed calls are free."
+        },
+        {
+          "info": {
+            "name": "Search for-rent listings",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.zillapi.com/v1/listings/for-rent",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Search for-rent listings within a bounding box (status forced to for_rent). Same body as POST /v1/search; a `bbox` or `searchUrls` is required. Billed at 1 credit per listing returned; failed calls are free."
+        },
+        {
+          "info": {
+            "name": "Search sold listings",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.zillapi.com/v1/listings/sold",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Search recently-sold listings within a bounding box (status forced to sold). Same body as POST /v1/search; a `bbox` or `searchUrls` is required. Billed at 1 credit per listing returned; failed calls are free."
+        },
+        {
+          "info": {
+            "name": "Search listings by bounding box",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.zillapi.com/v1/listings",
+            "params": [
+              {
+                "name": "status",
+                "value": "",
+                "type": "query",
+                "description": "Listing status preset."
+              },
+              {
+                "name": "bbox",
+                "value": "",
+                "type": "query",
+                "description": "REQUIRED bounding box as `west,south,east,north` (decimal degrees, comma-separated). A free-text location alone is not accepted and returns 400 missing_input; the search engine needs a real bounding box."
+              },
+              {
+                "name": "price_min",
+                "value": "",
+                "type": "query",
+                "description": "Minimum price in dollars."
+              },
+              {
+                "name": "price_max",
+                "value": "",
+                "type": "query",
+                "description": "Maximum price in dollars."
+              },
+              {
+                "name": "beds_min",
+                "value": "",
+                "type": "query",
+                "description": "Minimum bedrooms."
+              },
+              {
+                "name": "beds_max",
+                "value": "",
+                "type": "query",
+                "description": "Maximum bedrooms."
+              },
+              {
+                "name": "baths_min",
+                "value": "",
+                "type": "query",
+                "description": "Minimum bathrooms."
+              },
+              {
+                "name": "baths_max",
+                "value": "",
+                "type": "query",
+                "description": "Maximum bathrooms."
+              },
+              {
+                "name": "sqft_min",
+                "value": "",
+                "type": "query",
+                "description": "Minimum living area in square feet."
+              },
+              {
+                "name": "sqft_max",
+                "value": "",
+                "type": "query",
+                "description": "Maximum living area in square feet."
+              },
+              {
+                "name": "year_built_min",
+                "value": "",
+                "type": "query",
+                "description": "Minimum year built."
+              },
+              {
+                "name": "year_built_max",
+                "value": "",
+                "type": "query",
+                "description": "Maximum year built."
+              },
+              {
+                "name": "home_types",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated home types: house,condo,townhouse,multi_family,manufactured,lot,apartment."
+              },
+              {
+                "name": "days_on_zillow",
+                "value": "",
+                "type": "query",
+                "description": "Max age of the listing on Zillow."
+              },
+              {
+                "name": "max_items",
+                "value": "",
+                "type": "query",
+                "description": "Maximum rows to return in sync mode. Hard cap 50; for more results switch to POST /v1/search with async: true."
+              },
+              {
+                "name": "format",
+                "value": "",
+                "type": "query",
+                "description": "Response format."
+              },
+              {
+                "name": "location",
+                "value": "",
+                "type": "query",
+                "description": "Optional free-text place label (city/ZIP/neighborhood) — a hint only. A `bbox` is REQUIRED; `location` alone returns 400 (missing_input)."
+              }
+            ]
+          },
+          "docs": "REST GET wrapper over /v1/search for one-line curl or agent-toolchain use. A `bbox` (west,south,east,north) is REQUIRED — free-text location is not supported. Returns up to 50 rows synchronously; for more, use POST /v1/search with async. Billed at 1 credit per listing returned; failed calls are free."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

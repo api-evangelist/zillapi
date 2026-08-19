@@ -1,0 +1,303 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Zillapi: Zillow property data Properties API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Properties",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Look up a property by Zillow URL",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.zillapi.com/v1/properties/by-url",
+            "params": [
+              {
+                "name": "url",
+                "value": "",
+                "type": "query",
+                "description": "Full Zillow URL: homedetails, /b/, /community/, or /apartments/."
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query",
+                "description": "Listing status to resolve."
+              },
+              {
+                "name": "extract_units",
+                "value": "",
+                "type": "query",
+                "description": "For building URLs, which units to extract. `disabled` returns the parent record only; any other value returns an array of unit records."
+              },
+              {
+                "name": "fields",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated dotted-path field projection, e.g. `zpid,address.streetAddress,priceHistory[0].price`."
+              }
+            ]
+          },
+          "docs": "Fetch the full property record for a Zillow URL (homedetails, /b/, /community/, or /apartments/). When `extract_units` is not `disabled` and the URL is a multi-unit building, `data` is returned as an array of unit records. Costs 1 credit per record returned; failed calls are free."
+        },
+        {
+          "info": {
+            "name": "Look up a property by address",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.zillapi.com/v1/properties/by-address",
+            "params": [
+              {
+                "name": "address",
+                "value": "",
+                "type": "query",
+                "description": "Full street address including city, state, and ZIP; geocoded upstream."
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query",
+                "description": "Listing status to resolve."
+              },
+              {
+                "name": "fields",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated dotted-path field projection."
+              }
+            ]
+          },
+          "docs": "Resolve a full street address (street, city, state, ZIP) to a property record via upstream geocoding. Costs 3 credits per successful call because the address is resolved upstream; failed calls are free."
+        },
+        {
+          "info": {
+            "name": "Get a property by zpid",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.zillapi.com/v1/properties/:zpid",
+            "params": [
+              {
+                "name": "zpid",
+                "value": "",
+                "type": "path",
+                "description": "Zillow property id (numeric string)."
+              },
+              {
+                "name": "fields",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated dotted-path field projection."
+              }
+            ]
+          },
+          "docs": "Cache-first lookup (24h TTL) of the full property record by Zillow zpid. Cache hits (fresh, ≤24h old) cost 0 credits; a fresh upstream fetch costs 1 credit. Failed calls are free."
+        },
+        {
+          "info": {
+            "name": "Get property photos",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.zillapi.com/v1/properties/:zpid/photos",
+            "params": [
+              {
+                "name": "zpid",
+                "value": "",
+                "type": "path",
+                "description": "Zillow property id (numeric string)."
+              }
+            ]
+          },
+          "docs": "Return the property's photo array with multi-width JPEG/WebP sources plus counts and 3D/video flags. Cache-served when fresh (≤24h); cache hits cost 0 credits."
+        },
+        {
+          "info": {
+            "name": "Get property price history",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.zillapi.com/v1/properties/:zpid/price-history",
+            "params": [
+              {
+                "name": "zpid",
+                "value": "",
+                "type": "path",
+                "description": "Zillow property id (numeric string)."
+              }
+            ]
+          },
+          "docs": "Return the property's price-history events (listed, sold, and price changes). Cache-served when fresh (≤24h); cache hits cost 0 credits."
+        },
+        {
+          "info": {
+            "name": "Get property tax history",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.zillapi.com/v1/properties/:zpid/tax-history",
+            "params": [
+              {
+                "name": "zpid",
+                "value": "",
+                "type": "path",
+                "description": "Zillow property id (numeric string)."
+              }
+            ]
+          },
+          "docs": "Return the property's tax-history rows (tax paid and assessed value per year). Cache-served when fresh (≤24h); cache hits cost 0 credits."
+        },
+        {
+          "info": {
+            "name": "Get assigned and nearby schools",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.zillapi.com/v1/properties/:zpid/schools",
+            "params": [
+              {
+                "name": "zpid",
+                "value": "",
+                "type": "path",
+                "description": "Zillow property id (numeric string)."
+              }
+            ]
+          },
+          "docs": "Return schools associated with the property, including GreatSchools rating, distance, type, and level. Cache-served when fresh (≤24h); cache hits cost 0 credits."
+        },
+        {
+          "info": {
+            "name": "Get comparable nearby listings",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.zillapi.com/v1/properties/:zpid/nearby",
+            "params": [
+              {
+                "name": "zpid",
+                "value": "",
+                "type": "path",
+                "description": "Zillow property id (numeric string)."
+              }
+            ]
+          },
+          "docs": "Return comparable nearby homes (top ~12 from upstream) as search-style rows. Cache-served when fresh (≤24h); cache hits cost 0 credits."
+        },
+        {
+          "info": {
+            "name": "Get listing agent and broker",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.zillapi.com/v1/properties/:zpid/agent",
+            "params": [
+              {
+                "name": "zpid",
+                "value": "",
+                "type": "path",
+                "description": "Zillow property id (numeric string)."
+              }
+            ]
+          },
+          "docs": "Return the listing agent and broker contact details plus attribution info. Cache-served when fresh (≤24h); cache hits cost 0 credits."
+        },
+        {
+          "info": {
+            "name": "Get Zestimate and rent estimate",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.zillapi.com/v1/properties/:zpid/zestimate",
+            "params": [
+              {
+                "name": "zpid",
+                "value": "",
+                "type": "path",
+                "description": "Zillow property id (numeric string)."
+              }
+            ]
+          },
+          "docs": "Return the property's Zestimate, rent Zestimate, tax-assessed value, and last sold price. Cache-served when fresh (≤24h); cache hits cost 0 credits."
+        },
+        {
+          "info": {
+            "name": "Get open-house schedule",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.zillapi.com/v1/properties/:zpid/open-houses",
+            "params": [
+              {
+                "name": "zpid",
+                "value": "",
+                "type": "path",
+                "description": "Zillow property id (numeric string)."
+              }
+            ]
+          },
+          "docs": "Return the property's open-house schedule and tour eligibility. Cache-served when fresh (≤24h); cache hits cost 0 credits."
+        },
+        {
+          "info": {
+            "name": "Get full resoFacts attributes",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.zillapi.com/v1/properties/:zpid/facts",
+            "params": [
+              {
+                "name": "zpid",
+                "value": "",
+                "type": "path",
+                "description": "Zillow property id (numeric string)."
+              }
+            ]
+          },
+          "docs": "Return the full `resoFacts` MLS attribute set (appliances, flooring, parking, view, and hundreds of other fields). Cache-served when fresh (≤24h); cache hits cost 0 credits."
+        },
+        {
+          "info": {
+            "name": "Batch property-detail job",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.zillapi.com/v1/properties/batch",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Queue an async job that resolves up to 500 URLs and/or addresses to full property records. Always async: returns a job_id — poll GET /v1/jobs/{id} or use a webhook. Billed at 1 credit per record returned, settled when the job completes; failed calls are free."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

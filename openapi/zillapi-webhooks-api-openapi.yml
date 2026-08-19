@@ -1,0 +1,234 @@
+openapi: 3.2.0
+info:
+  title: 'Zillapi: Zillow property data Webhooks API'
+  version: 1.0.0
+  description: Real estate data API. Look up properties by URL, address, or zpid; search listings; extract multi-unit buildings; run async batches; receive results via signed webhooks.
+  license:
+    name: Proprietary
+  contact:
+    name: Support
+    url: https://zillapi.com/
+servers:
+- url: https://api.zillapi.com
+  description: Production
+security:
+- bearerAuth: []
+tags:
+- name: Webhooks
+paths:
+  /v1/webhooks:
+    get:
+      tags:
+      - Webhooks
+      operationId: listWebhooks
+      x-credit-cost: 0
+      summary: List webhooks
+      description: List registered outbound webhooks. Secrets are never returned on read — only once at creation. Control-plane endpoint — free.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Webhook'
+                  request_id:
+                    type: string
+    post:
+      tags:
+      - Webhooks
+      operationId: createWebhook
+      x-credit-cost: 0
+      summary: Create a webhook
+      description: Register an outbound webhook URL for terminal job events. The signing secret is returned once in the 201 response and never again. If `events` is omitted you receive all four. Control-plane endpoint — free.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookCreate'
+      responses:
+        '201':
+          description: Created (secret returned once)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/WebhookCreated'
+                  request_id:
+                    type: string
+        default:
+          $ref: '#/components/responses/Error'
+  /v1/webhooks/{id}:
+    delete:
+      tags:
+      - Webhooks
+      operationId: revokeWebhook
+      x-credit-cost: 0
+      summary: Revoke a webhook
+      description: Soft-revoke a webhook; delivery stops immediately. Returns 204 No Content. Control-plane endpoint — free.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: Webhook UUID.
+      responses:
+        '204':
+          description: Revoked
+        default:
+          $ref: '#/components/responses/Error'
+  /v1/webhooks/{id}/deliveries:
+    get:
+      tags:
+      - Webhooks
+      operationId: listWebhookDeliveries
+      x-credit-cost: 0
+      summary: List webhook delivery attempts
+      description: Return the per-attempt delivery log for a webhook (status code, delivered flag, response preview) for debugging failed deliveries. Control-plane endpoint — free.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: Webhook UUID.
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          default: 50
+          maximum: 200
+        description: Page size (max 200).
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/WebhookDelivery'
+                  request_id:
+                    type: string
+components:
+  schemas:
+    WebhookCreate:
+      type: object
+      required:
+      - url
+      properties:
+        url:
+          type: string
+          format: uri
+        events:
+          type: array
+          items:
+            type: string
+            enum:
+            - job.succeeded
+            - job.failed
+            - job.timed_out
+            - job.aborted
+          description: Events to subscribe to. Omit to receive all four.
+        description:
+          type: string
+    WebhookCreated:
+      allOf:
+      - $ref: '#/components/schemas/Webhook'
+      - type: object
+        properties:
+          secret:
+            type: string
+            description: Plaintext signing secret (whsec_*). Shown only once, at creation.
+    WebhookDelivery:
+      type: object
+      properties:
+        id:
+          type: integer
+        job_id:
+          type: string
+          format: uuid
+          nullable: true
+        event:
+          type: string
+        attempt:
+          type: integer
+        status_code:
+          type: integer
+          nullable: true
+        delivered:
+          type: boolean
+        attempted_at:
+          type: string
+          format: date-time
+        response_preview:
+          type: string
+          nullable: true
+    Webhook:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        url:
+          type: string
+          format: uri
+        events:
+          type: array
+          items:
+            type: string
+        active:
+          type: boolean
+        description:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        revoked_at:
+          type: string
+          format: date-time
+          nullable: true
+    ApiError:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              description: Stable, machine-matchable error code (e.g. missing_input, invalid_filters, invalid_search_url). Match on code, never on message.
+            message:
+              type: string
+              description: Human-readable message; may evolve. Do not match on this.
+            details: {}
+            request_id:
+              type: string
+          required:
+          - code
+          - message
+  responses:
+    Error:
+      description: Standard error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: API key (zk_*)

@@ -1,0 +1,141 @@
+openapi: 3.2.0
+info:
+  title: 'Zillapi: Zillow property data Account API'
+  version: 1.0.0
+  description: Real estate data API. Look up properties by URL, address, or zpid; search listings; extract multi-unit buildings; run async batches; receive results via signed webhooks.
+  license:
+    name: Proprietary
+  contact:
+    name: Support
+    url: https://zillapi.com/
+servers:
+- url: https://api.zillapi.com
+  description: Production
+security:
+- bearerAuth: []
+tags:
+- name: Account
+paths:
+  /v1/me:
+    get:
+      tags:
+      - Account
+      operationId: getMe
+      x-credit-cost: 0
+      summary: Get account and plan
+      description: Return the authenticated account, plan summary, and credit balance. Control-plane endpoint — free.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Me'
+                  request_id:
+                    type: string
+  /v1/usage:
+    get:
+      tags:
+      - Account
+      operationId: getUsage
+      x-credit-cost: 0
+      summary: List recent usage rows
+      description: Return recent metered usage rows (endpoint, actor, units, status code). Control-plane endpoint — free.
+      parameters:
+      - name: since
+        in: query
+        schema:
+          type: string
+          format: date-time
+        description: Return rows with created_at >= this ISO timestamp.
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          default: 100
+          maximum: 1000
+        description: Page size (max 1000).
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/UsageRow'
+                  request_id:
+                    type: string
+components:
+  schemas:
+    Me:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        plan_id:
+          type: string
+          enum:
+          - free
+          - monthly
+          - annual
+          - enterprise
+        current_period_start:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum:
+          - active
+          - suspended
+          - closed
+        plan:
+          type: object
+          properties:
+            id:
+              type: string
+            credits_per_cycle:
+              type: integer
+            rate_limit_per_minute:
+              type: integer
+        credits:
+          type: object
+          properties:
+            balance:
+              type: integer
+            granted_this_cycle:
+              type: integer
+    UsageRow:
+      type: object
+      properties:
+        id:
+          type: integer
+        endpoint:
+          type: string
+        actor:
+          type: string
+          enum:
+          - detail
+          - search
+        units:
+          type: integer
+        status_code:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: API key (zk_*)

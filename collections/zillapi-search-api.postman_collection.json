@@ -1,0 +1,454 @@
+{
+  "item": [
+    {
+      "id": "5aef2cc2-439b-4f45-8563-04e3b8e097c7",
+      "name": "Search",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "f74e59dc-5f05-4567-b7b7-8237d6040043",
+          "name": "Search listings with filters",
+          "request": {
+            "name": "Search listings with filters",
+            "description": {
+              "content": "Structured listing search using normalized filters (option A) or a pre-built Zillow searchQueryState URL (option B). A `bbox` or `searchUrls` is REQUIRED — a free-text location alone is rejected with 400 invalid_filters and never hits upstream. Sync when maxItems ≤ 50, async (202/job) otherwise. Billed at 1 credit per result returned; failed calls are free.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "search"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "ec3c2155-46ae-422f-8888-6b5d1a833399",
+              "name": "Search rows (sync). Note: the search-row shape (SearchResultRow) is NOT the same as the detail Property shape returned by the property endpoints.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "search"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"zpid\": \"string\",\n      \"id\": \"string\",\n      \"palsId\": \"string\",\n      \"address\": \"string\",\n      \"addressStreet\": \"string\",\n      \"addressCity\": \"string\",\n      \"addressState\": \"string\",\n      \"addressZipcode\": \"string\",\n      \"price\": \"string\",\n      \"unformattedPrice\": 8765.477346714904,\n      \"beds\": 7772.870970560048,\n      \"baths\": 6381.479937611686,\n      \"area\": 6901.752737487826,\n      \"livingArea\": 609.5276933136762,\n      \"latLong\": {\n        \"latitude\": 1512.2740837817605,\n        \"longitude\": 2322.539480119382\n      },\n      \"statusType\": \"string\",\n      \"statusText\": \"string\",\n      \"homeType\": \"string\",\n      \"imgSrc\": \"string\",\n      \"hasImage\": false,\n      \"detailUrl\": \"string\",\n      \"hdpData\": {\n        \"homeInfo\": {\n          \"homeStatus\": \"string\",\n          \"daysOnZillow\": 2860,\n          \"listing_sub_type\": {\n            \"key_0\": true,\n            \"key_1\": 4508.936602539534,\n            \"key_2\": 179\n          },\n          \"key_0\": 9465.495804698721,\n          \"key_1\": 6636,\n          \"key_2\": 4550\n        },\n        \"key_0\": true\n      }\n    },\n    {\n      \"zpid\": \"string\",\n      \"id\": \"string\",\n      \"palsId\": \"string\",\n      \"address\": \"string\",\n      \"addressStreet\": \"string\",\n      \"addressCity\": \"string\",\n      \"addressState\": \"string\",\n      \"addressZipcode\": \"string\",\n      \"price\": \"string\",\n      \"unformattedPrice\": 7363.173585917962,\n      \"beds\": 3736.285805836631,\n      \"baths\": 7099.689291536929,\n      \"area\": 7927.907700195533,\n      \"livingArea\": 3439.3364999731725,\n      \"latLong\": {\n        \"latitude\": 2561.62933598035,\n        \"longitude\": 4197.112446624037\n      },\n      \"statusType\": \"string\",\n      \"statusText\": \"string\",\n      \"homeType\": \"string\",\n      \"imgSrc\": \"string\",\n      \"hasImage\": false,\n      \"detailUrl\": \"string\",\n      \"hdpData\": {\n        \"homeInfo\": {\n          \"homeStatus\": \"string\",\n          \"daysOnZillow\": 2287,\n          \"listing_sub_type\": {\n            \"key_0\": 9254,\n            \"key_1\": 4760,\n            \"key_2\": 7053.793746306222\n          }\n        },\n        \"key_0\": 4102\n      }\n    }\n  ],\n  \"meta\": {\n    \"count\": 5587\n  },\n  \"request_id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7314074d-a5cb-42bc-afd4-af63d748c747",
+              "name": "Async job accepted",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "search"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Accepted",
+              "code": 202,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"job_id\": \"530bb312-02af-809b-1978-72bbd505f62e\",\n    \"status\": \"string\",\n    \"stage\": \"string\"\n  },\n  \"request_id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c1789043-aa90-4eef-9a8e-26d878b1ff0f",
+              "name": "Standard error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "search"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": \"\",\n    \"request_id\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b3684a14-8773-4c02-836a-8109e3c28442",
+              "name": "Standard error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "search"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": \"\",\n    \"request_id\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "1cd234d7-b89f-45f7-9bae-e6ef54b09f08",
+          "name": "Search then enrich with details",
+          "request": {
+            "name": "Search then enrich with details",
+            "description": {
+              "content": "Run a search and enrich every matched zpid with the full property-detail record in one chained async job. Always async; the results returned by GET /v1/jobs/{id}/results are detail rows (Property shape), not search rows. Billed per stage: 1 credit per search result plus 1 credit per detail record. Failed calls are free.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "search",
+                "with-details"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"propertyStatus\": \"FOR_SALE\",\n  \"extractBuildingUnits\": \"disabled\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "1088684f-6fbf-453e-8842-850af5576f16",
+              "name": "Async job accepted",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "search",
+                    "with-details"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"propertyStatus\": \"FOR_SALE\",\n  \"extractBuildingUnits\": \"disabled\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Accepted",
+              "code": 202,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"job_id\": \"530bb312-02af-809b-1978-72bbd505f62e\",\n    \"status\": \"string\",\n    \"stage\": \"string\"\n  },\n  \"request_id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "96c4d2f3-a040-4bd1-a777-409af8819aed",
+              "name": "Standard error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "search",
+                    "with-details"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"propertyStatus\": \"FOR_SALE\",\n  \"extractBuildingUnits\": \"disabled\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"details\": \"\",\n    \"request_id\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.zillapi.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "61eb53e6-b48a-448d-aba3-6be8d5ae0e0a",
+    "name": "Zillapi: Zillow property data Search API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Real estate data API. Look up properties by URL, address, or zpid; search listings; extract multi-unit buildings; run async batches; receive results via signed webhooks.\n\nContact Support:\n Name: Support",
+      "type": "text/plain"
+    }
+  }
+}

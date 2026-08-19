@@ -1,0 +1,60 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Zillapi: Zillow property data Account API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Account",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get account and plan",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.zillapi.com/v1/me"
+          },
+          "docs": "Return the authenticated account, plan summary, and credit balance. Control-plane endpoint — free."
+        },
+        {
+          "info": {
+            "name": "List recent usage rows",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.zillapi.com/v1/usage",
+            "params": [
+              {
+                "name": "since",
+                "value": "",
+                "type": "query",
+                "description": "Return rows with created_at >= this ISO timestamp."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Page size (max 1000)."
+              }
+            ]
+          },
+          "docs": "Return recent metered usage rows (endpoint, actor, units, status code). Control-plane endpoint — free."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

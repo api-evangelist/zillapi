@@ -1,0 +1,410 @@
+openapi: 3.2.0
+info:
+  title: 'Zillapi: Zillow property data Search API'
+  version: 1.0.0
+  description: Real estate data API. Look up properties by URL, address, or zpid; search listings; extract multi-unit buildings; run async batches; receive results via signed webhooks.
+  license:
+    name: Proprietary
+  contact:
+    name: Support
+    url: https://zillapi.com/
+servers:
+- url: https://api.zillapi.com
+  description: Production
+security:
+- bearerAuth: []
+tags:
+- name: Search
+paths:
+  /v1/search:
+    post:
+      tags:
+      - Search
+      operationId: search
+      x-credit-cost: 1
+      summary: Search listings with filters
+      description: Structured listing search using normalized filters (option A) or a pre-built Zillow searchQueryState URL (option B). A `bbox` or `searchUrls` is REQUIRED — a free-text location alone is rejected with 400 invalid_filters and never hits upstream. Sync when maxItems ≤ 50, async (202/job) otherwise. Billed at 1 credit per result returned; failed calls are free.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/SearchResultsOk'
+        '202':
+          $ref: '#/components/responses/JobAccepted'
+        '400':
+          $ref: '#/components/responses/Error'
+        default:
+          $ref: '#/components/responses/Error'
+  /v1/search/with-details:
+    post:
+      tags:
+      - Search
+      operationId: searchWithDetails
+      x-credit-cost: 1
+      summary: Search then enrich with details
+      description: 'Run a search and enrich every matched zpid with the full property-detail record in one chained async job. Always async; the results returned by GET /v1/jobs/{id}/results are detail rows (Property shape), not search rows. Billed per stage: 1 credit per search result plus 1 credit per detail record. Failed calls are free.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchWithDetailsRequest'
+      responses:
+        '202':
+          $ref: '#/components/responses/JobAccepted'
+        default:
+          $ref: '#/components/responses/Error'
+components:
+  responses:
+    Error:
+      description: Standard error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+    SearchResultsOk:
+      description: 'Search rows (sync). Note: the search-row shape (SearchResultRow) is NOT the same as the detail Property shape returned by the property endpoints.'
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SearchResultRow'
+              meta:
+                type: object
+                properties:
+                  count:
+                    type: integer
+              request_id:
+                type: string
+        application/x-ndjson:
+          schema:
+            type: string
+        text/csv:
+          schema:
+            type: string
+    JobAccepted:
+      description: Async job accepted
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  job_id:
+                    type: string
+                    format: uuid
+                  status:
+                    type: string
+                  stage:
+                    type: string
+                    nullable: true
+                    description: Present on chained jobs (e.g. "search").
+              request_id:
+                type: string
+  schemas:
+    SearchRequest:
+      type: object
+      description: A search request MUST supply either `filters` containing a `bbox`, OR a `searchUrls` array. A free-text location alone is not supported and is rejected with 400 invalid_filters.
+      properties:
+        filters:
+          $ref: '#/components/schemas/SearchFilters'
+        searchUrls:
+          type: array
+          items:
+            type: object
+            properties:
+              url:
+                type: string
+                format: uri
+                description: A zillow.com search URL that MUST contain a `searchQueryState=` query parameter. Pretty URLs (e.g. https://www.zillow.com/austin-tx/houses/) are rejected with 400 invalid_search_url.
+            required:
+            - url
+          description: 'Advanced: pre-built Zillow search URLs. Provide this instead of filters.bbox.'
+        extractionMethod:
+          type: string
+          enum:
+          - PAGINATION_WITH_ZOOM_IN
+          - PAGINATION
+          - MAP_MARKERS
+          default: PAGINATION
+          description: PAGINATION (default, up to ~820 results); MAP_MARKERS (fastest, up to ~500, less data per row); PAGINATION_WITH_ZOOM_IN (exhaustive recursive zoom, always runs async).
+        maxItems:
+          type: integer
+          minimum: 1
+          maximum: 500
+          default: 50
+          description: Maximum records to return (product hard cap 500). When maxItems > 50 the request is processed asynchronously and returns 202 with a job_id instead of results inline. maxItems ≤ 50 runs synchronously.
+        async:
+          type: boolean
+          description: Force async processing (202/job) even when maxItems ≤ 50.
+      anyOf:
+      - required:
+        - searchUrls
+      - required:
+        - filters
+        properties:
+          filters:
+            required:
+            - bbox
+    SearchResultRow:
+      type: object
+      description: A single row returned by search/listings endpoints. This is the SEARCH shape — lighter than the full Property detail record and with different field names. To get the full detail record for a row, call GET /v1/properties/{zpid} using its zpid.
+      additionalProperties: true
+      properties:
+        zpid:
+          type: string
+          description: Zillow property id, always a string.
+        id:
+          type: string
+          nullable: true
+          description: Zillow result id for the row.
+        palsId:
+          type: string
+          nullable: true
+        address:
+          type: string
+          nullable: true
+          description: Formatted street address for the row.
+        addressStreet:
+          type: string
+          nullable: true
+        addressCity:
+          type: string
+          nullable: true
+        addressState:
+          type: string
+          nullable: true
+        addressZipcode:
+          type: string
+          nullable: true
+        price:
+          type: string
+          nullable: true
+          description: Formatted price string, e.g. "$1,250,000".
+        unformattedPrice:
+          type: number
+          nullable: true
+          description: Numeric price.
+        beds:
+          type: number
+          nullable: true
+        baths:
+          type: number
+          nullable: true
+        area:
+          type: number
+          nullable: true
+          description: Living area in square feet.
+        livingArea:
+          type: number
+          nullable: true
+        latLong:
+          type: object
+          properties:
+            latitude:
+              type: number
+            longitude:
+              type: number
+        statusType:
+          type: string
+          nullable: true
+          description: e.g. FOR_SALE, FOR_RENT, SOLD.
+        statusText:
+          type: string
+          nullable: true
+        homeType:
+          type: string
+          nullable: true
+        imgSrc:
+          type: string
+          nullable: true
+          description: Primary thumbnail image URL.
+        hasImage:
+          type: boolean
+          nullable: true
+        detailUrl:
+          type: string
+          nullable: true
+          description: Relative or absolute Zillow detail URL for the listing.
+        hdpData:
+          type: object
+          additionalProperties: true
+          properties:
+            homeInfo:
+              type: object
+              additionalProperties: true
+              properties:
+                homeStatus:
+                  type: string
+                daysOnZillow:
+                  type: integer
+                listing_sub_type:
+                  type: object
+                  additionalProperties: true
+    SearchWithDetailsRequest:
+      allOf:
+      - $ref: '#/components/schemas/SearchRequest'
+      - type: object
+        properties:
+          propertyStatus:
+            type: string
+            enum:
+            - FOR_SALE
+            - RECENTLY_SOLD
+            - FOR_RENT
+            default: FOR_SALE
+          extractBuildingUnits:
+            type: string
+            enum:
+            - disabled
+            - all
+            - for_sale
+            - recently_sold
+            - for_rent
+            - off_market
+            default: disabled
+    SearchFilters:
+      type: object
+      description: Normalized search filters. A `bbox` is required (unless the request supplies `searchUrls` instead); a free-text search without a bounding box is rejected with 400 invalid_filters and never hits upstream.
+      properties:
+        status:
+          type: string
+          enum:
+          - for_sale
+          - for_rent
+          - sold
+          description: Listing status.
+        bbox:
+          type: object
+          required:
+          - west
+          - south
+          - east
+          - north
+          properties:
+            west:
+              type: number
+            south:
+              type: number
+            east:
+              type: number
+            north:
+              type: number
+          description: Bounding box in decimal degrees. REQUIRED unless searchUrls is supplied at the request level — the search engine needs a real bounding box to render results.
+        price:
+          type: object
+          properties:
+            min:
+              type: integer
+            max:
+              type: integer
+          description: Price range in dollars.
+        beds:
+          type: object
+          properties:
+            min:
+              type: integer
+            max:
+              type: integer
+          description: Bedroom count range.
+        baths:
+          type: object
+          properties:
+            min:
+              type: number
+            max:
+              type: number
+          description: Bathroom count range.
+        sqft:
+          type: object
+          properties:
+            min:
+              type: integer
+            max:
+              type: integer
+          description: Living-area range in square feet.
+        lotSize:
+          type: object
+          properties:
+            min:
+              type: integer
+            max:
+              type: integer
+        yearBuilt:
+          type: object
+          properties:
+            min:
+              type: integer
+            max:
+              type: integer
+        daysOnZillow:
+          type: string
+          enum:
+          - '1'
+          - '7'
+          - '14'
+          - '30'
+          - '90'
+          - 6m
+          - 12m
+          - 24m
+          - 36m
+        homeTypes:
+          type: array
+          items:
+            type: string
+            enum:
+            - house
+            - condo
+            - townhouse
+            - multi_family
+            - manufactured
+            - lot
+            - apartment
+          description: Home types to include.
+        hasPool:
+          type: boolean
+        hasGarage:
+          type: boolean
+        hasAirConditioning:
+          type: boolean
+        hasBasement:
+          type: boolean
+        isWaterfront:
+          type: boolean
+        location:
+          type: string
+          description: Optional free-text place label (city/ZIP/neighborhood) — a hint only. A `bbox` (or request-level `searchUrls`) is REQUIRED; `location` alone returns 400 (invalid_filters).
+    ApiError:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              description: Stable, machine-matchable error code (e.g. missing_input, invalid_filters, invalid_search_url). Match on code, never on message.
+            message:
+              type: string
+              description: Human-readable message; may evolve. Do not match on this.
+            details: {}
+            request_id:
+              type: string
+          required:
+          - code
+          - message
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: API key (zk_*)
