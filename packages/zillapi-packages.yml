@@ -23,7 +23,7 @@ packages:
     kind: agent-skills
     language: python
     registry: github
-    version: 1.0.1
+    version: 1.1.0
     url: https://github.com/ZeroPointRepo/zillow-skills
     install: npx skills add ZeroPointRepo/zillow-skills
     license: MIT-0
@@ -40,10 +40,6 @@ packages:
       dependencies, no build step. Sole network destination is https://api.zillapi.com.
     credentials: reads ZILLAPI_KEY from the environment at call time; not cached, not written to disk, not logged
     tests: each skill ships a tests/test_handler.py
-    note: >-
-      The repository's package.json points its homepage/repository at github.com/nikhonit/zillow-skills
-      while the live repo and every provider link use ZeroPointRepo/zillow-skills — a stale metadata
-      reference, recorded as observed.
 code_samples:
   source: https://zillapi.com/quickstart/
   languages: [curl, javascript, python, go]
