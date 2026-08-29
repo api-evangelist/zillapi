@@ -227,6 +227,9 @@ generated:
   confidence: 97
   at: '2026-07-13T07:54:16.663Z'
 common:
+- type: CapabilityMap
+  url: capabilities/zillapi-capability-edges.yml
+  name: Zillapi Business Capability Map
 - type: AgentSkill
   url: skills/zillapi-get-zestimate.md
 - type: MCPServer
