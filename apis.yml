@@ -21,16 +21,16 @@ created: '2026-07-13'
 modified: '2026-08-09'
 specificationVersion: '0.23'
 tags:
-  - real estate
-  - proptech
-  - property data
-  - zillow
-  - zestimate
-  - valuation
+  - Real-Estate
+  - PropTech
+  - Property Data
+  - Zillow
+  - Zestimate
+  - Valuation
   - AVM
   - Listings
   - MCP
-  - AI agent
+  - AI Agent
   - REST API
 tags_raw:
   - real estate
