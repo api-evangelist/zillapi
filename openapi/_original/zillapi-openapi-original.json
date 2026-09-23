@@ -193,7 +193,7 @@
         "operationId": "getPropertyByZpid",
         "x-credit-cost": 1,
         "summary": "Get a property by zpid",
-        "description": "Cache-first lookup (24h TTL) of the full property record by Zillow zpid. Cache hits (fresh, ≤24h old) cost 0 credits; a fresh upstream fetch costs 1 credit. Failed calls are free.",
+        "description": "Cache-first lookup (24h TTL) of the full property record by Zillow zpid. Costs 1 credit per successful lookup; caching is a transparent optimization (faster responses, same price). Failed calls are free.",
         "parameters": [
           {
             "name": "zpid",
@@ -232,7 +232,7 @@
         "operationId": "getPropertyPhotos",
         "x-credit-cost": 1,
         "summary": "Get property photos",
-        "description": "Return the property's photo array with multi-width JPEG/WebP sources plus counts and 3D/video flags. Cache-served when fresh (≤24h); cache hits cost 0 credits.",
+        "description": "Return the property's photo array with multi-width JPEG/WebP sources plus counts and 3D/video flags. Costs 1 credit per successful lookup; caching (≤24h) is a transparent optimization — same price, faster responses.",
         "parameters": [
           {
             "name": "zpid",
@@ -263,7 +263,7 @@
         "operationId": "getPropertyPriceHistory",
         "x-credit-cost": 1,
         "summary": "Get property price history",
-        "description": "Return the property's price-history events (listed, sold, and price changes). Cache-served when fresh (≤24h); cache hits cost 0 credits.",
+        "description": "Return the property's price-history events (listed, sold, and price changes). Costs 1 credit per successful lookup; caching (≤24h) is a transparent optimization — same price, faster responses.",
         "parameters": [
           {
             "name": "zpid",
@@ -294,7 +294,7 @@
         "operationId": "getPropertyTaxHistory",
         "x-credit-cost": 1,
         "summary": "Get property tax history",
-        "description": "Return the property's tax-history rows (tax paid and assessed value per year). Cache-served when fresh (≤24h); cache hits cost 0 credits.",
+        "description": "Return the property's tax-history rows (tax paid and assessed value per year). Costs 1 credit per successful lookup; caching (≤24h) is a transparent optimization — same price, faster responses.",
         "parameters": [
           {
             "name": "zpid",
@@ -325,7 +325,7 @@
         "operationId": "getPropertySchools",
         "x-credit-cost": 1,
         "summary": "Get assigned and nearby schools",
-        "description": "Return schools associated with the property, including GreatSchools rating, distance, type, and level. Cache-served when fresh (≤24h); cache hits cost 0 credits.",
+        "description": "Return schools associated with the property, including GreatSchools rating, distance, type, and level. Costs 1 credit per successful lookup; caching (≤24h) is a transparent optimization — same price, faster responses.",
         "parameters": [
           {
             "name": "zpid",
@@ -356,7 +356,7 @@
         "operationId": "getPropertyNearby",
         "x-credit-cost": 1,
         "summary": "Get comparable nearby listings",
-        "description": "Return comparable nearby homes (top ~12 from upstream) as search-style rows. Cache-served when fresh (≤24h); cache hits cost 0 credits.",
+        "description": "Return comparable nearby homes (top ~12 from upstream) as search-style rows. Costs 1 credit per successful lookup; caching (≤24h) is a transparent optimization — same price, faster responses.",
         "parameters": [
           {
             "name": "zpid",
@@ -387,7 +387,7 @@
         "operationId": "getPropertyAgent",
         "x-credit-cost": 1,
         "summary": "Get listing agent and broker",
-        "description": "Return the listing agent and broker contact details plus attribution info. Cache-served when fresh (≤24h); cache hits cost 0 credits.",
+        "description": "Return the listing agent and broker contact details plus attribution info. Costs 1 credit per successful lookup; caching (≤24h) is a transparent optimization — same price, faster responses.",
         "parameters": [
           {
             "name": "zpid",
@@ -418,7 +418,7 @@
         "operationId": "getPropertyZestimate",
         "x-credit-cost": 1,
         "summary": "Get Zestimate and rent estimate",
-        "description": "Return the property's Zestimate, rent Zestimate, tax-assessed value, and last sold price. Cache-served when fresh (≤24h); cache hits cost 0 credits.",
+        "description": "Return the property's Zestimate, rent Zestimate, tax-assessed value, and last sold price. Costs 1 credit per successful lookup; caching (≤24h) is a transparent optimization — same price, faster responses.",
         "parameters": [
           {
             "name": "zpid",
@@ -449,7 +449,7 @@
         "operationId": "getPropertyOpenHouses",
         "x-credit-cost": 1,
         "summary": "Get open-house schedule",
-        "description": "Return the property's open-house schedule and tour eligibility. Cache-served when fresh (≤24h); cache hits cost 0 credits.",
+        "description": "Return the property's open-house schedule and tour eligibility. Costs 1 credit per successful lookup; caching (≤24h) is a transparent optimization — same price, faster responses.",
         "parameters": [
           {
             "name": "zpid",
@@ -480,7 +480,7 @@
         "operationId": "getPropertyFacts",
         "x-credit-cost": 1,
         "summary": "Get full resoFacts attributes",
-        "description": "Return the full `resoFacts` MLS attribute set (appliances, flooring, parking, view, and hundreds of other fields). Cache-served when fresh (≤24h); cache hits cost 0 credits.",
+        "description": "Return the full `resoFacts` MLS attribute set (appliances, flooring, parking, view, and hundreds of other fields). Costs 1 credit per successful lookup; caching (≤24h) is a transparent optimization — same price, faster responses.",
         "parameters": [
           {
             "name": "zpid",
@@ -729,7 +729,7 @@
         "operationId": "listingsBbox",
         "x-credit-cost": 1,
         "summary": "Search listings by bounding box",
-        "description": "REST GET wrapper over /v1/search for one-line curl or agent-toolchain use. A `bbox` (west,south,east,north) is REQUIRED — free-text location is not supported. Returns up to 50 rows synchronously; for more, use POST /v1/search with async. Billed at 1 credit per listing returned; failed calls are free.",
+        "description": "REST GET wrapper over /v1/search for one-line curl or agent-toolchain use. A `bbox` (west,south,east,north) is REQUIRED — free-text location is not supported. Returns up to `max_items` rows synchronously (default 50, hard cap 50); for more, use POST /v1/search with async. Billed at 1 credit **per listing returned** — this cost is per-result, not per-call, so a full-page search costs up to 50 credits; set `max_items` lower to cap it. Failed calls are free.",
         "parameters": [
           {
             "name": "status",
@@ -869,7 +869,7 @@
               "default": 50,
               "maximum": 50
             },
-            "description": "Maximum rows to return in sync mode. Hard cap 50; for more results switch to POST /v1/search with async: true."
+            "description": "Maximum rows to return in sync mode (default 50, hard cap 50). Billing is 1 credit per row returned, so this is your cost cap — e.g. max_items=5 costs at most 5 credits. For more than 50 results, switch to POST /v1/search with async: true."
           },
           {
             "name": "format",
@@ -1554,13 +1554,6 @@
                 "data": {
                   "$ref": "#/components/schemas/Property"
                 },
-                "cached": {
-                  "type": "boolean"
-                },
-                "fetched_at": {
-                  "type": "string",
-                  "format": "date-time"
-                },
                 "request_id": {
                   "type": "string"
                 }
@@ -1620,14 +1613,6 @@
                     "$ref": "#/components/schemas/PriceHistoryEvent"
                   }
                 },
-                "meta": {
-                  "type": "object",
-                  "properties": {
-                    "cached": {
-                      "type": "boolean"
-                    }
-                  }
-                },
                 "request_id": {
                   "type": "string"
                 }
@@ -1647,14 +1632,6 @@
                   "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/TaxHistoryEvent"
-                  }
-                },
-                "meta": {
-                  "type": "object",
-                  "properties": {
-                    "cached": {
-                      "type": "boolean"
-                    }
                   }
                 },
                 "request_id": {
@@ -1678,14 +1655,6 @@
                     "$ref": "#/components/schemas/School"
                   }
                 },
-                "meta": {
-                  "type": "object",
-                  "properties": {
-                    "cached": {
-                      "type": "boolean"
-                    }
-                  }
-                },
                 "request_id": {
                   "type": "string"
                 }
@@ -1705,14 +1674,6 @@
                   "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/SearchResultRow"
-                  }
-                },
-                "meta": {
-                  "type": "object",
-                  "properties": {
-                    "cached": {
-                      "type": "boolean"
-                    }
                   }
                 },
                 "request_id": {
@@ -1739,9 +1700,6 @@
                 "meta": {
                   "type": "object",
                   "properties": {
-                    "cached": {
-                      "type": "boolean"
-                    },
                     "tour_eligibility": {
                       "type": "object",
                       "additionalProperties": true
@@ -1767,14 +1725,6 @@
                   "type": "object",
                   "additionalProperties": true,
                   "description": "resoFacts blob — the full MLS attribute set (appliances, flooring, parking, view, and hundreds of other fields)."
-                },
-                "meta": {
-                  "type": "object",
-                  "properties": {
-                    "cached": {
-                      "type": "boolean"
-                    }
-                  }
                 },
                 "request_id": {
                   "type": "string"

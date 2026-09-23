@@ -59,58 +59,6 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 components:
-  responses:
-    Error:
-      description: Standard error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ApiError'
-    SearchResultsOk:
-      description: 'Search rows (sync). Note: the search-row shape (SearchResultRow) is NOT the same as the detail Property shape returned by the property endpoints.'
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                type: array
-                items:
-                  $ref: '#/components/schemas/SearchResultRow'
-              meta:
-                type: object
-                properties:
-                  count:
-                    type: integer
-              request_id:
-                type: string
-        application/x-ndjson:
-          schema:
-            type: string
-        text/csv:
-          schema:
-            type: string
-    JobAccepted:
-      description: Async job accepted
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                type: object
-                properties:
-                  job_id:
-                    type: string
-                    format: uuid
-                  status:
-                    type: string
-                  stage:
-                    type: string
-                    nullable: true
-                    description: Present on chained jobs (e.g. "search").
-              request_id:
-                type: string
   schemas:
     SearchRequest:
       type: object
@@ -156,6 +104,28 @@ components:
           filters:
             required:
             - bbox
+    SearchWithDetailsRequest:
+      allOf:
+      - $ref: '#/components/schemas/SearchRequest'
+      - type: object
+        properties:
+          propertyStatus:
+            type: string
+            enum:
+            - FOR_SALE
+            - RECENTLY_SOLD
+            - FOR_RENT
+            default: FOR_SALE
+          extractBuildingUnits:
+            type: string
+            enum:
+            - disabled
+            - all
+            - for_sale
+            - recently_sold
+            - for_rent
+            - off_market
+            default: disabled
     SearchResultRow:
       type: object
       description: A single row returned by search/listings endpoints. This is the SEARCH shape — lighter than the full Property detail record and with different field names. To get the full detail record for a row, call GET /v1/properties/{zpid} using its zpid.
@@ -251,28 +221,6 @@ components:
                 listing_sub_type:
                   type: object
                   additionalProperties: true
-    SearchWithDetailsRequest:
-      allOf:
-      - $ref: '#/components/schemas/SearchRequest'
-      - type: object
-        properties:
-          propertyStatus:
-            type: string
-            enum:
-            - FOR_SALE
-            - RECENTLY_SOLD
-            - FOR_RENT
-            default: FOR_SALE
-          extractBuildingUnits:
-            type: string
-            enum:
-            - disabled
-            - all
-            - for_sale
-            - recently_sold
-            - for_rent
-            - off_market
-            default: disabled
     SearchFilters:
       type: object
       description: Normalized search filters. A `bbox` is required (unless the request supplies `searchUrls` instead); a free-text search without a bounding box is rejected with 400 invalid_filters and never hits upstream.
@@ -403,6 +351,58 @@ components:
           required:
           - code
           - message
+  responses:
+    Error:
+      description: Standard error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+    JobAccepted:
+      description: Async job accepted
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  job_id:
+                    type: string
+                    format: uuid
+                  status:
+                    type: string
+                  stage:
+                    type: string
+                    nullable: true
+                    description: Present on chained jobs (e.g. "search").
+              request_id:
+                type: string
+    SearchResultsOk:
+      description: 'Search rows (sync). Note: the search-row shape (SearchResultRow) is NOT the same as the detail Property shape returned by the property endpoints.'
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SearchResultRow'
+              meta:
+                type: object
+                properties:
+                  count:
+                    type: integer
+              request_id:
+                type: string
+        application/x-ndjson:
+          schema:
+            type: string
+        text/csv:
+          schema:
+            type: string
   securitySchemes:
     bearerAuth:
       type: http

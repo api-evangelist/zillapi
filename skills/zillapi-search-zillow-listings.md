@@ -65,7 +65,7 @@ Sync:
 ```json
 {
   "data": [
-    { "zpid": "...", "price": 295000, "address": {...}, "bedrooms": 3, ... },
+    { "zpid": "...", "price": 750000, "address": {...}, "bedrooms": 3, ... },
     ...
   ],
   "meta": { "limit": 50, "offset": 0, "has_more": true },

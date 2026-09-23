@@ -1,36 +1,87 @@
-generated: '2026-08-09'
+generated: '2026-09-11'
 method: searched
 source: >-
-  Registry probes (npm, PyPI) plus the provider's GitHub repository and quickstart docs, 2026-08-09.
+  Registry metadata probes (npm, PyPI, RubyGems, crates.io, pkg.go.dev/proxy.golang.org) plus the
+  GitHub REST API and the provider's quickstart docs, re-run 2026-09-11 (first run 2026-08-09).
+  Widened 2026-09-11 to enumerate the whole ZeroPointRepo GitHub account rather than the single repo
+  the provider links from llms.txt — https://api.github.com/users/ZeroPointRepo/repos returned 30
+  public repositories, six of them Zillapi-branded, and two carry real published distributions that
+  earlier rounds of this pipeline missed entirely.
 summary: >-
-  Zillapi ships NO client SDKs. The quickstart documents raw HTTP in curl, JavaScript, Python and Go —
-  four code samples, not four libraries. The only first-party distributable is an agent-skills bundle
-  on GitHub, installed with the `skills` CLI rather than from a package registry.
+  Zillapi ships NO general-purpose client SDKs — the quickstart documents raw HTTP in curl,
+  JavaScript, Python and Go, which is four code samples, not four libraries. It does, however, ship
+  FOUR first-party distributions, and three of them are agent- or automation-platform integrations
+  rather than SDKs: an n8n community node published to npm (the only one with real registry
+  metadata), an agent plugin for Claude/Cursor-class clients, an agent-skills bundle on GitHub, and
+  the hosted agent-skills set served from its own /.well-known/ path. CORRECTION (2026-09-11): the
+  2026-08-09 and earlier-today captures both stated the skills bundle was the only first-party
+  distributable and that zillow-skills was the only public repo in the account. Both statements were
+  wrong — they came from probing only the repo the provider links from llms.txt instead of listing
+  the account.
 sdks:
   count: 0
   note: >-
-    No official or community client library was found on npm, PyPI, Maven Central, NuGet, pkg.go.dev,
-    RubyGems, Packagist or crates.io. No `SDKs` pointer is emitted — code samples in four languages are
-    not SDKs, and claiming otherwise would credit the provider for something it does not ship.
+    No general-purpose client library was found on npm, PyPI, Maven Central, NuGet, pkg.go.dev,
+    RubyGems, Packagist or crates.io. No `SDKs` pointer is emitted. The npm-published
+    `n8n-nodes-zillapi` is genuinely first-party and genuinely on a registry, but it is an n8n
+    workflow node — it can only be loaded by an n8n instance and exposes no importable client to an
+    ordinary TypeScript program — so it is recorded as a platform connector, not an SDK. Calling it
+    one would credit the provider with a developer library it does not ship, which is the same error
+    as counting code samples.
 registry_probes:
-  - {registry: npm, name: zillapi, status: 404}
-  - {registry: npm, name: '@zillapi/sdk', status: 404}
-  - {registry: npm, name: zillow-skills, status: 404}
-  - {registry: pypi, name: zillapi, status: 404}
-  - {registry: pypi, name: zillow-skills, status: 404}
+  checked: '2026-09-11'
+  results:
+    - {registry: npm, name: zillapi, status: 404}
+    - {registry: npm, name: '@zillapi/sdk', status: 404}
+    - {registry: npm, name: '@zillapi/mcp', status: 404}
+    - {registry: npm, name: zillow-skills, status: 404}
+    - {registry: pypi, name: zillapi, status: 404}
+    - {registry: pypi, name: zillow-skills, status: 404}
+    - {registry: rubygems, name: zillapi, status: 404}
+    - {registry: crates.io, name: zillapi, status: 404}
+    - {registry: go-proxy, name: github.com/zeropointrepo/zillow-skills, status: 200, note: 'empty version list — not a published Go module'}
+    - {registry: npm, name: n8n-nodes-zillapi, status: 200, note: 'HIT — first-party, see packages[] below. Never probed before 2026-09-11.'}
+    - {registry: npm, name: n8n-nodes-transcriptapi, status: 200, note: 'Same publisher account, but a different product (TranscriptAPI). Not a Zillapi package; recorded so the sibling-brand overlap is on the record.'}
+    - registry: npm
+      name: zillow-mcp
+      status: 200
+      ownership: rejected
+      note: >-
+        REJECTED ON OWNERSHIP. npm `zillow-mcp` resolves, but its repository is
+        github.com/chrischall/zillow-mcp and its author field is "Claude Code" — an unrelated
+        third-party MCP server that happens to wrap Zillow data. It is NOT ZeroPointRepo/zillow-mcp
+        (which publishes no npm package at all, only a hosted remote). Recorded here because the
+        name collision is an easy and expensive mis-attribution to make.
 packages:
   - name: zillow-skills
     kind: agent-skills
     language: python
     registry: github
-    version: 1.0.1
+    version: 1.1.0
+    published: '2026-08-23'
+    published_precision: repository-commit
+    published_source: >-
+      No GitHub releases and no git tags exist on the repository, so there is no release date to read.
+      `version` is package.json at HEAD of main; `published` is the committer date of the commit that
+      is HEAD (fb2af78d, 2026-08-23T06:01:15Z) — the newest date at which this version was observably
+      distributable. Recorded as repository-commit precision, not a release date.
     url: https://github.com/ZeroPointRepo/zillow-skills
     install: npx skills add ZeroPointRepo/zillow-skills
     license: MIT-0
     official: true
     official_evidence: >-
-      package.json and manifest.json both set "author": "Zillapi"; the repo is the maintainer URL in
-      the provider's own apis.yml submission and is linked from https://zillapi.com/llms.txt.
+      The repo is the maintainer URL in the provider's own apis.yml submission, is linked from
+      https://zillapi.com/llms.txt as "Agent skills (open source, MIT-0)", and three of its skills are
+      the same skills the provider hosts at /.well-known/agent-skills/.
+    currency:
+      api_spec_version: '1.0.0'
+      api_spec_last_observed_change: '2026-09-11'
+      verdict: current
+      note: >-
+        The bundle was last updated 2026-08-23, two and a half weeks before the last observed API
+        contract change. Because the observed change (removal of `meta.cached`) does not touch any
+        field these skills read, the bundle is not stale against the API it wraps. There is no
+        abandonment signal here.
     contents:
       - {skill: zillow-full, path: skills/zillow-full, description: 'Complete Zillow property data toolkit — address/URL lookup, Zestimate, search, price history, photos, schools, agent.'}
       - {skill: zillow-zestimate, path: skills/zillow-zestimate, description: 'Zillow Zestimate (property valuation and rent Zestimate) lookups by address or zpid.'}
@@ -40,11 +91,123 @@ packages:
       dependencies, no build step. Sole network destination is https://api.zillapi.com.
     credentials: reads ZILLAPI_KEY from the environment at call time; not cached, not written to disk, not logged
     tests: each skill ships a tests/test_handler.py
+    metadata_history:
+      - observed: '2026-08-09'
+        issue: >-
+          package.json pointed homepage/repository at github.com/nikhonit/zillow-skills while the live
+          repo and every provider link used ZeroPointRepo/zillow-skills, and `author` was "Zillapi".
+        status: resolved
+      - observed: '2026-09-11'
+        issue: >-
+          FIXED in 1.1.0 — homepage/repository now both resolve to ZeroPointRepo/zillow-skills.
+          `author` is now "Zero Point Studio", which is the operating entity behind the Zillapi brand
+          rather than the brand itself; recorded as observed, not treated as a mismatch.
+        status: current
+  - name: n8n-nodes-zillapi
+    kind: workflow-node
+    platform: n8n
+    language: typescript
+    registry: npm
+    version: 0.1.2
+    published: '2026-08-11'
+    published_precision: registry-release
+    published_source: registry.npmjs.org/n8n-nodes-zillapi — time["0.1.2"] = 2026-08-11T14:21:55.730Z
+    url: https://www.npmjs.com/package/n8n-nodes-zillapi
+    repository: https://github.com/ZeroPointRepo/n8n-nodes-zillapi
+    install: npm install n8n-nodes-zillapi
+    license: MIT
+    official: true
+    official_evidence: >-
+      package.json author is "Zero Point Studio <hello@zillapi.com>" — the same operating entity and
+      the same contact address the provider publishes on its MCP server card — homepage is
+      https://zillapi.com, and the repository sits in the same ZeroPointRepo account as the
+      agent-skills bundle the provider links from its own llms.txt.
+    release_history:
+      - {version: 0.1.0, published: '2026-08-10'}
+      - {version: 0.1.1, published: '2026-08-11'}
+      - {version: 0.1.2, published: '2026-08-11'}
+    n8n_manifest:
+      api_version: 1
+      credentials: [dist/credentials/ZillapiApi.credentials.js]
+      nodes: [dist/nodes/Zillapi/Zillapi.node.js]
+    currency:
+      api_spec_version: '1.0.0'
+      api_spec_last_observed_change: '2026-09-11'
+      verdict: stale-risk
+      note: >-
+        Last published 2026-08-11, one month before the last observed contract change and with no
+        release since. All three versions shipped inside a 36-hour window on 2026-08-10/11 and the
+        package has not moved since, so there is no maintenance cadence to read. It is not
+        demonstrably broken — the observed API change (removal of `meta.cached`) touches no field the
+        node maps — but a one-burst-then-silence release history on a connector is the abandonment
+        shape this field exists to record, and it is recorded as risk, not as breakage.
     note: >-
-      The repository's package.json points its homepage/repository at github.com/nikhonit/zillow-skills
-      while the live repo and every provider link use ZeroPointRepo/zillow-skills — a stale metadata
-      reference, recorded as observed.
+      A credential type plus a single Zillapi node. Loadable only by an n8n instance; it is not an
+      importable client library, which is why it does not move `sdks.count`.
+  - name: zillapi agent plugin
+    kind: agent-plugin
+    registry: github
+    version: 1.0.0
+    published: '2026-08-25'
+    published_precision: repository-commit
+    published_source: >-
+      No releases and no tags on ZeroPointRepo/zillow-plugin; `version` is the string declared in
+      plugin.json and marketplace.json, `published` is the repository's last push date
+      (2026-08-25T06:02:55Z) as reported by the GitHub REST API.
+    url: https://github.com/ZeroPointRepo/zillow-plugin
+    license: MIT
+    official: true
+    official_evidence: >-
+      plugin.json and marketplace.json both declare author/owner "Zillapi",
+      hello@zillapi.com, homepage https://zillapi.com; the bundled MCP config points at the same
+      https://api.zillapi.com/mcp endpoint carried on the provider's own MCP server card.
+    standards:
+      - {id: agent-plugins-1.0.0, files: [plugin.json, mcp.json], schema: 'https://agent-plugins.org/schemas/1.0.0/plugin.schema.json'}
+      - {id: claude-plugin-marketplace, files: ['.claude-plugin/plugin.json', '.claude-plugin/marketplace.json', marketplace.json]}
+      - {id: cursor-plugin, files: ['.cursor-plugin/']}
+    contents:
+      skills:
+        - {name: zillow, path: skills/zillow/SKILL.md, license: MIT, description: 'Live Zillow property data via the bundled Zillapi MCP server; declares the four MCP tools as the only permitted data path and forbids scraping zillow.com or calling REST directly.'}
+      commands:
+        - {name: property, description: 'Pull the full Zillow record for a property — price, Zestimate, taxes, schools, price history, photos, agent contact.'}
+        - {name: search, description: 'Search Zillow listings — for sale, for rent, or sold — by area, price, and bedrooms.'}
+        - {name: zestimate, description: 'Get the Zestimate (home value) and rent Zestimate for a property.'}
+        - {name: comps, description: 'Run sold comparables for a subject property and estimate value from $/sqft.'}
+    transport: >-
+      Ships NO code of its own. It is a manifest bundle that wires the client to the hosted remote
+      MCP server (streamable-http, https://api.zillapi.com/mcp) and adds prompt-level workflows over
+      the same four tools. Auth is OAuth 2.1 with no API key to configure.
+    see: mcp/zillapi-mcp.yml
+    note: >-
+      The command bodies are the most operationally specific documents Zillapi publishes anywhere:
+      `comps` states a per-run credit cost (~10-15), per-tool credit prices (zpid lookup 1 credit,
+      address lookup 3, each search result 1) and a concrete bounding-box heuristic (±0.01-0.02°).
+      None of that appears in the pricing page, the docs, or the OpenAPI.
+  - name: zillapi hosted agent skills
+    kind: agent-skills
+    registry: cdn
+    distribution: https://zillapi.com/.well-known/agent-skills/index.json
+    version: 1.0.0
+    published: null
+    published_note: >-
+      Hosted, not packaged — there is no registry metadata endpoint to query and no pinned URL to read
+      a version from. Each skill declares `version: 1.0.0` inside its own SKILL.md frontmatter, and
+      that string did NOT change on 2026-09-11 even though all three sha256 digests rotated and the
+      skill bodies were rewritten. The distribution is effectively unpinned: a consumer fetching these
+      URLs cannot tell which revision it received except by hashing the body against the published
+      index. Recorded as a finding, not a gap in our measurement.
+    official: true
+    official_evidence: Served from the provider's own /.well-known/ path under the Cloudflare Agent Skills Discovery RFC v0.2.0.
+    index_file: well-known/zillapi-agent-skills-index.json
+    skills: [lookup-zillow-property, get-zestimate, search-zillow-listings, verify-zillow-webhook]
+    see: skills/_index.yml
 code_samples:
   source: https://zillapi.com/quickstart/
   languages: [curl, javascript, python, go]
   note: Raw HTTP examples per language, plus webhook-verification samples in JavaScript, Python and Go.
+cli:
+  first_party: false
+  note: >-
+    `npx skills add ZeroPointRepo/zillow-skills` invokes the third-party `skills` CLI, not a Zillapi
+    binary. No first-party CLI exists — https://zillapi.com/cli/ returns 404 — so no cli/ artifact and
+    no `CLI` pointer are emitted.

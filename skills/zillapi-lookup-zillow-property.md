@@ -11,7 +11,7 @@ Use this skill when you need full data on a single U.S. property: address, price
 ## When to use
 
 - User mentions a specific home, street address, or Zillow listing
-- User gives you a numeric Zillow property id (zpid) like `11026031`
+- User gives you a numeric Zillow property id (zpid) like `{zpid}`
 - You need 300+ structured fields about a property in a single call
 
 ## Prerequisites
@@ -29,7 +29,7 @@ When the user gives you a street address, prefer this. Geocoding is handled serv
 
 ```bash
 curl https://api.zillapi.com/v1/properties/by-address \
-  -G --data-urlencode "address=17 Zelma Dr, Greenville, SC 29617" \
+  -G --data-urlencode "address=350 5th Ave, New York NY 10118" \
   -H "Authorization: Bearer $ZILLAPI_KEY"
 ```
 
@@ -38,7 +38,7 @@ curl https://api.zillapi.com/v1/properties/by-address \
 When the user gives you a numeric id, prefer this. It is faster and served from cache when fresh.
 
 ```bash
-curl https://api.zillapi.com/v1/properties/11026031 \
+curl https://api.zillapi.com/v1/properties/{zpid} \
   -H "Authorization: Bearer $ZILLAPI_KEY"
 ```
 
@@ -48,7 +48,7 @@ When the user pastes a `zillow.com/homedetails/...` URL.
 
 ```bash
 curl https://api.zillapi.com/v1/properties/by-url \
-  -G --data-urlencode "url=https://www.zillow.com/homedetails/.../11026031_zpid/" \
+  -G --data-urlencode "url=https://www.zillow.com/homedetails/.../{zpid}_zpid/" \
   -H "Authorization: Bearer $ZILLAPI_KEY"
 ```
 
@@ -65,18 +65,18 @@ If you support the Model Context Protocol (Streamable HTTP transport), call the 
 ```json
 {
   "data": {
-    "zpid": "11026031",
-    "address": { "streetAddress": "17 Zelma Dr", "city": "Greenville", "state": "SC", "zipcode": "29617" },
-    "price": 295000,
-    "zestimate": 305100,
-    "rentZestimate": 1850,
+    "zpid": "{zpid}",
+    "address": { "streetAddress": "350 5th Ave", "city": "New York", "state": "NY", "zipcode": "10118" },
+    "price": 750000,
+    "zestimate": 765000,
+    "rentZestimate": 3200,
     "bedrooms": 3,
     "bathrooms": 2,
-    "livingArea": 1432,
-    "yearBuilt": 1965,
+    "livingArea": 1450,
+    "yearBuilt": 1998,
     "homeType": "SINGLE_FAMILY",
-    "latitude": 34.882,
-    "longitude": -82.428
+    "latitude": 40.748,
+    "longitude": -73.985
   },
   "request_id": "..."
 }

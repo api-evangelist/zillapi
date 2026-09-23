@@ -1,8 +1,12 @@
-generated: '2026-08-09'
+generated: '2026-09-11'
 method: searched
 status: published
 source: https://zillapi.com/.well-known/mcp/server-card.json
+additional_sources:
+  - https://raw.githubusercontent.com/ZeroPointRepo/zillow-mcp/main/server.json
+  - https://raw.githubusercontent.com/ZeroPointRepo/zillow-plugin/main/mcp.json
 card_file: well-known/zillapi-mcp-server-card.json
+registry_manifest_file: mcp/zillapi-server.json
 docs: https://zillapi.com/blog/mcp-server-for-zillow-data/
 server:
   name: zillapi
@@ -74,10 +78,65 @@ terms_of_service: https://zillapi.com/legal/trademark-and-affiliation/
 notes: The MCP surface is a deliberate 4-tool subset of a 29-operation REST API — buildings, async batch
   jobs, webhooks, job management, sub-resources (photos, price history, tax history, schools, agent, open
   houses, facts) and account/usage are REST-only. See mcp/zillapi-tool-crosswalk.yml.
+registry_manifest:
+  found: '2026-09-11'
+  file: mcp/zillapi-server.json
+  source: https://raw.githubusercontent.com/ZeroPointRepo/zillow-mcp/main/server.json
+  schema: https://static.modelcontextprotocol.io/schemas/2025-09-29/server.schema.json
+  name: com.zillapi/zillow-mcp
+  version: 1.0.0
+  website: https://zillapi.com
+  repository: https://github.com/ZeroPointRepo/zillow-mcp
+  remotes:
+    - {type: streamable-http, url: https://api.zillapi.com/mcp}
+  packages: []
+  finding: >-
+    NEW 2026-09-11. Zillapi publishes a second, independent MCP discovery document alongside its
+    /.well-known/ server card: an official MCP-registry `server.json` (schema 2025-09-29) in the
+    ZeroPointRepo/zillow-mcp repository, under the reverse-DNS name com.zillapi/zillow-mcp. Its
+    `remotes[]` names exactly the endpoint already recorded here, and it declares NO `packages[]` —
+    an independent confirmation from the provider's own manifest that this server is remote-only and
+    that no stdio package exists to install. Earlier rounds of this pipeline never enumerated the
+    GitHub account and so never saw it.
+  glama_listing:
+    file: glama.json
+    maintainers: [zillapi, therohitdas]
+    note: >-
+      Both zillow-mcp and zillow-api carry a glama.json naming the Glama MCP directory schema. It is
+      a third-party directory claim, not a contract; recorded as a distribution channel only.
+distributions:
+  - channel: hosted-remote
+    endpoint: https://api.zillapi.com/mcp
+    transport: streamable-http
+    auth: oauth2 (authorization_code + PKCE) or bearer API key
+    primary: true
+  - channel: mcp-registry-manifest
+    manifest: mcp/zillapi-server.json
+    name: com.zillapi/zillow-mcp
+  - channel: agent-plugin
+    repository: https://github.com/ZeroPointRepo/zillow-plugin
+    standard: agent-plugins.org 1.0.0 (+ Claude and Cursor plugin marketplace formats)
+    wires_to: https://api.zillapi.com/mcp
+    adds: 1 skill (zillow) + 4 slash commands (property, search, zestimate, comps)
+    see: packages/zillapi-packages.yml
+    note: >-
+      Adds no new tools. It is a manifest-and-prompt bundle over the same four remote tools, so it
+      does not change `tool_count`.
+  - channel: n8n-node
+    package: https://www.npmjs.com/package/n8n-nodes-zillapi
+    note: >-
+      Calls the REST API, not the MCP endpoint. Listed here only so the full first-party integration
+      surface is visible from one place; it is catalogued in packages/zillapi-packages.yml.
 deployment:
   mode: remote
   endpoint: https://api.zillapi.com/mcp
+  auth: oauth
   verified: probed
+  verified_note: >-
+    `mode: remote` is confirmed from three independent provider-published documents — the
+    /.well-known/ MCP server card, the MCP-registry server.json (which carries remotes[] and an
+    EMPTY packages[]), and the plugin's mcp.json — plus a live POST to the endpoint that returned
+    401 missing_api_key rather than a connection failure. No stdio package exists on any registry.
   probe: gated
   checked: '2026-08-12'
   source: catalog MCP census

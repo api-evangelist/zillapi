@@ -1,5 +1,5 @@
 {
-  "resource": "https://api.zillapi.com",
+  "resource": "https://api.zillapi.com/mcp",
   "resource_name": "Zillapi",
   "resource_logo_uri": "https://zillapi.com/mcp-icon-128.png",
   "authorization_servers": ["https://api.zillapi.com"],

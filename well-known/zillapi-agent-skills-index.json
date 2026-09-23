@@ -1,7 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/cloudflare/agent-skills-discovery-rfc/main/schema/index.schema.json",
   "version": "0.2.0",
-  "generatedAt": "2026-08-03T05:30:12.382Z",
   "publisher": {
     "name": "Zillapi",
     "url": "https://zillapi.com"
@@ -13,7 +12,7 @@
       "description": "Fetch the current Zestimate (Zillow's automated valuation) and rent Zestimate for a U.S. property by Zillow zpid.",
       "version": "1.0.0",
       "url": "https://zillapi.com/.well-known/agent-skills/get-zestimate/SKILL.md",
-      "sha256": "8612500532c52fa9953ea085b629fe84f4e63a5d106ce3234e20d8b22c6ef105"
+      "sha256": "f5a6eea07d3a7bd099233daf805c5731eec406575994c4a9e8948a6d57c8a4d1"
     },
     {
       "name": "lookup-zillow-property",
@@ -21,7 +20,7 @@
       "description": "Look up a U.S. property by address or Zillow zpid and return full property data including price, Zestimate, photos, schools, taxes, agent contact, and price history.",
       "version": "1.0.0",
       "url": "https://zillapi.com/.well-known/agent-skills/lookup-zillow-property/SKILL.md",
-      "sha256": "18b959a3b122402373ec66d4c02aad080721cdd0f00c57df06f6b5bfdc4166ed"
+      "sha256": "600d7d14238631e595a6b8303490e34c9271fbba3ffff9433e7e2bbcf5d61c8e"
     },
     {
       "name": "search-zillow-listings",
@@ -29,7 +28,7 @@
       "description": "Search U.S. property listings inside a geographic bounding box, filtered by status (for_sale, for_rent, sold), price ceiling, and bedroom count.",
       "version": "1.0.0",
       "url": "https://zillapi.com/.well-known/agent-skills/search-zillow-listings/SKILL.md",
-      "sha256": "aadcc02f3364415f9ee016797e1ad3d6a10f8c0db300538f9d6a5aef30054377"
+      "sha256": "fda094f3f0da362439e037bf3629cbb602d7526f854770f82c23c11fa0f16140"
     },
     {
       "name": "verify-zillow-webhook",

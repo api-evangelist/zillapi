@@ -1,4 +1,4 @@
-generated: '2026-08-09'
+generated: '2026-09-11'
 method: searched
 source: https://zillapi.com/llms.txt
 docs:
@@ -10,6 +10,7 @@ docs:
   - https://zillapi.com/field-projection/
   - https://zillapi.com/async-jobs/
   - https://zillapi.com/webhooks-guide/
+  - https://zillapi.com/ai-agents/
 summary: >-
   Cross-cutting request/response semantics for the Zillapi /v1 REST surface, captured from the
   published docs and confirmed against the live OpenAPI 3.1. The defining conventions are a single
@@ -45,15 +46,102 @@ request_tracing:
     Correlation is body-borne, not header-borne — there is no documented X-Request-Id response header.
     The provider directs users to include request_id when reporting issues.
 idempotency:
+  coverage: none
   supported: false
   documented: true
   header: null
+  scope: []
+  verified: '2026-09-11'
+  evidence:
+    - url: https://zillapi.com/async-jobs/
+      finding: >-
+        The async-jobs guide states retries create new jobs; no Idempotency-Key header or equivalent
+        request parameter is documented anywhere in the docs set.
+    - url: https://zillapi.com/openapi.json
+      finding: >-
+        Re-checked against the live OpenAPI 3.1 on 2026-09-11 — zero parameters, headers or schema
+        properties matching /idempoten/i across all 29 operations.
+  mutating_surface:
+    total_mutating_method_operations: 8
+    operations:
+      - {id: createBatchPropertyJob, method: POST, shape: job-creating}
+      - {id: searchWithDetails, method: POST, shape: job-creating}
+      - {id: search, method: POST, shape: query-shaped (async when maxItems >= 51)}
+      - {id: listingsForSale, method: POST, shape: query-shaped (async when maxItems >= 51)}
+      - {id: listingsForRent, method: POST, shape: query-shaped (async when maxItems >= 51)}
+      - {id: listingsSold, method: POST, shape: query-shaped (async when maxItems >= 51)}
+      - {id: createWebhook, method: POST, shape: state-creating}
+      - {id: revokeWebhook, method: DELETE, shape: state-removing}
+    covered: 0
+    note: >-
+      Four of the eight are POST-as-query search operations, but they are not free of consequence —
+      above the maxItems threshold they create billed async jobs, so an unintended replay costs
+      credits exactly like a batch would.
   notes: >-
     Explicitly NOT supported, and the docs say so plainly: reads (GET) are safe to retry on 5xx and
     429, but async writes "create new jobs — retrying creates a new job". There is no Idempotency-Key
     header or equivalent parameter anywhere in the OpenAPI. Callers must de-duplicate themselves using
     request_id correlation in their own logs. Webhook deliveries are at-least-once, so consumers must
-    make their own handlers idempotent on job.id.
+    make their own handlers idempotent on job.id. `coverage: none` is the machine verdict; no
+    `Idempotency` pointer is emitted in apis.yml because there is no mechanism to point at.
+reversibility:
+  applicable: true
+  grade: documented
+  verified: '2026-09-11'
+  summary: >-
+    One of the two consequential writes has a real reversal operation and it is a first-class REST
+    endpoint; the other has none. No reversal WINDOW is stated anywhere in the docs, so this grades
+    `documented` rather than `verified` — the pipeline does not assert a window the provider has not
+    published.
+  write_surfaces:
+    - operation: createWebhook
+      method: POST /v1/webhooks
+      consequence: Creates a signed callback subscription that will receive every job event on the account.
+      reversal:
+        operation: revokeWebhook
+        method: DELETE /v1/webhooks/{id}
+        semantics: >-
+          Soft-revoke. Returns 204 No Content; the provider states "We stop sending events
+          immediately." The subscription row persists with revoked_at set and remains readable via
+          GET /v1/webhooks.
+        window: null
+        window_note: >-
+          No deadline is published — revocation appears to be available for the life of the
+          subscription — but the docs never state a window, so none is recorded here.
+        docs: https://zillapi.com/api/webhooks/
+        cost: free (control-plane operation, no credits)
+      grade: documented
+    - operation: createBatchPropertyJob
+      method: POST /v1/properties/batch
+      also_applies_to: [searchWithDetails, search, listingsForSale, listingsForRent, listingsSold]
+      consequence: >-
+        Starts a billed async job. Credits are settled once when the job completes, so an
+        accidentally-launched 500-entry batch bills for every record returned.
+      reversal:
+        operation: null
+        semantics: >-
+          NO public reversal path. The job model has an `aborted` terminal status documented as
+          "Cancelled" on https://zillapi.com/async-jobs/, but no cancel/abort operation exists in the
+          OpenAPI 3.1 or the Jobs API reference — only listJobs, getJob and getJobResults. An agent
+          that fires a batch cannot recall it through the API.
+        window: null
+        docs: https://zillapi.com/api/jobs/
+      grade: none
+    - operation: api key creation / revocation
+      surface: dashboard-only (https://zillapi.com/app/keys/), not an API operation
+      reversal:
+        operation: null
+        semantics: >-
+          Keys are revoked in the dashboard; the docs state "Revocation is immediate, calls using the
+          old key start returning 401 invalid_api_key within seconds." Plaintext is shown once and only
+          the SHA-256 hash is stored, so a lost key cannot be recovered — rotation is create-then-revoke.
+        window: null
+        docs: https://zillapi.com/authentication/
+      grade: out-of-band
+  gap: >-
+    The billed write — async job creation — is the one with no reversal path, and the free
+    control-plane write is the one that has it. An agent operating autonomously on a paid key should
+    treat every job POST as irreversible and size maxItems/entries accordingly.
 pagination:
   style: limit-offset
   params: [limit, offset]
@@ -130,6 +218,45 @@ caching:
     The zpid lookup is documented as cache-served when fresh (the spec has a distinct PropertyCachedOk
     response component). The provider advises client-side caching of static fields (zpid, address, year
     built) to avoid burning rate limit and credits on re-fetches.
+agent_etiquette:
+  source: https://zillapi.com/ai-agents/
+  harvested: '2026-09-11'
+  note: >-
+    Zillapi publishes an explicit client-behaviour contract for automated callers, under the heading
+    "Agent etiquette". It is guidance, not enforcement — nothing here is rejected at the edge — but it
+    is the provider stating in its own words how it expects an agent to behave, and no other artifact
+    in this repo carried it.
+  rules:
+    - id: cache-client-side
+      rule: 'Cache responses on your side, the data behind a zpid rarely changes minute-to-minute, so a short TTL is plenty.'
+      machine_readable: false
+      note: No Cache-Control max-age or ETag is documented on responses; the TTL is left to the caller.
+    - id: no-fan-out
+      rule: "Don't fan out, one agent, one in-flight request per key (concurrency = 1). Scale by raising your plan, not by parallelism."
+      machine_readable: true
+      enforced: true
+      see: concurrency
+    - id: respect-429
+      rule: 'Respect 429. Back off. We respond with error.code = "rate_limited" so you can detect it without parsing prose.'
+      machine_readable: true
+      enforced: true
+      see: rate_limit_signaling
+    - id: identify-yourself
+      rule: 'Identify yourself, set a clear User-Agent like MyAgent/1.2 (+https://yourdomain.example).'
+      machine_readable: false
+      required: false
+      note: >-
+        Requested, not required — the User-Agent is not listed as a parameter on any operation in the
+        OpenAPI 3.1 and calls without one succeed. Recorded as a published expectation.
+  function_calling_templates:
+    published: true
+    source: https://zillapi.com/ai-agents/
+    note: >-
+      The same page publishes a drop-in Anthropic/OpenAI function-calling tool definition for a
+      `lookup_property` tool, with a `oneOf` requiring either `zpid` or `address`, and states it routes
+      to /v1/properties/{zpid} or /v1/properties/by-address. It is a hand-written tool schema, not a
+      generated one, and it does not correspond 1:1 to the four tools on the MCP server card — the MCP
+      surface splits the same capability into lookup_property_by_zpid and lookup_property_by_address.
 cross_links:
   authentication: authentication/zillapi-authentication.yml
   scopes: scopes/zillapi-scopes.yml

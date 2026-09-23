@@ -201,7 +201,32 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 components:
+  responses:
+    Error:
+      description: Standard error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
   schemas:
+    ApiError:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              description: Stable, machine-matchable error code (e.g. missing_input, invalid_filters, invalid_search_url). Match on code, never on message.
+            message:
+              type: string
+              description: Human-readable message; may evolve. Do not match on this.
+            details: {}
+            request_id:
+              type: string
+          required:
+          - code
+          - message
     Job:
       type: object
       properties:
@@ -249,31 +274,6 @@ components:
           type: string
           format: date-time
           nullable: true
-    ApiError:
-      type: object
-      properties:
-        error:
-          type: object
-          properties:
-            code:
-              type: string
-              description: Stable, machine-matchable error code (e.g. missing_input, invalid_filters, invalid_search_url). Match on code, never on message.
-            message:
-              type: string
-              description: Human-readable message; may evolve. Do not match on this.
-            details: {}
-            request_id:
-              type: string
-          required:
-          - code
-          - message
-  responses:
-    Error:
-      description: Standard error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ApiError'
   securitySchemes:
     bearerAuth:
       type: http

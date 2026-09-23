@@ -1,0 +1,84 @@
+generated: '2026-09-11'
+method: probed
+source: live probes of zillapi.com plus a byte-level diff of the provider's own machine-readable documents against the 2026-08-09 capture in this repo
+published: false
+scheme: null
+current_version: v1
+summary: >-
+  Zillapi publishes NO dated changelog, release notes page, or version history. This file records the
+  absence, the probes behind it, and — more usefully — the changes this pipeline OBSERVED the provider
+  ship between 2026-08-09 and 2026-09-11 with no public announcement. No `ChangeLog` pointer is wired
+  into apis.yml: a file documenting an absence must not be scored as a presence.
+probes:
+  - {url: 'https://zillapi.com/changelog/', status: 404, note: 'Astro "Page not found" shell; control URL also 404s'}
+  - {url: 'https://zillapi.com/blog/', status: 200, note: 'Product and per-client setup posts, not a versioned change record'}
+  - {url: 'https://zillapi.com/llms.txt', status: 200, note: 'Doc index; carries no changelog link'}
+  - {url: 'https://zillapi.com/.well-known/api-catalog', status: 200, note: 'RFC 9727 linkset; carries no changelog or version-history relation'}
+  - {url: 'https://github.com/ZeroPointRepo/zillow-skills/releases', status: 200, note: 'Zero releases and zero tags; the open-source skills bundle is versioned only in package.json'}
+observed_undocumented_changes:
+  note: >-
+    Not a provider-published changelog. These are diffs this pipeline measured between its own
+    2026-08-09 verbatim captures and the live documents on 2026-09-11. They are recorded because the
+    provider ships breaking-adjacent contract changes with no announcement surface of any kind.
+  window: {from: '2026-08-09', to: '2026-09-11'}
+  entries:
+    - date_observed: '2026-09-11'
+      document: https://zillapi.com/openapi.json
+      version_unchanged: '1.0.0'
+      kind: response-schema change
+      breaking: false
+      detail: >-
+        The `meta: {cached: boolean}` object was removed from several property response schemas and the
+        `cached` boolean was removed from the PropertyCachedOk response component and from the
+        tour_eligibility block. Path count (28), operation count (29), component-schema count (20) and
+        info.version (1.0.0) are all unchanged — the spec version was NOT bumped for the change.
+      impact: >-
+        A consumer that read `meta.cached` to decide whether to re-fetch has silently lost that signal,
+        with no version bump and no notice.
+    - date_observed: '2026-09-11'
+      document: https://zillapi.com/.well-known/oauth-protected-resource
+      kind: discovery-metadata correction
+      breaking: false
+      detail: >-
+        `resource` changed from https://api.zillapi.com to https://api.zillapi.com/mcp — the
+        RFC 9728-correct value for an MCP protected resource. The document also now carries
+        `api_key_format`, `api_key_signup_url`, `api_key_management_url`, `oauth_dashboard_url`,
+        `rate_limit_documentation`, `auth_md` and a `discovery_endpoints` map.
+      impact: An OAuth client that pinned the old resource identifier would fail audience validation.
+    - date_observed: '2026-09-11'
+      document: https://zillapi.com/.well-known/agent-skills/index.json
+      kind: content rotation
+      breaking: false
+      detail: >-
+        All three published SKILL.md sha256 digests rotated and the index dropped its `generatedAt`
+        field. The skill bodies replaced real worked examples (17 Zelma Dr, Greenville SC; zpid
+        11026031; a $305,100 Zestimate) with `{zpid}` placeholders and a 350 5th Ave sample.
+      impact: >-
+        Any agent cache keyed on the published digest is invalidated. The rotation is detectable
+        precisely because the provider publishes digests — good practice that partly substitutes for
+        the missing changelog on this one surface.
+    - date_observed: '2026-09-11'
+      document: https://github.com/ZeroPointRepo/zillow-skills
+      kind: package release
+      breaking: false
+      detail: >-
+        package.json version 1.0.1 -> 1.1.0 (last commit 2026-08-23). The stale metadata recorded in
+        the 2026-08-09 pass is FIXED — homepage/repository now point at ZeroPointRepo/zillow-skills
+        rather than nikhonit/zillow-skills. `author` changed from "Zillapi" to "Zero Point Studio".
+      impact: Resolved a provenance discrepancy previously recorded in packages/zillapi-packages.yml.
+gaps:
+  - No changelog, release-notes or version-history page on any host.
+  - >-
+    No version bump accompanied a live response-schema change, so `info.version` is not a reliable
+    change signal and a consumer cannot pin against it.
+  - >-
+    No RFC 8594 Sunset/Deprecation header support and no deprecation policy — see
+    lifecycle/zillapi-lifecycle.yml.
+recommendation: >-
+  A dated /changelog/ page, linked from llms.txt and registered as a `version-history` relation in the
+  existing RFC 9727 api-catalog, would be a small addition on a site that already publishes five
+  machine-readable discovery documents.
+cross_links:
+  lifecycle: lifecycle/zillapi-lifecycle.yml
+  conformance: conformance/zillapi-conformance.yml
+  packages: packages/zillapi-packages.yml

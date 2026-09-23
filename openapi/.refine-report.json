@@ -1,13 +1,7 @@
 {
   "provider": "zillapi",
   "sources": [
-    "zillapi-account-api-openapi.yml",
-    "zillapi-buildings-api-openapi.yml",
-    "zillapi-jobs-api-openapi.yml",
-    "zillapi-listings-api-openapi.yml",
-    "zillapi-properties-api-openapi.yml",
-    "zillapi-search-api-openapi.yml",
-    "zillapi-webhooks-api-openapi.yml"
+    "_original/zillapi-openapi-original.json"
   ],
   "outputs": [
     "zillapi-account-api-openapi.yml",
@@ -22,14 +16,17 @@
   "errors": [],
   "warnings": [],
   "notes": [
-    "zillapi-account-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "zillapi-buildings-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "zillapi-jobs-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "zillapi-listings-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "zillapi-properties-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "zillapi-search-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "zillapi-webhooks-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "zillapi-openapi-original.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
     "apis.yml register: already-registered"
   ],
-  "skipped": []
+  "skipped": [
+    "zillapi-account-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "zillapi-buildings-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "zillapi-jobs-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "zillapi-listings-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "zillapi-properties-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "zillapi-search-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "zillapi-webhooks-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }

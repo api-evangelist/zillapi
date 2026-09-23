@@ -86,7 +86,7 @@ paths:
       operationId: listingsBbox
       x-credit-cost: 1
       summary: Search listings by bounding box
-      description: REST GET wrapper over /v1/search for one-line curl or agent-toolchain use. A `bbox` (west,south,east,north) is REQUIRED — free-text location is not supported. Returns up to 50 rows synchronously; for more, use POST /v1/search with async. Billed at 1 credit per listing returned; failed calls are free.
+      description: REST GET wrapper over /v1/search for one-line curl or agent-toolchain use. A `bbox` (west,south,east,north) is REQUIRED — free-text location is not supported. Returns up to `max_items` rows synchronously (default 50, hard cap 50); for more, use POST /v1/search with async. Billed at 1 credit **per listing returned** — this cost is per-result, not per-call, so a full-page search costs up to 50 credits; set `max_items` lower to cap it. Failed calls are free.
       parameters:
       - name: status
         in: query
@@ -180,7 +180,7 @@ paths:
           type: integer
           default: 50
           maximum: 50
-        description: 'Maximum rows to return in sync mode. Hard cap 50; for more results switch to POST /v1/search with async: true.'
+        description: 'Maximum rows to return in sync mode (default 50, hard cap 50). Billing is 1 credit per row returned, so this is your cost cap — e.g. max_items=5 costs at most 5 credits. For more than 50 results, switch to POST /v1/search with async: true.'
       - name: format
         in: query
         schema:
@@ -205,58 +205,6 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 components:
-  responses:
-    SearchResultsOk:
-      description: 'Search rows (sync). Note: the search-row shape (SearchResultRow) is NOT the same as the detail Property shape returned by the property endpoints.'
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                type: array
-                items:
-                  $ref: '#/components/schemas/SearchResultRow'
-              meta:
-                type: object
-                properties:
-                  count:
-                    type: integer
-              request_id:
-                type: string
-        application/x-ndjson:
-          schema:
-            type: string
-        text/csv:
-          schema:
-            type: string
-    Error:
-      description: Standard error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ApiError'
-    JobAccepted:
-      description: Async job accepted
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                type: object
-                properties:
-                  job_id:
-                    type: string
-                    format: uuid
-                  status:
-                    type: string
-                  stage:
-                    type: string
-                    nullable: true
-                    description: Present on chained jobs (e.g. "search").
-              request_id:
-                type: string
   schemas:
     SearchRequest:
       type: object
@@ -527,6 +475,58 @@ components:
           required:
           - code
           - message
+  responses:
+    Error:
+      description: Standard error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+    JobAccepted:
+      description: Async job accepted
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  job_id:
+                    type: string
+                    format: uuid
+                  status:
+                    type: string
+                  stage:
+                    type: string
+                    nullable: true
+                    description: Present on chained jobs (e.g. "search").
+              request_id:
+                type: string
+    SearchResultsOk:
+      description: 'Search rows (sync). Note: the search-row shape (SearchResultRow) is NOT the same as the detail Property shape returned by the property endpoints.'
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SearchResultRow'
+              meta:
+                type: object
+                properties:
+                  count:
+                    type: integer
+              request_id:
+                type: string
+        application/x-ndjson:
+          schema:
+            type: string
+        text/csv:
+          schema:
+            type: string
   securitySchemes:
     bearerAuth:
       type: http

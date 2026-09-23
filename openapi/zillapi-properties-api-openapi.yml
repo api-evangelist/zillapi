@@ -118,7 +118,7 @@ paths:
       operationId: getPropertyByZpid
       x-credit-cost: 1
       summary: Get a property by zpid
-      description: Cache-first lookup (24h TTL) of the full property record by Zillow zpid. Cache hits (fresh, ≤24h old) cost 0 credits; a fresh upstream fetch costs 1 credit. Failed calls are free.
+      description: Cache-first lookup (24h TTL) of the full property record by Zillow zpid. Costs 1 credit per successful lookup; caching is a transparent optimization (faster responses, same price). Failed calls are free.
       parameters:
       - name: zpid
         in: path
@@ -144,7 +144,7 @@ paths:
       operationId: getPropertyPhotos
       x-credit-cost: 1
       summary: Get property photos
-      description: Return the property's photo array with multi-width JPEG/WebP sources plus counts and 3D/video flags. Cache-served when fresh (≤24h); cache hits cost 0 credits.
+      description: Return the property's photo array with multi-width JPEG/WebP sources plus counts and 3D/video flags. Costs 1 credit per successful lookup; caching (≤24h) is a transparent optimization — same price, faster responses.
       parameters:
       - name: zpid
         in: path
@@ -165,7 +165,7 @@ paths:
       operationId: getPropertyPriceHistory
       x-credit-cost: 1
       summary: Get property price history
-      description: Return the property's price-history events (listed, sold, and price changes). Cache-served when fresh (≤24h); cache hits cost 0 credits.
+      description: Return the property's price-history events (listed, sold, and price changes). Costs 1 credit per successful lookup; caching (≤24h) is a transparent optimization — same price, faster responses.
       parameters:
       - name: zpid
         in: path
@@ -186,7 +186,7 @@ paths:
       operationId: getPropertyTaxHistory
       x-credit-cost: 1
       summary: Get property tax history
-      description: Return the property's tax-history rows (tax paid and assessed value per year). Cache-served when fresh (≤24h); cache hits cost 0 credits.
+      description: Return the property's tax-history rows (tax paid and assessed value per year). Costs 1 credit per successful lookup; caching (≤24h) is a transparent optimization — same price, faster responses.
       parameters:
       - name: zpid
         in: path
@@ -207,7 +207,7 @@ paths:
       operationId: getPropertySchools
       x-credit-cost: 1
       summary: Get assigned and nearby schools
-      description: Return schools associated with the property, including GreatSchools rating, distance, type, and level. Cache-served when fresh (≤24h); cache hits cost 0 credits.
+      description: Return schools associated with the property, including GreatSchools rating, distance, type, and level. Costs 1 credit per successful lookup; caching (≤24h) is a transparent optimization — same price, faster responses.
       parameters:
       - name: zpid
         in: path
@@ -228,7 +228,7 @@ paths:
       operationId: getPropertyNearby
       x-credit-cost: 1
       summary: Get comparable nearby listings
-      description: Return comparable nearby homes (top ~12 from upstream) as search-style rows. Cache-served when fresh (≤24h); cache hits cost 0 credits.
+      description: Return comparable nearby homes (top ~12 from upstream) as search-style rows. Costs 1 credit per successful lookup; caching (≤24h) is a transparent optimization — same price, faster responses.
       parameters:
       - name: zpid
         in: path
@@ -249,7 +249,7 @@ paths:
       operationId: getPropertyAgent
       x-credit-cost: 1
       summary: Get listing agent and broker
-      description: Return the listing agent and broker contact details plus attribution info. Cache-served when fresh (≤24h); cache hits cost 0 credits.
+      description: Return the listing agent and broker contact details plus attribution info. Costs 1 credit per successful lookup; caching (≤24h) is a transparent optimization — same price, faster responses.
       parameters:
       - name: zpid
         in: path
@@ -270,7 +270,7 @@ paths:
       operationId: getPropertyZestimate
       x-credit-cost: 1
       summary: Get Zestimate and rent estimate
-      description: Return the property's Zestimate, rent Zestimate, tax-assessed value, and last sold price. Cache-served when fresh (≤24h); cache hits cost 0 credits.
+      description: Return the property's Zestimate, rent Zestimate, tax-assessed value, and last sold price. Costs 1 credit per successful lookup; caching (≤24h) is a transparent optimization — same price, faster responses.
       parameters:
       - name: zpid
         in: path
@@ -291,7 +291,7 @@ paths:
       operationId: getPropertyOpenHouses
       x-credit-cost: 1
       summary: Get open-house schedule
-      description: Return the property's open-house schedule and tour eligibility. Cache-served when fresh (≤24h); cache hits cost 0 credits.
+      description: Return the property's open-house schedule and tour eligibility. Costs 1 credit per successful lookup; caching (≤24h) is a transparent optimization — same price, faster responses.
       parameters:
       - name: zpid
         in: path
@@ -312,7 +312,7 @@ paths:
       operationId: getPropertyFacts
       x-credit-cost: 1
       summary: Get full resoFacts attributes
-      description: Return the full `resoFacts` MLS attribute set (appliances, flooring, parking, view, and hundreds of other fields). Cache-served when fresh (≤24h); cache hits cost 0 credits.
+      description: Return the full `resoFacts` MLS attribute set (appliances, flooring, parking, view, and hundreds of other fields). Costs 1 credit per successful lookup; caching (≤24h) is a transparent optimization — same price, faster responses.
       parameters:
       - name: zpid
         in: path
@@ -347,19 +347,8 @@ paths:
           $ref: '#/components/responses/Error'
 components:
   responses:
-    PropertyOk:
-      description: Single property (an array of Property when extract_units is set and the URL is a multi-unit building)
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                $ref: '#/components/schemas/Property'
-              request_id:
-                type: string
-    PhotosOk:
-      description: Property photos with multi-width sources and counts
+    PriceHistoryOk:
+      description: Property price-history events
       content:
         application/json:
           schema:
@@ -368,22 +357,11 @@ components:
               data:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Photo'
-              meta:
-                type: object
-                properties:
-                  count:
-                    type: integer
-                  photo_count:
-                    type: integer
-                  has_3d:
-                    type: boolean
-                  has_video:
-                    type: boolean
+                  $ref: '#/components/schemas/PriceHistoryEvent'
               request_id:
                 type: string
-    TaxHistoryOk:
-      description: Property tax-history rows
+    SchoolsOk:
+      description: Schools associated with the property
       content:
         application/json:
           schema:
@@ -392,12 +370,26 @@ components:
               data:
                 type: array
                 items:
-                  $ref: '#/components/schemas/TaxHistoryEvent'
-              meta:
+                  $ref: '#/components/schemas/School'
+              request_id:
+                type: string
+    Error:
+      description: Standard error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+    FactsOk:
+      description: Full resoFacts MLS attribute set
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
                 type: object
-                properties:
-                  cached:
-                    type: boolean
+                additionalProperties: true
+                description: resoFacts blob — the full MLS attribute set (appliances, flooring, parking, view, and hundreds of other fields).
               request_id:
                 type: string
     AgentOk:
@@ -434,64 +426,6 @@ components:
                     nullable: true
               request_id:
                 type: string
-    PriceHistoryOk:
-      description: Property price-history events
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                type: array
-                items:
-                  $ref: '#/components/schemas/PriceHistoryEvent'
-              meta:
-                type: object
-                properties:
-                  cached:
-                    type: boolean
-              request_id:
-                type: string
-    Error:
-      description: Standard error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ApiError'
-    FactsOk:
-      description: Full resoFacts MLS attribute set
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                type: object
-                additionalProperties: true
-                description: resoFacts blob — the full MLS attribute set (appliances, flooring, parking, view, and hundreds of other fields).
-              meta:
-                type: object
-                properties:
-                  cached:
-                    type: boolean
-              request_id:
-                type: string
-    PropertyCachedOk:
-      description: Single property with cache info
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                $ref: '#/components/schemas/Property'
-              cached:
-                type: boolean
-              fetched_at:
-                type: string
-                format: date-time
-              request_id:
-                type: string
     ZestimateOk:
       description: Zestimate / rent zestimate
       content:
@@ -518,6 +452,36 @@ components:
                     type: string
               request_id:
                 type: string
+    PropertyCachedOk:
+      description: Single property with cache info
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/components/schemas/Property'
+              request_id:
+                type: string
+    Unauthorized:
+      description: Auth missing/invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+    TaxHistoryOk:
+      description: Property tax-history rows
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaxHistoryEvent'
+              request_id:
+                type: string
     JobAccepted:
       description: Async job accepted
       content:
@@ -539,6 +503,19 @@ components:
                     description: Present on chained jobs (e.g. "search").
               request_id:
                 type: string
+    NearbyOk:
+      description: Comparable nearby listings (search-row shape)
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SearchResultRow'
+              request_id:
+                type: string
     OpenHousesOk:
       description: Open-house schedule and tour eligibility
       content:
@@ -553,15 +530,24 @@ components:
               meta:
                 type: object
                 properties:
-                  cached:
-                    type: boolean
                   tour_eligibility:
                     type: object
                     additionalProperties: true
               request_id:
                 type: string
-    SchoolsOk:
-      description: Schools associated with the property
+    PropertyOk:
+      description: Single property (an array of Property when extract_units is set and the URL is a multi-unit building)
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/components/schemas/Property'
+              request_id:
+                type: string
+    PhotosOk:
+      description: Property photos with multi-width sources and counts
       content:
         application/json:
           schema:
@@ -570,113 +556,21 @@ components:
               data:
                 type: array
                 items:
-                  $ref: '#/components/schemas/School'
+                  $ref: '#/components/schemas/Photo'
               meta:
                 type: object
                 properties:
-                  cached:
+                  count:
+                    type: integer
+                  photo_count:
+                    type: integer
+                  has_3d:
+                    type: boolean
+                  has_video:
                     type: boolean
               request_id:
                 type: string
-    NearbyOk:
-      description: Comparable nearby listings (search-row shape)
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                type: array
-                items:
-                  $ref: '#/components/schemas/SearchResultRow'
-              meta:
-                type: object
-                properties:
-                  cached:
-                    type: boolean
-              request_id:
-                type: string
-    Unauthorized:
-      description: Auth missing/invalid
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ApiError'
   schemas:
-    Photo:
-      type: object
-      additionalProperties: true
-      properties:
-        url:
-          type: string
-          description: Default-resolution JPEG URL.
-        caption:
-          type: string
-          nullable: true
-        subjectType:
-          type: string
-          nullable: true
-        mixedSources:
-          type: object
-          properties:
-            jpeg:
-              type: array
-              items:
-                type: object
-                properties:
-                  url:
-                    type: string
-                  width:
-                    type: integer
-            webp:
-              type: array
-              items:
-                type: object
-                properties:
-                  url:
-                    type: string
-                  width:
-                    type: integer
-    School:
-      type: object
-      additionalProperties: true
-      properties:
-        name:
-          type: string
-        rating:
-          type: integer
-          nullable: true
-          description: GreatSchools rating (1–10).
-        distance:
-          type: number
-          nullable: true
-          description: Distance in miles.
-        type:
-          type: string
-          nullable: true
-          description: e.g. public, private, charter.
-        level:
-          type: string
-          nullable: true
-          description: e.g. Elementary, Middle, High.
-    ApiError:
-      type: object
-      properties:
-        error:
-          type: object
-          properties:
-            code:
-              type: string
-              description: Stable, machine-matchable error code (e.g. missing_input, invalid_filters, invalid_search_url). Match on code, never on message.
-            message:
-              type: string
-              description: Human-readable message; may evolve. Do not match on this.
-            details: {}
-            request_id:
-              type: string
-          required:
-          - code
-          - message
     Property:
       type: object
       description: Full property-detail record (300+ fields; additional properties allowed). This is the DETAIL shape and differs from the SearchResultRow shape returned by search endpoints.
@@ -749,30 +643,6 @@ components:
         resoFacts:
           type: object
           additionalProperties: true
-    OpenHouse:
-      type: object
-      additionalProperties: true
-      properties:
-        startTime:
-          type: string
-          format: date-time
-        endTime:
-          type: string
-          format: date-time
-    PriceHistoryEvent:
-      type: object
-      additionalProperties: true
-      properties:
-        date:
-          type: string
-          description: Event date (YYYY-MM-DD).
-        event:
-          type: string
-          description: e.g. "Listed for sale", "Sold".
-        price:
-          type: number
-        priceChangeRate:
-          type: number
     BatchPropertyRequest:
       type: object
       description: Up to 500 entries total across urls and addresses. At least one of urls or addresses is required.
@@ -812,6 +682,82 @@ components:
           minimum: 1
           maximum: 5000
           description: Upper bound on records returned by the job.
+    PriceHistoryEvent:
+      type: object
+      additionalProperties: true
+      properties:
+        date:
+          type: string
+          description: Event date (YYYY-MM-DD).
+        event:
+          type: string
+          description: e.g. "Listed for sale", "Sold".
+        price:
+          type: number
+        priceChangeRate:
+          type: number
+    Photo:
+      type: object
+      additionalProperties: true
+      properties:
+        url:
+          type: string
+          description: Default-resolution JPEG URL.
+        caption:
+          type: string
+          nullable: true
+        subjectType:
+          type: string
+          nullable: true
+        mixedSources:
+          type: object
+          properties:
+            jpeg:
+              type: array
+              items:
+                type: object
+                properties:
+                  url:
+                    type: string
+                  width:
+                    type: integer
+            webp:
+              type: array
+              items:
+                type: object
+                properties:
+                  url:
+                    type: string
+                  width:
+                    type: integer
+    ApiError:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              description: Stable, machine-matchable error code (e.g. missing_input, invalid_filters, invalid_search_url). Match on code, never on message.
+            message:
+              type: string
+              description: Human-readable message; may evolve. Do not match on this.
+            details: {}
+            request_id:
+              type: string
+          required:
+          - code
+          - message
+    OpenHouse:
+      type: object
+      additionalProperties: true
+      properties:
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
     TaxHistoryEvent:
       type: object
       additionalProperties: true
@@ -924,6 +870,28 @@ components:
                 listing_sub_type:
                   type: object
                   additionalProperties: true
+    School:
+      type: object
+      additionalProperties: true
+      properties:
+        name:
+          type: string
+        rating:
+          type: integer
+          nullable: true
+          description: GreatSchools rating (1–10).
+        distance:
+          type: number
+          nullable: true
+          description: Distance in miles.
+        type:
+          type: string
+          nullable: true
+          description: e.g. public, private, charter.
+        level:
+          type: string
+          nullable: true
+          description: e.g. Elementary, Middle, High.
   securitySchemes:
     bearerAuth:
       type: http

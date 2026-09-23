@@ -1,6 +1,6 @@
-generated: '2026-08-09'
+generated: '2026-09-11'
 method: searched
-source: https://zillapi.com/ + live probes 2026-08-09
+source: https://zillapi.com/ + live probes 2026-09-11 (first probed 2026-08-09)
 versioning:
   scheme: uri-path
   current: v1
@@ -12,10 +12,23 @@ versioning:
 changelog:
   published: false
   probes:
-    - {url: 'https://zillapi.com/changelog/', status: 404}
+    - {url: 'https://zillapi.com/changelog/', status: 404, checked: '2026-09-11'}
+    - {url: 'https://zillapi.com/blog/', status: 200, checked: '2026-09-11'}
+    - {url: 'https://github.com/ZeroPointRepo/zillow-skills/releases', status: 200, checked: '2026-09-11', note: 'zero releases, zero tags'}
+    - {url: 'https://api.github.com/users/ZeroPointRepo/repos', status: 200, checked: '2026-09-11', note: 'Account enumerated for the first time: 30 public repos, six Zillapi-branded. None carries a GitHub release or tag.'}
+    - {url: 'https://registry.npmjs.org/n8n-nodes-zillapi', status: 200, checked: '2026-09-11', note: 'The ONLY dated release history the provider publishes anywhere: 0.1.0 (2026-08-10), 0.1.1 and 0.1.2 (both 2026-08-11). It versions a connector, not the API.'}
   notes: >-
     No dated changelog. The blog at https://zillapi.com/blog/ carries product and setup posts but is
-    not a versioned change record.
+    not a versioned change record. The npm release history of n8n-nodes-zillapi is the only dated,
+    machine-readable release record in the provider's whole estate, and it tracks the connector
+    rather than the API — it cannot be used to date an API change. No `ChangeLog` pointer is emitted.
+  see: changelog/zillapi-changelog.yml
+  measured_drift: >-
+    Between 2026-08-09 and 2026-09-11 this pipeline observed the live OpenAPI change (the meta.cached
+    object removed from several property responses) WITHOUT an info.version bump, and the RFC 9728
+    protected-resource document change its `resource` identifier. Neither was announced anywhere. That
+    makes info.version unusable as a change signal for a consumer. Details in
+    changelog/zillapi-changelog.yml.
 deprecation:
   policy_documented: false
   sunset_header: false
@@ -27,7 +40,8 @@ deprecation:
 status_page:
   published: false
   probes:
-    - {host: 'status.zillapi.com', status: NXDOMAIN}
+    - {host: 'status.zillapi.com', status: NXDOMAIN, checked: '2026-09-11'}
+    - {url: 'https://zillapi.com/status/', status: 404, checked: '2026-09-11'}
   health_endpoint:
     url: https://api.zillapi.com/healthz
     status: 200
@@ -57,8 +71,26 @@ data_provenance:
     Continuity risk worth recording: the entire data surface is derived from a third party that is not
     a contractual supplier. The provider's own terms-of-service link is a trademark-and-affiliation
     disclaimer, which is the honest framing of that dependency.
+api_root_descriptor:
+  url: https://api.zillapi.com/
+  status: 200
+  content_type: application/json
+  body: '{"service":"zillow-api","version":"v1","docs":"https://github.com/<org>/zillow-api-platform#readme"}'
+  finding: >-
+    The API host root serves a small service descriptor whose `docs` value is an UNREPLACED TEMPLATE
+    PLACEHOLDER — literally `https://github.com/<org>/zillow-api-platform#readme`, which resolves to
+    nothing. Observed 2026-09-11. Recorded as a live defect in the provider's own discovery surface,
+    not as a documentation link. Every other Zillapi discovery document points at real, live URLs.
+verification:
+  checked: '2026-09-11'
+  pointers_reverified: >-
+    All 35 apis.yml link pointers plus every URL named in llms.txt were fetched with a browser
+    User-Agent on 2026-09-11. All returned HTTP 200 with real page bodies (titles read, not just
+    status codes). No dead pointers; nothing removed.
 gaps:
-  - No changelog
+  - No changelog (and observed unannounced contract drift — see changelog/zillapi-changelog.yml)
   - No deprecation or sunset policy
   - No status page or incident history
   - No SLA on paid tiers
+  - No roadmap (https://zillapi.com/roadmap/ returns 404)
+  - Unreplaced `<org>` placeholder in the api.zillapi.com root service descriptor

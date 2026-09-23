@@ -26,7 +26,7 @@ If you only have an address, run the `lookup-zillow-property` skill first to get
 ### REST
 
 ```bash
-curl https://api.zillapi.com/v1/properties/11026031/zestimate \
+curl https://api.zillapi.com/v1/properties/{zpid}/zestimate \
   -H "Authorization: Bearer $ZILLAPI_KEY"
 ```
 
@@ -34,7 +34,7 @@ curl https://api.zillapi.com/v1/properties/11026031/zestimate \
 
 ```
 tool: get_zestimate
-args: { "zpid": "11026031" }
+args: { "zpid": "{zpid}" }
 ```
 
 ## Response shape
@@ -42,8 +42,8 @@ args: { "zpid": "11026031" }
 ```json
 {
   "data": {
-    "zestimate": 305100,
-    "rent_zestimate": 1850,
+    "zestimate": 765000,
+    "rent_zestimate": 3200,
     "tax_assessed_value": 250000,
     "last_sold_price": 240000,
     "currency": "USD"

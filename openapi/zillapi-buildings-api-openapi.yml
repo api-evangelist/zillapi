@@ -79,45 +79,6 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 components:
-  schemas:
-    BuildingUnit:
-      type: object
-      additionalProperties: true
-      properties:
-        zpid:
-          type: string
-          description: Zillow property id, always a string.
-        unitNumber:
-          type: string
-          nullable: true
-          description: Absent on the building's parent record.
-        price:
-          type: number
-          nullable: true
-        beds:
-          type: number
-          nullable: true
-        baths:
-          type: number
-          nullable: true
-    ApiError:
-      type: object
-      properties:
-        error:
-          type: object
-          properties:
-            code:
-              type: string
-              description: Stable, machine-matchable error code (e.g. missing_input, invalid_filters, invalid_search_url). Match on code, never on message.
-            message:
-              type: string
-              description: Human-readable message; may evolve. Do not match on this.
-            details: {}
-            request_id:
-              type: string
-          required:
-          - code
-          - message
   responses:
     JobAccepted:
       description: Async job accepted
@@ -146,6 +107,45 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ApiError'
+  schemas:
+    ApiError:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              description: Stable, machine-matchable error code (e.g. missing_input, invalid_filters, invalid_search_url). Match on code, never on message.
+            message:
+              type: string
+              description: Human-readable message; may evolve. Do not match on this.
+            details: {}
+            request_id:
+              type: string
+          required:
+          - code
+          - message
+    BuildingUnit:
+      type: object
+      additionalProperties: true
+      properties:
+        zpid:
+          type: string
+          description: Zillow property id, always a string.
+        unitNumber:
+          type: string
+          nullable: true
+          description: Absent on the building's parent record.
+        price:
+          type: number
+          nullable: true
+        beds:
+          type: number
+          nullable: true
+        baths:
+          type: number
+          nullable: true
   securitySchemes:
     bearerAuth:
       type: http

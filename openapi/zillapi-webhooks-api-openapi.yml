@@ -145,14 +145,6 @@ components:
           description: Events to subscribe to. Omit to receive all four.
         description:
           type: string
-    WebhookCreated:
-      allOf:
-      - $ref: '#/components/schemas/Webhook'
-      - type: object
-        properties:
-          secret:
-            type: string
-            description: Plaintext signing secret (whsec_*). Shown only once, at creation.
     WebhookDelivery:
       type: object
       properties:
@@ -177,6 +169,14 @@ components:
         response_preview:
           type: string
           nullable: true
+    WebhookCreated:
+      allOf:
+      - $ref: '#/components/schemas/Webhook'
+      - type: object
+        properties:
+          secret:
+            type: string
+            description: Plaintext signing secret (whsec_*). Shown only once, at creation.
     Webhook:
       type: object
       properties:

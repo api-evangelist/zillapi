@@ -1,16 +1,16 @@
 # Zillapi: Zillow property data API
 
-> REST API for U.S. Zillow property data — Zestimates, photos, schools, taxes, agent contact, price history, listing search, multi-unit building extraction, async batches, signed webhooks. Free tier: 100 credits, no card required. See https://zillapi.com/pricing for current plans. Built for AI agents and SaaS products.
+> REST API for U.S. Zillow property data: Zestimates, photos, schools, taxes, agent contact, price history, listing search, multi-unit building extraction, async batches, signed webhooks. 100 credits, no card required. See https://zillapi.com/pricing for current plans. Built for AI agents and SaaS products.
 
-Auth is `Authorization: Bearer zk_…`. Errors return `{ error: { code, message, request_id } }`. Async endpoints return `{ data: { job_id, status } }` with a `202` and notify completion via signed HMAC-SHA256 webhooks.
+Auth is `Authorization: Bearer zk_…`. Errors return `{ error: { code, message, request_id } }`. Async endpoints return `{ data: { job_id, status } }` with a `202` and notify completion via signed webhooks.
 
 ## Get a key in 30 seconds
 - [Sign up free](https://zillapi.com/signup): 100 credits, no card required. Same key works for REST, MCP, and agent skills.
-- [Pricing](https://zillapi.com/pricing/): Free tier plus paid plans with top-ups. Current prices on the page.
+- [Pricing](https://zillapi.com/pricing/): 100 credits to start, plus paid plans with top-ups. Current prices on the page.
 
 ## Use Zillapi from any AI agent
 - [MCP server](https://api.zillapi.com/mcp): Hosted, streamable-http transport. Drop into Claude Desktop, Claude Code, Cursor, ChatGPT, or the OpenAI Agents SDK with one config line.
-- [Agent skills (open source, MIT-0)](https://github.com/ZeroPointRepo/zillow-skills): `npx skills add ZeroPointRepo/zillow-skills` — three drop-in Python skills for any skills-compatible agent.
+- [Agent skills (open source, MIT-0)](https://github.com/ZeroPointRepo/zillow-skills): `npx skills add ZeroPointRepo/zillow-skills`: three drop-in agent skills for any skills-compatible agent.
 - [Per-client setup guides](https://zillapi.com/blog/): Step-by-step install for Claude Desktop, Claude Code, Cursor, and ChatGPT custom GPTs.
 - [For AI agents and LLMs](https://zillapi.com/ai-agents/): Tooling, conventions, function-calling templates.
 
