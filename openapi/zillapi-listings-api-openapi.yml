@@ -206,50 +206,24 @@ paths:
           $ref: '#/components/responses/Error'
 components:
   schemas:
-    SearchRequest:
+    ApiError:
       type: object
-      description: A search request MUST supply either `filters` containing a `bbox`, OR a `searchUrls` array. A free-text location alone is not supported and is rejected with 400 invalid_filters.
       properties:
-        filters:
-          $ref: '#/components/schemas/SearchFilters'
-        searchUrls:
-          type: array
-          items:
-            type: object
-            properties:
-              url:
-                type: string
-                format: uri
-                description: A zillow.com search URL that MUST contain a `searchQueryState=` query parameter. Pretty URLs (e.g. https://www.zillow.com/austin-tx/houses/) are rejected with 400 invalid_search_url.
-            required:
-            - url
-          description: 'Advanced: pre-built Zillow search URLs. Provide this instead of filters.bbox.'
-        extractionMethod:
-          type: string
-          enum:
-          - PAGINATION_WITH_ZOOM_IN
-          - PAGINATION
-          - MAP_MARKERS
-          default: PAGINATION
-          description: PAGINATION (default, up to ~820 results); MAP_MARKERS (fastest, up to ~500, less data per row); PAGINATION_WITH_ZOOM_IN (exhaustive recursive zoom, always runs async).
-        maxItems:
-          type: integer
-          minimum: 1
-          maximum: 500
-          default: 50
-          description: Maximum records to return (product hard cap 500). When maxItems > 50 the request is processed asynchronously and returns 202 with a job_id instead of results inline. maxItems ≤ 50 runs synchronously.
-        async:
-          type: boolean
-          description: Force async processing (202/job) even when maxItems ≤ 50.
-      anyOf:
-      - required:
-        - searchUrls
-      - required:
-        - filters
-        properties:
-          filters:
-            required:
-            - bbox
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              description: Stable, machine-matchable error code (e.g. missing_input, invalid_filters, invalid_search_url). Match on code, never on message.
+            message:
+              type: string
+              description: Human-readable message; may evolve. Do not match on this.
+            details: {}
+            request_id:
+              type: string
+          required:
+          - code
+          - message
     SearchResultRow:
       type: object
       description: A single row returned by search/listings endpoints. This is the SEARCH shape — lighter than the full Property detail record and with different field names. To get the full detail record for a row, call GET /v1/properties/{zpid} using its zpid.
@@ -457,31 +431,51 @@ components:
         location:
           type: string
           description: Optional free-text place label (city/ZIP/neighborhood) — a hint only. A `bbox` (or request-level `searchUrls`) is REQUIRED; `location` alone returns 400 (invalid_filters).
-    ApiError:
+    SearchRequest:
       type: object
+      description: A search request MUST supply either `filters` containing a `bbox`, OR a `searchUrls` array. A free-text location alone is not supported and is rejected with 400 invalid_filters.
       properties:
-        error:
-          type: object
-          properties:
-            code:
-              type: string
-              description: Stable, machine-matchable error code (e.g. missing_input, invalid_filters, invalid_search_url). Match on code, never on message.
-            message:
-              type: string
-              description: Human-readable message; may evolve. Do not match on this.
-            details: {}
-            request_id:
-              type: string
-          required:
-          - code
-          - message
+        filters:
+          $ref: '#/components/schemas/SearchFilters'
+        searchUrls:
+          type: array
+          items:
+            type: object
+            properties:
+              url:
+                type: string
+                format: uri
+                description: A zillow.com search URL that MUST contain a `searchQueryState=` query parameter. Pretty URLs (e.g. https://www.zillow.com/austin-tx/houses/) are rejected with 400 invalid_search_url.
+            required:
+            - url
+          description: 'Advanced: pre-built Zillow search URLs. Provide this instead of filters.bbox.'
+        extractionMethod:
+          type: string
+          enum:
+          - PAGINATION_WITH_ZOOM_IN
+          - PAGINATION
+          - MAP_MARKERS
+          default: PAGINATION
+          description: PAGINATION (default, up to ~820 results); MAP_MARKERS (fastest, up to ~500, less data per row); PAGINATION_WITH_ZOOM_IN (exhaustive recursive zoom, always runs async).
+        maxItems:
+          type: integer
+          minimum: 1
+          maximum: 500
+          default: 50
+          description: Maximum records to return (product hard cap 500). When maxItems > 50 the request is processed asynchronously and returns 202 with a job_id instead of results inline. maxItems ≤ 50 runs synchronously.
+        async:
+          type: boolean
+          description: Force async processing (202/job) even when maxItems ≤ 50.
+      anyOf:
+      - required:
+        - searchUrls
+      - required:
+        - filters
+        properties:
+          filters:
+            required:
+            - bbox
   responses:
-    Error:
-      description: Standard error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ApiError'
     JobAccepted:
       description: Async job accepted
       content:
@@ -503,6 +497,12 @@ components:
                     description: Present on chained jobs (e.g. "search").
               request_id:
                 type: string
+    Error:
+      description: Standard error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
     SearchResultsOk:
       description: 'Search rows (sync). Note: the search-row shape (SearchResultRow) is NOT the same as the detail Property shape returned by the property endpoints.'
       content:

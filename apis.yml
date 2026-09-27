@@ -37,7 +37,7 @@ created: '2026-07-13'
 modified: '2026-09-11'
 specificationVersion: '0.23'
 tags:
-  - Real-Estate
+  - Real Estate
   - PropTech
   - Property Data
   - Zillow
@@ -60,6 +60,7 @@ tags_raw:
   - MCP
   - AI agent
   - REST API
+  - Real-Estate
 apis:
 - aid: zillapi:zillapi-account-api
   name: Zillapi Account API
