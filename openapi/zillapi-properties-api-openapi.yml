@@ -347,158 +347,6 @@ paths:
           $ref: '#/components/responses/Error'
 components:
   responses:
-    Error:
-      description: Standard error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ApiError'
-    PriceHistoryOk:
-      description: Property price-history events
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                type: array
-                items:
-                  $ref: '#/components/schemas/PriceHistoryEvent'
-              request_id:
-                type: string
-    Unauthorized:
-      description: Auth missing/invalid
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ApiError'
-    JobAccepted:
-      description: Async job accepted
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                type: object
-                properties:
-                  job_id:
-                    type: string
-                    format: uuid
-                  status:
-                    type: string
-                  stage:
-                    type: string
-                    nullable: true
-                    description: Present on chained jobs (e.g. "search").
-              request_id:
-                type: string
-    OpenHousesOk:
-      description: Open-house schedule and tour eligibility
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                type: array
-                items:
-                  $ref: '#/components/schemas/OpenHouse'
-              meta:
-                type: object
-                properties:
-                  tour_eligibility:
-                    type: object
-                    additionalProperties: true
-              request_id:
-                type: string
-    ZestimateOk:
-      description: Zestimate / rent zestimate
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                type: object
-                properties:
-                  zestimate:
-                    type: number
-                    nullable: true
-                  rent_zestimate:
-                    type: number
-                    nullable: true
-                  tax_assessed_value:
-                    type: number
-                    nullable: true
-                  last_sold_price:
-                    type: number
-                    nullable: true
-                  currency:
-                    type: string
-              request_id:
-                type: string
-    PropertyCachedOk:
-      description: Single property with cache info
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                $ref: '#/components/schemas/Property'
-              request_id:
-                type: string
-    SchoolsOk:
-      description: Schools associated with the property
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                type: array
-                items:
-                  $ref: '#/components/schemas/School'
-              request_id:
-                type: string
-    FactsOk:
-      description: Full resoFacts MLS attribute set
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                type: object
-                additionalProperties: true
-                description: resoFacts blob — the full MLS attribute set (appliances, flooring, parking, view, and hundreds of other fields).
-              request_id:
-                type: string
-    PhotosOk:
-      description: Property photos with multi-width sources and counts
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Photo'
-              meta:
-                type: object
-                properties:
-                  count:
-                    type: integer
-                  photo_count:
-                    type: integer
-                  has_3d:
-                    type: boolean
-                  has_video:
-                    type: boolean
-              request_id:
-                type: string
     TaxHistoryOk:
       description: Property tax-history rows
       content:
@@ -510,6 +358,19 @@ components:
                 type: array
                 items:
                   $ref: '#/components/schemas/TaxHistoryEvent'
+              request_id:
+                type: string
+    NearbyOk:
+      description: Comparable nearby listings (search-row shape)
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SearchResultRow'
               request_id:
                 type: string
     AgentOk:
@@ -546,8 +407,8 @@ components:
                     nullable: true
               request_id:
                 type: string
-    NearbyOk:
-      description: Comparable nearby listings (search-row shape)
+    PhotosOk:
+      description: Property photos with multi-width sources and counts
       content:
         application/json:
           schema:
@@ -556,7 +417,95 @@ components:
               data:
                 type: array
                 items:
-                  $ref: '#/components/schemas/SearchResultRow'
+                  $ref: '#/components/schemas/Photo'
+              meta:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  photo_count:
+                    type: integer
+                  has_3d:
+                    type: boolean
+                  has_video:
+                    type: boolean
+              request_id:
+                type: string
+    PriceHistoryOk:
+      description: Property price-history events
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PriceHistoryEvent'
+              request_id:
+                type: string
+    JobAccepted:
+      description: Async job accepted
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  job_id:
+                    type: string
+                    format: uuid
+                  status:
+                    type: string
+                  stage:
+                    type: string
+                    nullable: true
+                    description: Present on chained jobs (e.g. "search").
+              request_id:
+                type: string
+    PropertyCachedOk:
+      description: Single property with cache info
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/components/schemas/Property'
+              request_id:
+                type: string
+    OpenHousesOk:
+      description: Open-house schedule and tour eligibility
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OpenHouse'
+              meta:
+                type: object
+                properties:
+                  tour_eligibility:
+                    type: object
+                    additionalProperties: true
+              request_id:
+                type: string
+    SchoolsOk:
+      description: Schools associated with the property
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/School'
               request_id:
                 type: string
     PropertyOk:
@@ -570,7 +519,228 @@ components:
                 $ref: '#/components/schemas/Property'
               request_id:
                 type: string
+    FactsOk:
+      description: Full resoFacts MLS attribute set
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                additionalProperties: true
+                description: resoFacts blob — the full MLS attribute set (appliances, flooring, parking, view, and hundreds of other fields).
+              request_id:
+                type: string
+    Error:
+      description: Standard error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+    Unauthorized:
+      description: Auth missing/invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+    ZestimateOk:
+      description: Zestimate / rent zestimate
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  zestimate:
+                    type: number
+                    nullable: true
+                  rent_zestimate:
+                    type: number
+                    nullable: true
+                  tax_assessed_value:
+                    type: number
+                    nullable: true
+                  last_sold_price:
+                    type: number
+                    nullable: true
+                  currency:
+                    type: string
+              request_id:
+                type: string
   schemas:
+    PriceHistoryEvent:
+      type: object
+      additionalProperties: true
+      properties:
+        date:
+          type: string
+          description: Event date (YYYY-MM-DD).
+        event:
+          type: string
+          description: e.g. "Listed for sale", "Sold".
+        price:
+          type: number
+        priceChangeRate:
+          type: number
+    BatchPropertyRequest:
+      type: object
+      description: Up to 500 entries total across urls and addresses. At least one of urls or addresses is required.
+      properties:
+        urls:
+          type: array
+          items:
+            type: string
+            format: uri
+          maxItems: 500
+          description: Zillow URLs to resolve.
+        addresses:
+          type: array
+          items:
+            type: string
+          maxItems: 500
+          description: Full street addresses to resolve.
+        propertyStatus:
+          type: string
+          enum:
+          - FOR_SALE
+          - RECENTLY_SOLD
+          - FOR_RENT
+          default: FOR_SALE
+        extractBuildingUnits:
+          type: string
+          enum:
+          - disabled
+          - all
+          - for_sale
+          - recently_sold
+          - for_rent
+          - off_market
+          default: disabled
+        maxItems:
+          type: integer
+          minimum: 1
+          maximum: 5000
+          description: Upper bound on records returned by the job.
+    TaxHistoryEvent:
+      type: object
+      additionalProperties: true
+      properties:
+        time:
+          type: integer
+          description: Epoch milliseconds for the tax year.
+        taxPaid:
+          type: number
+          nullable: true
+        value:
+          type: number
+          nullable: true
+          description: Assessed value.
+        valueIncreaseRate:
+          type: number
+          nullable: true
+    Property:
+      type: object
+      description: Full property-detail record (300+ fields; additional properties allowed). This is the DETAIL shape and differs from the SearchResultRow shape returned by search endpoints.
+      additionalProperties: true
+      properties:
+        zpid:
+          type: string
+          description: Zillow property id, always returned as a string.
+        address:
+          type: object
+          additionalProperties: true
+        price:
+          type: number
+        bedrooms:
+          type: number
+        bathrooms:
+          type: number
+        livingArea:
+          type: number
+        lotSize:
+          type: number
+        yearBuilt:
+          type: integer
+        homeType:
+          type: string
+          description: SINGLE_FAMILY | CONDO | TOWNHOUSE | MULTI_FAMILY | APARTMENT | MANUFACTURED | LOT
+        homeStatus:
+          type: string
+          description: FOR_SALE | RECENTLY_SOLD | FOR_RENT | ...
+        latitude:
+          type: number
+        longitude:
+          type: number
+        zestimate:
+          type: number
+          nullable: true
+        rentZestimate:
+          type: number
+          nullable: true
+        priceHistory:
+          type: array
+          items:
+            $ref: '#/components/schemas/PriceHistoryEvent'
+        taxHistory:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaxHistoryEvent'
+        schools:
+          type: array
+          items:
+            $ref: '#/components/schemas/School'
+        nearbyHomes:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        responsivePhotos:
+          type: array
+          items:
+            $ref: '#/components/schemas/Photo'
+        photoCount:
+          type: integer
+        openHouseSchedule:
+          type: array
+          items:
+            $ref: '#/components/schemas/OpenHouse'
+        tourEligibility:
+          type: object
+          additionalProperties: true
+        resoFacts:
+          type: object
+          additionalProperties: true
+    OpenHouse:
+      type: object
+      additionalProperties: true
+      properties:
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
+    ApiError:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              description: Stable, machine-matchable error code (e.g. missing_input, invalid_filters, invalid_search_url). Match on code, never on message.
+            message:
+              type: string
+              description: Human-readable message; may evolve. Do not match on this.
+            details: {}
+            request_id:
+              type: string
+          required:
+          - code
+          - message
     SearchResultRow:
       type: object
       description: A single row returned by search/listings endpoints. This is the SEARCH shape — lighter than the full Property detail record and with different field names. To get the full detail record for a row, call GET /v1/properties/{zpid} using its zpid.
@@ -666,24 +836,6 @@ components:
                 listing_sub_type:
                   type: object
                   additionalProperties: true
-    ApiError:
-      type: object
-      properties:
-        error:
-          type: object
-          properties:
-            code:
-              type: string
-              description: Stable, machine-matchable error code (e.g. missing_input, invalid_filters, invalid_search_url). Match on code, never on message.
-            message:
-              type: string
-              description: Human-readable message; may evolve. Do not match on this.
-            details: {}
-            request_id:
-              type: string
-          required:
-          - code
-          - message
     Photo:
       type: object
       additionalProperties: true
@@ -718,86 +870,6 @@ components:
                     type: string
                   width:
                     type: integer
-    BatchPropertyRequest:
-      type: object
-      description: Up to 500 entries total across urls and addresses. At least one of urls or addresses is required.
-      properties:
-        urls:
-          type: array
-          items:
-            type: string
-            format: uri
-          maxItems: 500
-          description: Zillow URLs to resolve.
-        addresses:
-          type: array
-          items:
-            type: string
-          maxItems: 500
-          description: Full street addresses to resolve.
-        propertyStatus:
-          type: string
-          enum:
-          - FOR_SALE
-          - RECENTLY_SOLD
-          - FOR_RENT
-          default: FOR_SALE
-        extractBuildingUnits:
-          type: string
-          enum:
-          - disabled
-          - all
-          - for_sale
-          - recently_sold
-          - for_rent
-          - off_market
-          default: disabled
-        maxItems:
-          type: integer
-          minimum: 1
-          maximum: 5000
-          description: Upper bound on records returned by the job.
-    PriceHistoryEvent:
-      type: object
-      additionalProperties: true
-      properties:
-        date:
-          type: string
-          description: Event date (YYYY-MM-DD).
-        event:
-          type: string
-          description: e.g. "Listed for sale", "Sold".
-        price:
-          type: number
-        priceChangeRate:
-          type: number
-    TaxHistoryEvent:
-      type: object
-      additionalProperties: true
-      properties:
-        time:
-          type: integer
-          description: Epoch milliseconds for the tax year.
-        taxPaid:
-          type: number
-          nullable: true
-        value:
-          type: number
-          nullable: true
-          description: Assessed value.
-        valueIncreaseRate:
-          type: number
-          nullable: true
-    OpenHouse:
-      type: object
-      additionalProperties: true
-      properties:
-        startTime:
-          type: string
-          format: date-time
-        endTime:
-          type: string
-          format: date-time
     School:
       type: object
       additionalProperties: true
@@ -820,78 +892,6 @@ components:
           type: string
           nullable: true
           description: e.g. Elementary, Middle, High.
-    Property:
-      type: object
-      description: Full property-detail record (300+ fields; additional properties allowed). This is the DETAIL shape and differs from the SearchResultRow shape returned by search endpoints.
-      additionalProperties: true
-      properties:
-        zpid:
-          type: string
-          description: Zillow property id, always returned as a string.
-        address:
-          type: object
-          additionalProperties: true
-        price:
-          type: number
-        bedrooms:
-          type: number
-        bathrooms:
-          type: number
-        livingArea:
-          type: number
-        lotSize:
-          type: number
-        yearBuilt:
-          type: integer
-        homeType:
-          type: string
-          description: SINGLE_FAMILY | CONDO | TOWNHOUSE | MULTI_FAMILY | APARTMENT | MANUFACTURED | LOT
-        homeStatus:
-          type: string
-          description: FOR_SALE | RECENTLY_SOLD | FOR_RENT | ...
-        latitude:
-          type: number
-        longitude:
-          type: number
-        zestimate:
-          type: number
-          nullable: true
-        rentZestimate:
-          type: number
-          nullable: true
-        priceHistory:
-          type: array
-          items:
-            $ref: '#/components/schemas/PriceHistoryEvent'
-        taxHistory:
-          type: array
-          items:
-            $ref: '#/components/schemas/TaxHistoryEvent'
-        schools:
-          type: array
-          items:
-            $ref: '#/components/schemas/School'
-        nearbyHomes:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
-        responsivePhotos:
-          type: array
-          items:
-            $ref: '#/components/schemas/Photo'
-        photoCount:
-          type: integer
-        openHouseSchedule:
-          type: array
-          items:
-            $ref: '#/components/schemas/OpenHouse'
-        tourEligibility:
-          type: object
-          additionalProperties: true
-        resoFacts:
-          type: object
-          additionalProperties: true
   securitySchemes:
     bearerAuth:
       type: http

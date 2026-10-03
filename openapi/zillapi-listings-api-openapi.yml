@@ -206,119 +206,6 @@ paths:
           $ref: '#/components/responses/Error'
 components:
   schemas:
-    ApiError:
-      type: object
-      properties:
-        error:
-          type: object
-          properties:
-            code:
-              type: string
-              description: Stable, machine-matchable error code (e.g. missing_input, invalid_filters, invalid_search_url). Match on code, never on message.
-            message:
-              type: string
-              description: Human-readable message; may evolve. Do not match on this.
-            details: {}
-            request_id:
-              type: string
-          required:
-          - code
-          - message
-    SearchResultRow:
-      type: object
-      description: A single row returned by search/listings endpoints. This is the SEARCH shape — lighter than the full Property detail record and with different field names. To get the full detail record for a row, call GET /v1/properties/{zpid} using its zpid.
-      additionalProperties: true
-      properties:
-        zpid:
-          type: string
-          description: Zillow property id, always a string.
-        id:
-          type: string
-          nullable: true
-          description: Zillow result id for the row.
-        palsId:
-          type: string
-          nullable: true
-        address:
-          type: string
-          nullable: true
-          description: Formatted street address for the row.
-        addressStreet:
-          type: string
-          nullable: true
-        addressCity:
-          type: string
-          nullable: true
-        addressState:
-          type: string
-          nullable: true
-        addressZipcode:
-          type: string
-          nullable: true
-        price:
-          type: string
-          nullable: true
-          description: Formatted price string, e.g. "$1,250,000".
-        unformattedPrice:
-          type: number
-          nullable: true
-          description: Numeric price.
-        beds:
-          type: number
-          nullable: true
-        baths:
-          type: number
-          nullable: true
-        area:
-          type: number
-          nullable: true
-          description: Living area in square feet.
-        livingArea:
-          type: number
-          nullable: true
-        latLong:
-          type: object
-          properties:
-            latitude:
-              type: number
-            longitude:
-              type: number
-        statusType:
-          type: string
-          nullable: true
-          description: e.g. FOR_SALE, FOR_RENT, SOLD.
-        statusText:
-          type: string
-          nullable: true
-        homeType:
-          type: string
-          nullable: true
-        imgSrc:
-          type: string
-          nullable: true
-          description: Primary thumbnail image URL.
-        hasImage:
-          type: boolean
-          nullable: true
-        detailUrl:
-          type: string
-          nullable: true
-          description: Relative or absolute Zillow detail URL for the listing.
-        hdpData:
-          type: object
-          additionalProperties: true
-          properties:
-            homeInfo:
-              type: object
-              additionalProperties: true
-              properties:
-                homeStatus:
-                  type: string
-                daysOnZillow:
-                  type: integer
-                listing_sub_type:
-                  type: object
-                  additionalProperties: true
     SearchFilters:
       type: object
       description: Normalized search filters. A `bbox` is required (unless the request supplies `searchUrls` instead); a free-text search without a bounding box is rejected with 400 invalid_filters and never hits upstream.
@@ -475,7 +362,126 @@ components:
           filters:
             required:
             - bbox
+    SearchResultRow:
+      type: object
+      description: A single row returned by search/listings endpoints. This is the SEARCH shape — lighter than the full Property detail record and with different field names. To get the full detail record for a row, call GET /v1/properties/{zpid} using its zpid.
+      additionalProperties: true
+      properties:
+        zpid:
+          type: string
+          description: Zillow property id, always a string.
+        id:
+          type: string
+          nullable: true
+          description: Zillow result id for the row.
+        palsId:
+          type: string
+          nullable: true
+        address:
+          type: string
+          nullable: true
+          description: Formatted street address for the row.
+        addressStreet:
+          type: string
+          nullable: true
+        addressCity:
+          type: string
+          nullable: true
+        addressState:
+          type: string
+          nullable: true
+        addressZipcode:
+          type: string
+          nullable: true
+        price:
+          type: string
+          nullable: true
+          description: Formatted price string, e.g. "$1,250,000".
+        unformattedPrice:
+          type: number
+          nullable: true
+          description: Numeric price.
+        beds:
+          type: number
+          nullable: true
+        baths:
+          type: number
+          nullable: true
+        area:
+          type: number
+          nullable: true
+          description: Living area in square feet.
+        livingArea:
+          type: number
+          nullable: true
+        latLong:
+          type: object
+          properties:
+            latitude:
+              type: number
+            longitude:
+              type: number
+        statusType:
+          type: string
+          nullable: true
+          description: e.g. FOR_SALE, FOR_RENT, SOLD.
+        statusText:
+          type: string
+          nullable: true
+        homeType:
+          type: string
+          nullable: true
+        imgSrc:
+          type: string
+          nullable: true
+          description: Primary thumbnail image URL.
+        hasImage:
+          type: boolean
+          nullable: true
+        detailUrl:
+          type: string
+          nullable: true
+          description: Relative or absolute Zillow detail URL for the listing.
+        hdpData:
+          type: object
+          additionalProperties: true
+          properties:
+            homeInfo:
+              type: object
+              additionalProperties: true
+              properties:
+                homeStatus:
+                  type: string
+                daysOnZillow:
+                  type: integer
+                listing_sub_type:
+                  type: object
+                  additionalProperties: true
+    ApiError:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              description: Stable, machine-matchable error code (e.g. missing_input, invalid_filters, invalid_search_url). Match on code, never on message.
+            message:
+              type: string
+              description: Human-readable message; may evolve. Do not match on this.
+            details: {}
+            request_id:
+              type: string
+          required:
+          - code
+          - message
   responses:
+    Error:
+      description: Standard error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
     JobAccepted:
       description: Async job accepted
       content:
@@ -497,12 +503,6 @@ components:
                     description: Present on chained jobs (e.g. "search").
               request_id:
                 type: string
-    Error:
-      description: Standard error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ApiError'
     SearchResultsOk:
       description: 'Search rows (sync). Note: the search-row shape (SearchResultRow) is NOT the same as the detail Property shape returned by the property endpoints.'
       content:
