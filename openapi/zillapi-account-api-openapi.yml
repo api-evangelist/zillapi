@@ -74,6 +74,25 @@ paths:
                     type: string
 components:
   schemas:
+    UsageRow:
+      type: object
+      properties:
+        id:
+          type: integer
+        endpoint:
+          type: string
+        actor:
+          type: string
+          enum:
+          - detail
+          - search
+        units:
+          type: integer
+        status_code:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
     Me:
       type: object
       properties:
@@ -115,25 +134,6 @@ components:
               type: integer
             granted_this_cycle:
               type: integer
-    UsageRow:
-      type: object
-      properties:
-        id:
-          type: integer
-        endpoint:
-          type: string
-        actor:
-          type: string
-          enum:
-          - detail
-          - search
-        units:
-          type: integer
-        status_code:
-          type: integer
-        created_at:
-          type: string
-          format: date-time
   securitySchemes:
     bearerAuth:
       type: http

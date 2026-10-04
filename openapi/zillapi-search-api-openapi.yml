@@ -59,7 +59,77 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 components:
+  responses:
+    JobAccepted:
+      description: Async job accepted
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  job_id:
+                    type: string
+                    format: uuid
+                  status:
+                    type: string
+                  stage:
+                    type: string
+                    nullable: true
+                    description: Present on chained jobs (e.g. "search").
+              request_id:
+                type: string
+    SearchResultsOk:
+      description: 'Search rows (sync). Note: the search-row shape (SearchResultRow) is NOT the same as the detail Property shape returned by the property endpoints.'
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SearchResultRow'
+              meta:
+                type: object
+                properties:
+                  count:
+                    type: integer
+              request_id:
+                type: string
+        application/x-ndjson:
+          schema:
+            type: string
+        text/csv:
+          schema:
+            type: string
+    Error:
+      description: Standard error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
   schemas:
+    ApiError:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              description: Stable, machine-matchable error code (e.g. missing_input, invalid_filters, invalid_search_url). Match on code, never on message.
+            message:
+              type: string
+              description: Human-readable message; may evolve. Do not match on this.
+            details: {}
+            request_id:
+              type: string
+          required:
+          - code
+          - message
     SearchFilters:
       type: object
       description: Normalized search filters. A `bbox` is required (unless the request supplies `searchUrls` instead); a free-text search without a bounding box is rejected with 400 invalid_filters and never hits upstream.
@@ -172,72 +242,6 @@ components:
         location:
           type: string
           description: Optional free-text place label (city/ZIP/neighborhood) — a hint only. A `bbox` (or request-level `searchUrls`) is REQUIRED; `location` alone returns 400 (invalid_filters).
-    SearchRequest:
-      type: object
-      description: A search request MUST supply either `filters` containing a `bbox`, OR a `searchUrls` array. A free-text location alone is not supported and is rejected with 400 invalid_filters.
-      properties:
-        filters:
-          $ref: '#/components/schemas/SearchFilters'
-        searchUrls:
-          type: array
-          items:
-            type: object
-            properties:
-              url:
-                type: string
-                format: uri
-                description: A zillow.com search URL that MUST contain a `searchQueryState=` query parameter. Pretty URLs (e.g. https://www.zillow.com/austin-tx/houses/) are rejected with 400 invalid_search_url.
-            required:
-            - url
-          description: 'Advanced: pre-built Zillow search URLs. Provide this instead of filters.bbox.'
-        extractionMethod:
-          type: string
-          enum:
-          - PAGINATION_WITH_ZOOM_IN
-          - PAGINATION
-          - MAP_MARKERS
-          default: PAGINATION
-          description: PAGINATION (default, up to ~820 results); MAP_MARKERS (fastest, up to ~500, less data per row); PAGINATION_WITH_ZOOM_IN (exhaustive recursive zoom, always runs async).
-        maxItems:
-          type: integer
-          minimum: 1
-          maximum: 500
-          default: 50
-          description: Maximum records to return (product hard cap 500). When maxItems > 50 the request is processed asynchronously and returns 202 with a job_id instead of results inline. maxItems ≤ 50 runs synchronously.
-        async:
-          type: boolean
-          description: Force async processing (202/job) even when maxItems ≤ 50.
-      anyOf:
-      - required:
-        - searchUrls
-      - required:
-        - filters
-        properties:
-          filters:
-            required:
-            - bbox
-    SearchWithDetailsRequest:
-      allOf:
-      - $ref: '#/components/schemas/SearchRequest'
-      - type: object
-        properties:
-          propertyStatus:
-            type: string
-            enum:
-            - FOR_SALE
-            - RECENTLY_SOLD
-            - FOR_RENT
-            default: FOR_SALE
-          extractBuildingUnits:
-            type: string
-            enum:
-            - disabled
-            - all
-            - for_sale
-            - recently_sold
-            - for_rent
-            - off_market
-            default: disabled
     SearchResultRow:
       type: object
       description: A single row returned by search/listings endpoints. This is the SEARCH shape — lighter than the full Property detail record and with different field names. To get the full detail record for a row, call GET /v1/properties/{zpid} using its zpid.
@@ -333,76 +337,72 @@ components:
                 listing_sub_type:
                   type: object
                   additionalProperties: true
-    ApiError:
+    SearchRequest:
       type: object
+      description: A search request MUST supply either `filters` containing a `bbox`, OR a `searchUrls` array. A free-text location alone is not supported and is rejected with 400 invalid_filters.
       properties:
-        error:
-          type: object
-          properties:
-            code:
-              type: string
-              description: Stable, machine-matchable error code (e.g. missing_input, invalid_filters, invalid_search_url). Match on code, never on message.
-            message:
-              type: string
-              description: Human-readable message; may evolve. Do not match on this.
-            details: {}
-            request_id:
-              type: string
-          required:
-          - code
-          - message
-  responses:
-    Error:
-      description: Standard error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ApiError'
-    JobAccepted:
-      description: Async job accepted
-      content:
-        application/json:
-          schema:
+        filters:
+          $ref: '#/components/schemas/SearchFilters'
+        searchUrls:
+          type: array
+          items:
             type: object
             properties:
-              data:
-                type: object
-                properties:
-                  job_id:
-                    type: string
-                    format: uuid
-                  status:
-                    type: string
-                  stage:
-                    type: string
-                    nullable: true
-                    description: Present on chained jobs (e.g. "search").
-              request_id:
+              url:
                 type: string
-    SearchResultsOk:
-      description: 'Search rows (sync). Note: the search-row shape (SearchResultRow) is NOT the same as the detail Property shape returned by the property endpoints.'
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                type: array
-                items:
-                  $ref: '#/components/schemas/SearchResultRow'
-              meta:
-                type: object
-                properties:
-                  count:
-                    type: integer
-              request_id:
-                type: string
-        application/x-ndjson:
-          schema:
+                format: uri
+                description: A zillow.com search URL that MUST contain a `searchQueryState=` query parameter. Pretty URLs (e.g. https://www.zillow.com/austin-tx/houses/) are rejected with 400 invalid_search_url.
+            required:
+            - url
+          description: 'Advanced: pre-built Zillow search URLs. Provide this instead of filters.bbox.'
+        extractionMethod:
+          type: string
+          enum:
+          - PAGINATION_WITH_ZOOM_IN
+          - PAGINATION
+          - MAP_MARKERS
+          default: PAGINATION
+          description: PAGINATION (default, up to ~820 results); MAP_MARKERS (fastest, up to ~500, less data per row); PAGINATION_WITH_ZOOM_IN (exhaustive recursive zoom, always runs async).
+        maxItems:
+          type: integer
+          minimum: 1
+          maximum: 500
+          default: 50
+          description: Maximum records to return (product hard cap 500). When maxItems > 50 the request is processed asynchronously and returns 202 with a job_id instead of results inline. maxItems ≤ 50 runs synchronously.
+        async:
+          type: boolean
+          description: Force async processing (202/job) even when maxItems ≤ 50.
+      anyOf:
+      - required:
+        - searchUrls
+      - required:
+        - filters
+        properties:
+          filters:
+            required:
+            - bbox
+    SearchWithDetailsRequest:
+      allOf:
+      - $ref: '#/components/schemas/SearchRequest'
+      - type: object
+        properties:
+          propertyStatus:
             type: string
-        text/csv:
-          schema:
+            enum:
+            - FOR_SALE
+            - RECENTLY_SOLD
+            - FOR_RENT
+            default: FOR_SALE
+          extractBuildingUnits:
             type: string
+            enum:
+            - disabled
+            - all
+            - for_sale
+            - recently_sold
+            - for_rent
+            - off_market
+            default: disabled
   securitySchemes:
     bearerAuth:
       type: http

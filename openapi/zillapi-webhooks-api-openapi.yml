@@ -125,51 +125,6 @@ paths:
                     type: string
 components:
   schemas:
-    Webhook:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        url:
-          type: string
-          format: uri
-        events:
-          type: array
-          items:
-            type: string
-        active:
-          type: boolean
-        description:
-          type: string
-          nullable: true
-        created_at:
-          type: string
-          format: date-time
-        revoked_at:
-          type: string
-          format: date-time
-          nullable: true
-    WebhookCreate:
-      type: object
-      required:
-      - url
-      properties:
-        url:
-          type: string
-          format: uri
-        events:
-          type: array
-          items:
-            type: string
-            enum:
-            - job.succeeded
-            - job.failed
-            - job.timed_out
-            - job.aborted
-          description: Events to subscribe to. Omit to receive all four.
-        description:
-          type: string
     WebhookDelivery:
       type: object
       properties:
@@ -220,6 +175,51 @@ components:
           secret:
             type: string
             description: Plaintext signing secret (whsec_*). Shown only once, at creation.
+    WebhookCreate:
+      type: object
+      required:
+      - url
+      properties:
+        url:
+          type: string
+          format: uri
+        events:
+          type: array
+          items:
+            type: string
+            enum:
+            - job.succeeded
+            - job.failed
+            - job.timed_out
+            - job.aborted
+          description: Events to subscribe to. Omit to receive all four.
+        description:
+          type: string
+    Webhook:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        url:
+          type: string
+          format: uri
+        events:
+          type: array
+          items:
+            type: string
+        active:
+          type: boolean
+        description:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        revoked_at:
+          type: string
+          format: date-time
+          nullable: true
   responses:
     Error:
       description: Standard error
