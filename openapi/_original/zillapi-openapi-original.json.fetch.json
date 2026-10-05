@@ -1,0 +1,12 @@
+{
+ "url": "https://zillapi.com/openapi.json",
+ "requested_url": "https://zillapi.com/openapi.json",
+ "status": 200,
+ "content_type": "application/openapi+json; charset=utf-8",
+ "bytes": 84274,
+ "sha256": "cfbdc5928cb9065f2172377fb8fb53ed1a1d7ecd6c11debb430cab7d39281d30",
+ "fetched_at": "2026-10-04",
+ "fetched_by": "APIEvangelist-Harvest/1.0 (+https://apievangelist.com)",
+ "match": "byte-identical",
+ "note": "Re-fetched from the provider by verify-openapi-sources.py; the archived file is byte-identical to what the provider serves."
+}
