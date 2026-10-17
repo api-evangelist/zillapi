@@ -124,77 +124,14 @@ paths:
                   request_id:
                     type: string
 components:
+  responses:
+    Error:
+      description: Standard error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
   schemas:
-    WebhookDelivery:
-      type: object
-      properties:
-        id:
-          type: integer
-        job_id:
-          type: string
-          format: uuid
-          nullable: true
-        event:
-          type: string
-        attempt:
-          type: integer
-        status_code:
-          type: integer
-          nullable: true
-        delivered:
-          type: boolean
-        attempted_at:
-          type: string
-          format: date-time
-        response_preview:
-          type: string
-          nullable: true
-    ApiError:
-      type: object
-      properties:
-        error:
-          type: object
-          properties:
-            code:
-              type: string
-              description: Stable, machine-matchable error code (e.g. missing_input, invalid_filters, invalid_search_url). Match on code, never on message.
-            message:
-              type: string
-              description: Human-readable message; may evolve. Do not match on this.
-            details: {}
-            request_id:
-              type: string
-          required:
-          - code
-          - message
-    WebhookCreated:
-      allOf:
-      - $ref: '#/components/schemas/Webhook'
-      - type: object
-        properties:
-          secret:
-            type: string
-            description: Plaintext signing secret (whsec_*). Shown only once, at creation.
-    WebhookCreate:
-      type: object
-      required:
-      - url
-      properties:
-        url:
-          type: string
-          format: uri
-        events:
-          type: array
-          items:
-            type: string
-            enum:
-            - job.succeeded
-            - job.failed
-            - job.timed_out
-            - job.aborted
-          description: Events to subscribe to. Omit to receive all four.
-        description:
-          type: string
     Webhook:
       type: object
       properties:
@@ -220,13 +157,76 @@ components:
           type: string
           format: date-time
           nullable: true
-  responses:
-    Error:
-      description: Standard error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ApiError'
+    WebhookCreated:
+      allOf:
+      - $ref: '#/components/schemas/Webhook'
+      - type: object
+        properties:
+          secret:
+            type: string
+            description: Plaintext signing secret (whsec_*). Shown only once, at creation.
+    ApiError:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              description: Stable, machine-matchable error code (e.g. missing_input, invalid_filters, invalid_search_url). Match on code, never on message.
+            message:
+              type: string
+              description: Human-readable message; may evolve. Do not match on this.
+            details: {}
+            request_id:
+              type: string
+          required:
+          - code
+          - message
+    WebhookCreate:
+      type: object
+      required:
+      - url
+      properties:
+        url:
+          type: string
+          format: uri
+        events:
+          type: array
+          items:
+            type: string
+            enum:
+            - job.succeeded
+            - job.failed
+            - job.timed_out
+            - job.aborted
+          description: Events to subscribe to. Omit to receive all four.
+        description:
+          type: string
+    WebhookDelivery:
+      type: object
+      properties:
+        id:
+          type: integer
+        job_id:
+          type: string
+          format: uuid
+          nullable: true
+        event:
+          type: string
+        attempt:
+          type: integer
+        status_code:
+          type: integer
+          nullable: true
+        delivered:
+          type: boolean
+        attempted_at:
+          type: string
+          format: date-time
+        response_preview:
+          type: string
+          nullable: true
   securitySchemes:
     bearerAuth:
       type: http

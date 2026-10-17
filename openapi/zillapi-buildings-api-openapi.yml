@@ -79,34 +79,6 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 components:
-  responses:
-    JobAccepted:
-      description: Async job accepted
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                type: object
-                properties:
-                  job_id:
-                    type: string
-                    format: uuid
-                  status:
-                    type: string
-                  stage:
-                    type: string
-                    nullable: true
-                    description: Present on chained jobs (e.g. "search").
-              request_id:
-                type: string
-    Error:
-      description: Standard error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ApiError'
   schemas:
     ApiError:
       type: object
@@ -146,6 +118,34 @@ components:
         baths:
           type: number
           nullable: true
+  responses:
+    Error:
+      description: Standard error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+    JobAccepted:
+      description: Async job accepted
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  job_id:
+                    type: string
+                    format: uuid
+                  status:
+                    type: string
+                  stage:
+                    type: string
+                    nullable: true
+                    description: Present on chained jobs (e.g. "search").
+              request_id:
+                type: string
   securitySchemes:
     bearerAuth:
       type: http
