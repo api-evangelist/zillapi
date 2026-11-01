@@ -1,4 +1,4 @@
-# Zillapi (zillapi)
+# Zillapi
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -66,233 +66,156 @@
 
 Independent third-party provider of Zillow-sourced U.S. residential property data via a REST API, hosted MCP server, and agent skills. Returns ~300+ fields per property including price, Zestimate, rent Zestimate, photos, schools, taxes, and full price history, plus listing search, building extraction, async batch jobs, and signed webhooks.
 
-**APIs.json:** [https://zillapi.apievangelist.com/apis.yml](https://zillapi.apievangelist.com/apis.yml)
+**Areas:** Real Estate · PropTech · Property Data · Zillow · Zestimate · Valuation · AVM · Listings · MCP · AI Agents · REST API
 
-## Tags
+## Zillapi on APIs.io
 
-- real estate
-- proptech
-- property data
-- zillow
-- zestimate
-- valuation
-- AVM
-- listings
-- MCP
-- AI agent
-- REST API
+Everything profiled for Zillapi is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/zillapi/](https://apis.io/providers/zillapi/)** — or go straight to one of the APIs or properties below.
 
-## Timestamps
+### APIs (7)
 
-- **Created:** 2026-07-13
-- **Modified:** 2026-08-09
+- [Zillapi Account API](https://apis.io/apis/zillapi/zillapi-account-api/) — The Account API from Zillapi — 2 operation(s) for account.
+- [Zillapi Buildings API](https://apis.io/apis/zillapi/zillapi-buildings-api/) — The Buildings API from Zillapi — 1 operation(s) for buildings.
+- [Zillapi Jobs API](https://apis.io/apis/zillapi/zillapi-jobs-api/) — The Jobs API from Zillapi — 3 operation(s) for jobs.
+- [Zillapi Listings API](https://apis.io/apis/zillapi/zillapi-listings-api/) — The Listings API from Zillapi — 4 operation(s) for listings.
+- [Zillapi Properties API](https://apis.io/apis/zillapi/zillapi-properties-api/) — The Properties API from Zillapi — 13 operation(s) for properties.
+- [Zillapi Search API](https://apis.io/apis/zillapi/zillapi-search-api/) — The Search API from Zillapi — 2 operation(s) for search.
+- [Zillapi Webhooks API](https://apis.io/apis/zillapi/zillapi-webhooks-api/) — The Webhooks API from Zillapi — 3 operation(s) for webhooks.
 
-## APIs
+### Published properties
 
-### Zillapi Account API
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
 
-The Account API from Zillapi — 2 operation(s) for account.
+#### AsyncAPI (1)
 
-- **Human URL:** [https://zillapi.com/api/properties/](https://zillapi.com/api/properties/)
-- **Base URL:** `https://api.zillapi.com`
+Event-driven and webhook contracts.
 
-#### Tags
+- [Zillapi Webhooks](https://apis.io/asyncapis/zillapi/zillapi-webhooks/)
 
-- Account
+#### MCP servers (2)
 
-#### Properties
+Model Context Protocol servers that expose the API to agents.
 
-- [OpenAPI](openapi/zillapi-account-api-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/zillapi-account-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/zillapi-account-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [MCP registry server.json (com.zillapi/zillow-mcp)](https://apis.io/servers/zillapi/mcp-registry-server-json-com-zillapi-zillow-mcp/)
+- [Zillapi - Zillow Data API](https://apis.io/servers/zillapi/zillapi/)
+
+#### Agentic access (1)
+
+Which operations an agent can call, which act, and which need a human in the loop.
+
+- [Zillapi Agentic Access](https://apis.io/agentic-access/zillapi/zillapi-agentic-access/)
+
+#### Collections (7)
+
+Postman and Open Collection request collections.
+
+- [Zillapi: Zillow property data Account API](https://apis.io/collections/zillapi/open-zillapi-account-api/)
+- [Zillapi: Zillow property data Buildings API](https://apis.io/collections/zillapi/open-zillapi-buildings-api/)
+- [Zillapi: Zillow property data Jobs API](https://apis.io/collections/zillapi/open-zillapi-jobs-api/)
+- [Zillapi: Zillow property data Listings API](https://apis.io/collections/zillapi/open-zillapi-listings-api/)
+- [Zillapi: Zillow property data Properties API](https://apis.io/collections/zillapi/open-zillapi-properties-api/)
+- [Zillapi: Zillow property data Search API](https://apis.io/collections/zillapi/open-zillapi-search-api/)
+- [Zillapi: Zillow property data Webhooks API](https://apis.io/collections/zillapi/open-zillapi-webhooks-api/)
+
+#### Overlays (1)
+
+OpenAPI overlays, including conversational phrasing for each operation.
+
+- [Zillapi Openapi Overlay](https://apis.io/overlays/zillapi/zillapi-openapi-overlay/)
+
+#### Security (3)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Zillapi Authentication](https://apis.io/security/zillapi/zillapi-authentication/)
+- [Zillapi Domain Security](https://apis.io/security/zillapi/zillapi-domain-security/)
+- [Zillapi Vulnerability Disclosure](https://apis.io/security/zillapi/zillapi-vulnerability-disclosure/)
+
+#### OAuth scopes (1)
+
+The permissions the API asks for.
+
+- [Zillapi Scopes](https://apis.io/scopes/zillapi/zillapi-scopes/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Zillapi Plans](https://apis.io/plans/zillapi/zillapi-plans/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Zillapi Rate Limits](https://apis.io/rate-limits/zillapi/zillapi-rate-limits/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://www.zillapi.com/)
 - [Documentation](https://zillapi.com/quickstart/)
-- [L L Ms Txt](https://zillapi.com/llms.txt)
-- [L L Ms Txt](https://zillapi.com/llms-full.txt)
-- [Tool Crosswalk](mcp/zillapi-tool-crosswalk.yml)
-- [L L Ms Txt](llms/zillapi-llms.txt)
-- [Data Model](data-model/zillapi-data-model.yml)
-- [Examples](examples/zillapi-examples.yml)
-
-### Zillapi Buildings API
-
-The Buildings API from Zillapi — 1 operation(s) for buildings.
-
-- **Human URL:** [https://zillapi.com/api/properties/](https://zillapi.com/api/properties/)
-- **Base URL:** `https://api.zillapi.com`
-
-#### Tags
-
-- Buildings
-
-#### Properties
-
-- [OpenAPI](openapi/zillapi-buildings-api-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/zillapi-buildings-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/zillapi-buildings-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-- [Documentation](https://zillapi.com/quickstart/)
-- [L L Ms Txt](https://zillapi.com/llms.txt)
-- [L L Ms Txt](https://zillapi.com/llms-full.txt)
-- [Tool Crosswalk](mcp/zillapi-tool-crosswalk.yml)
-- [L L Ms Txt](llms/zillapi-llms.txt)
-- [Data Model](data-model/zillapi-data-model.yml)
-- [Examples](examples/zillapi-examples.yml)
-
-### Zillapi Jobs API
-
-The Jobs API from Zillapi — 3 operation(s) for jobs.
-
-- **Human URL:** [https://zillapi.com/api/properties/](https://zillapi.com/api/properties/)
-- **Base URL:** `https://api.zillapi.com`
-
-#### Tags
-
-- Jobs
-
-#### Properties
-
-- [OpenAPI](openapi/zillapi-jobs-api-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/zillapi-jobs-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/zillapi-jobs-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-- [Documentation](https://zillapi.com/quickstart/)
-- [L L Ms Txt](https://zillapi.com/llms.txt)
-- [L L Ms Txt](https://zillapi.com/llms-full.txt)
-- [Tool Crosswalk](mcp/zillapi-tool-crosswalk.yml)
-- [L L Ms Txt](llms/zillapi-llms.txt)
-- [Data Model](data-model/zillapi-data-model.yml)
-- [Examples](examples/zillapi-examples.yml)
-
-### Zillapi Listings API
-
-The Listings API from Zillapi — 4 operation(s) for listings.
-
-- **Human URL:** [https://zillapi.com/api/properties/](https://zillapi.com/api/properties/)
-- **Base URL:** `https://api.zillapi.com`
-
-#### Tags
-
-- Listings
-
-#### Properties
-
-- [OpenAPI](openapi/zillapi-listings-api-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/zillapi-listings-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/zillapi-listings-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-- [Documentation](https://zillapi.com/quickstart/)
-- [L L Ms Txt](https://zillapi.com/llms.txt)
-- [L L Ms Txt](https://zillapi.com/llms-full.txt)
-- [Tool Crosswalk](mcp/zillapi-tool-crosswalk.yml)
-- [L L Ms Txt](llms/zillapi-llms.txt)
-- [Data Model](data-model/zillapi-data-model.yml)
-- [Examples](examples/zillapi-examples.yml)
-
-### Zillapi Properties API
-
-The Properties API from Zillapi — 13 operation(s) for properties.
-
-- **Human URL:** [https://zillapi.com/api/properties/](https://zillapi.com/api/properties/)
-- **Base URL:** `https://api.zillapi.com`
-
-#### Tags
-
-- Properties
-
-#### Properties
-
-- [OpenAPI](openapi/zillapi-properties-api-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/zillapi-properties-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/zillapi-properties-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-- [Documentation](https://zillapi.com/quickstart/)
-- [L L Ms Txt](https://zillapi.com/llms.txt)
-- [L L Ms Txt](https://zillapi.com/llms-full.txt)
-- [Tool Crosswalk](mcp/zillapi-tool-crosswalk.yml)
-- [L L Ms Txt](llms/zillapi-llms.txt)
-- [Data Model](data-model/zillapi-data-model.yml)
-- [Examples](examples/zillapi-examples.yml)
-
-### Zillapi Search API
-
-The Search API from Zillapi — 2 operation(s) for search.
-
-- **Human URL:** [https://zillapi.com/api/properties/](https://zillapi.com/api/properties/)
-- **Base URL:** `https://api.zillapi.com`
-
-#### Tags
-
-- Search
-
-#### Properties
-
-- [OpenAPI](openapi/zillapi-search-api-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/zillapi-search-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/zillapi-search-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-- [Documentation](https://zillapi.com/quickstart/)
-- [L L Ms Txt](https://zillapi.com/llms.txt)
-- [L L Ms Txt](https://zillapi.com/llms-full.txt)
-- [Tool Crosswalk](mcp/zillapi-tool-crosswalk.yml)
-- [L L Ms Txt](llms/zillapi-llms.txt)
-- [Data Model](data-model/zillapi-data-model.yml)
-- [Examples](examples/zillapi-examples.yml)
-
-### Zillapi Webhooks API
-
-The Webhooks API from Zillapi — 3 operation(s) for webhooks.
-
-- **Human URL:** [https://zillapi.com/api/properties/](https://zillapi.com/api/properties/)
-- **Base URL:** `https://api.zillapi.com`
-
-#### Tags
-
-- Webhooks
-
-#### Properties
-
-- [OpenAPI](openapi/zillapi-webhooks-api-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/zillapi-webhooks-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/zillapi-webhooks-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-- [Documentation](https://zillapi.com/quickstart/)
-- [L L Ms Txt](https://zillapi.com/llms.txt)
-- [L L Ms Txt](https://zillapi.com/llms-full.txt)
-- [Tool Crosswalk](mcp/zillapi-tool-crosswalk.yml)
-- [L L Ms Txt](llms/zillapi-llms.txt)
-- [Data Model](data-model/zillapi-data-model.yml)
-- [Examples](examples/zillapi-examples.yml)
-
-## Common Properties
-
-- [Agent Skill](skills/zillapi-get-zestimate.md)
-- [M C P Server](mcp/zillapi-mcp.yml)
-- [Overlay](overlays/zillapi-openapi-overlay.yaml)
-- [Domain Security](security/zillapi-domain-security.yml)
-- [Agentic Access](agentic-access/zillapi-agentic-access.yml)
-- [Authentication](authentication/zillapi-authentication.yml)
-- [O Auth Scopes](scopes/zillapi-scopes.yml)
-- [Conventions](conventions/zillapi-conventions.yml)
-- [Error Catalog](errors/zillapi-error-codes.yml)
-- [Lifecycle](lifecycle/zillapi-lifecycle.yml)
-- [Conformance](conformance/zillapi-conformance.yml)
-- [Packages](packages/zillapi-packages.yml)
-- [Well Known](well-known/zillapi-well-known.yml)
-- [A P I Catalog](https://zillapi.com/.well-known/api-catalog)
-- [Webhooks](asyncapi/zillapi-webhooks.yml)
-- [Rate Limits](rate-limits/zillapi-rate-limits.yml)
-- [Plans](plans/zillapi-plans.yml)
-- [Vulnerability Disclosure](security/zillapi-vulnerability-disclosure.yml)
-- [Security](https://github.com/ZeroPointRepo/zillow-skills/blob/main/SECURITY.md)
-- [Developer Portal](https://zillapi.com/)
-- [Documentation](https://zillapi.com/quickstart/)
-- [API Reference](https://zillapi.com/api/properties/)
-- [Getting Started](https://zillapi.com/quickstart/)
-- [Blog](https://zillapi.com/blog/)
-- [GitHub Organization](https://github.com/ZeroPointRepo/zillow-skills)
+- [Getting started](https://zillapi.com/quickstart/)
+- [API reference](https://zillapi.com/api/properties/)
 - [Pricing](https://zillapi.com/pricing/)
-- [Sign Up](https://zillapi.com/signup)
-- [Login](https://zillapi.com/login)
-- [Terms of Service](https://zillapi.com/legal/terms/)
-- [Privacy Policy](https://zillapi.com/legal/privacy/)
-- [Support](mailto:hello@zillapi.com)
+- [Sign up](https://zillapi.com/signup)
+- [Blog](https://zillapi.com/blog/)
+- [Security](https://github.com/ZeroPointRepo/zillow-skills/blob/main/SECURITY.md)
+- [Terms of service](https://zillapi.com/legal/terms/)
+- [Privacy policy](https://zillapi.com/legal/privacy/)
+- [GitHub](https://github.com/ZeroPointRepo)
 
-## Maintainers
+## API Evangelist rating
 
-**FN:** ZeroPointRepo
-**Email:** hello@zillapi.com
-**URL:** https://github.com/ZeroPointRepo/zillow-skills
+**Kin Score 63.9** — strong · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 85.0 |
+| Contract quality | 60.8 |
+| Contract governance | 18.2 |
+| Operational transparency | 52.6 |
+| Developer ergonomics | 64.3 |
+| Access clarity | 76.3 |
+
+**Agent readiness 58.3** — agent-ready (gated down from agent-native)
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | — |
+| MCP Server | verified |
+| Auth Clarity | served (partial credit) |
+| Idempotency | — |
+| Error Semantics | documented (partial credit) |
+| OpenAPI Examples | documented (partial credit) |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | yes |
+| Agent Skills | yes |
+| Well Known Catalog | yes |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | served (partial credit) |
+| Protected Resource Metadata | verified |
+| Dynamic Client Registration | yes |
+| Agentic Commerce | — |
+| Pagination Ratio | — |
+| Operation Distinctiveness | distinct |
+
+**Regulatory alignment 40.2** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/zillapi/](https://apis.io/providers/zillapi/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Zillapi: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/zillapi/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
