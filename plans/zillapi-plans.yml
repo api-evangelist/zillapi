@@ -91,7 +91,7 @@ rate_limit_statements:
 - 300 req / min
 - 'Each plan has a per-minute request cap: 20/min on Free, 200/min on Monthly, 300/min on Annual.'
 x-canonical:
-  generated: '2026-11-02'
+  generated: '2026-11-06'
   vocabulary: engine/economics/plans-canonical.yml
   models:
   - hybrid
